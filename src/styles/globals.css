@@ -115,6 +115,10 @@ a {
 	transform: rotate(270deg);
 }
 
+input:checked ~ .dot {
+	transform: translateX(100%);
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
