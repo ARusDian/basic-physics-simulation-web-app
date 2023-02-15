@@ -85,7 +85,7 @@ export default function Layout(props: Props) {
 					</div>
 				</aside>
 			</div >
-			<div className="p-4 bg-zinc-800">
+			<div className="p-4 bg-zinc-800 h-max">
 				{props.children}
 			</div>
 		</div>
