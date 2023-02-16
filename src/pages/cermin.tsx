@@ -66,8 +66,6 @@ export default function cermin() {
 					text: "Image",
 				});
 			}
-
-			
 		}
 	};
 
@@ -94,21 +92,21 @@ export default function cermin() {
 				<div className='flex my-20'>
 					<Slider
 						handler={(e) => setmirrorFocus(parseInt(e.target.value))}
-						className="slider-vertical w-96"
+						className="slider-vertical"
 						value={mirrorFocus}
 						max={540}
 						min={0}
 					/>
 					<Slider
 						handler={(e) => setObjectHeight(parseInt(e.target.value))}
-						className="slider-vertical w-96"
+						className="slider-vertical"
 						value={objectHeight}
 						max={360}
 						min={-360}
 					/>
 					<Slider
 						handler={(e) => setObjectDistance(parseInt(e.target.value))}
-						className="slider-vertical w-96"
+						className="slider-vertical"
 						value={objectDistance}
 						max={540}
 						min={0}
