@@ -63,7 +63,7 @@ export default function Layout(props: Props) {
 						<li className='border-b border-gray-600'>Gerak Bola</li>
 					</ul>
 					<div className='flex justify-center'>
-						<div className='absolute text-3xl bottom-1/4' onClick={handleLeftSidebar}>
+						<div className='absolute text-3xl bottom-32' onClick={handleLeftSidebar}>
 							<AiOutlineClose />
 						</div>
 					</div>
@@ -79,7 +79,7 @@ export default function Layout(props: Props) {
 					</h1>
 					{props.configBar()}
 					<div className='flex justify-center'>
-						<div className='absolute text-3xl bottom-1/4' onClick={handleRightSidebar}>
+						<div className='absolute text-3xl bottom-32' onClick={handleRightSidebar}>
 							<AiOutlineClose />
 						</div>
 					</div>
