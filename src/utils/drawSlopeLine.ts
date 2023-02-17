@@ -18,10 +18,6 @@ export default function drawSlopeLine(props: Props) {
         return (y - intercept) / slope;
     }
 
-    const getY = (x: number) => {
-        return slope * x + intercept;
-    }
-
     ctx.beginPath();
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
