@@ -24,6 +24,8 @@ export default function drawSlopeLine(props: Props) {
 
     ctx.beginPath();
     ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 1;
 
     ctx.moveTo(getX(-props.canvasHeight), props.canvasHeight);
     ctx.lineTo(start.x, -start.y);
