@@ -5,6 +5,7 @@ import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
 import drawLine from '../utils/drawLine';
+import writeText from '@/utils/writeText';
 
 export default function cermin() {
 	const [objectDistance, setObjectDistance] = useState(100);
@@ -35,12 +36,49 @@ export default function cermin() {
 				color: "#ea96FF",
 				text: "Object",
 			});
+			// Draw Focus coordinate
 			drawLine({
 				ctx: context,
 				start: { x: - mirrorFocus, y: 0 },
 				end: { x: -	mirrorFocus, y: 30 },
 				color: "purple",
 				text: "Focus",
+			});
+			// Draw Curvature Point
+			drawLine({
+				ctx: context,
+				start: { x: - mirrorFocus * 2, y: 2 },
+				end: { x: -	mirrorFocus * 2, y: 30 },
+				color: "brown",
+				text: "Curvature",
+			});
+			//text for 1st object dimension(ruang cahaya I)
+			writeText({
+				ctx: context,
+				start: { x: - mirrorFocus + mirrorFocus*0.5, y: 2 },
+				end: { x: -	mirrorFocus + mirrorFocus*0.5, y: -20 },
+				text: "Ruang I",
+			});
+			//text for 2nd object dimension(ruang cahaya II)
+			writeText({
+				ctx: context,
+				start: { x: - mirrorFocus *1.5, y: 2 },
+				end: { x: -	mirrorFocus *1.5, y: -20 },
+				text: "Ruang II",
+			});
+			//text for 3rd object dimension(ruang cahaya III)
+			writeText({
+				ctx: context,
+				start: { x: - mirrorFocus *2.5, y: 2 },
+				end: { x: -	mirrorFocus *2.5, y: -20 },
+				text: "Ruang III",
+			});	
+			//text for 4th object dimension(ruang cahaya IV)
+			writeText({
+				ctx: context,
+				start: { x: canvas.width / 3, y: 0 },
+				end: { x: canvas.width / 4, y: -20 },
+				text: "Ruang IV",
 			});
 
 			// Draw Mirror
