@@ -1,4 +1,5 @@
 import Slider from '@/components/Slider';
+import drawSlopeLine from '@/utils/drawSlopeLine';
 import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
@@ -79,28 +80,30 @@ export default function cermin() {
 				ctx: context,
 				start: { x: -objectDistance, y: -objectHeight},
 				end: {x: 0, y: objectHeight },
-				color: "red",
+				color: "green",
 			});
 
 			drawLine({
 				ctx: context,
 				start: { x: -mirrorObjectDistance, y: mirrorObjectHeight},
 				end: {x: 0, y: -mirrorObjectHeight },
-				color: "red",
+				color: "orange",
 			});
 
-			drawLine({
+			drawSlopeLine({
 				ctx: context,
-				start: { x: -objectDistance, y: -objectHeight},
+				start: { x: -objectDistance, y: objectHeight},
 				end: {x: 0, y: -mirrorObjectHeight },
-				color: "red",
+				color: "yellow",
+				canvasHeight:canvas.height
 			});
 
-			drawLine({
+			drawSlopeLine({
 				ctx: context,
-				start: { x: -mirrorObjectDistance, y: mirrorObjectHeight },
-				end: {x: 0, y: objectHeight },
-				color: "red",
+				start: {x: 0, y: objectHeight },
+				end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+				color: "cyan",
+				canvasHeight:canvas.height
 			});
 		}
 	};
