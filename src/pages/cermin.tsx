@@ -47,25 +47,18 @@ export default function cermin() {
 				console.log(objectDistance,calculatedFocus)
 				setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
 				setMirrorObjectHeight((mirrorObjectDistance * objectHeight) / objectDistance);
-				drawLine({
-					ctx: context,
-					start: { x: -(mirrorObjectDistance), y: 0 },
-					end: { x: -(mirrorObjectDistance), y: -(mirrorObjectHeight) },
-					color: "#FF0000",
-					text: "Image",
-				});
 			} else {
 				const calculatedFocus = mirrorFocus
 				setMirrorObjectDistance(objectDistance * calculatedFocus / (objectDistance - calculatedFocus));
 				setMirrorObjectHeight(mirrorObjectDistance * objectHeight / objectDistance);
-				drawLine({
-					ctx: context,
-					start: { x:-(mirrorObjectDistance), y: 0 },
-					end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
-					color: "#FF0000",
-					text: "Image",
-				});
 			}
+			drawLine({
+				ctx: context,
+				start: { x:-(mirrorObjectDistance), y: 0 },
+				end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
+				color: "#FF0000",
+				text: "Image",
+			});
 		}
 	};
 
