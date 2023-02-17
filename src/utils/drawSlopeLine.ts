@@ -26,7 +26,6 @@ export default function drawSlopeLine(props: Props) {
 	ctx.moveTo(getX(-props.canvasHeight), props.canvasHeight);
 	ctx.lineTo(start.x, -start.y);
 	ctx.lineTo(end.x, -end.y);
-	ctx.lineTo(getX(props.canvasHeight), -props.canvasHeight);
 	if (text) {
 		ctx.fillText(text, start.x-end.x, -end.y - 10);
 		ctx.textAlign = 'center';
