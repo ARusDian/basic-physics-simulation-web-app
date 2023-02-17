@@ -1,5 +1,6 @@
 import Slider from '@/components/Slider';
 import drawLineDDA from '@/utils/drawLineWDDa';
+import drawSlopeLine from '@/utils/drawSlopeLine';
 import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
@@ -45,51 +46,51 @@ export default function cermin() {
 			// Draw Mirror
 			if (isConvex) { 
 				const calculatedFocus = -mirrorFocus;
-				// console.log(objectDistance,calculatedFocus);
 				setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
 				setMirrorObjectHeight((mirrorObjectDistance * objectHeight) / objectDistance);
 			} else {
 				const calculatedFocus = mirrorFocus;
 				setMirrorObjectDistance(objectDistance * calculatedFocus / (objectDistance - calculatedFocus));
 				setMirrorObjectHeight(mirrorObjectDistance * objectHeight / objectDistance);
-				drawLine({
-					ctx: context,
-					start: { x:-(mirrorObjectDistance), y: 0 },
-					end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
-					color: "green",
-					text: "Image",
-				});
 			}
+			
+			drawLine({
+				ctx: context,
+				start: { x:-(mirrorObjectDistance), y: 0 },
+				end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
+				color: "green",
+				text: "Image",
+			});
 			drawLine({
 				ctx: context,
 				start: { x: -objectDistance, y: -objectHeight },
-				end: { x: -0, y: objectHeight },
-				color: "red",
+				end: { x: 0, y: objectHeight },
+				color: "green",
 			});
-			drawLineDDA({
+
+			drawLine({
 				ctx: context,
-				start: { x: 0, y: objectHeight  },
-				end: { x: -mirrorFocus, y: 0 },
-				color: "red",
+				start: { x: -mirrorObjectDistance, y: mirrorObjectHeight },
+				end: { x: 0, y: -mirrorObjectHeight },
+				color: "orange",
 			});
-			drawLineDDA({
+
+			drawSlopeLine({
 				ctx: context,
-				start: { x: -mirrorFocus, y: 0 },
-				end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight  },
+				start: { x: -objectDistance, y: objectHeight },
+				end: { x: 0, y: -mirrorObjectHeight },
 				color: "red",
+				canvasHeight: canvas.height
 			});
-			drawLineDDA({
+
+			drawSlopeLine({
 				ctx: context,
-				start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight  },
-				end: { x: 0, y: -mirrorObjectHeight  },
-				color: "red",
+				start: { x: 0, y: objectHeight },
+				end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+				color: "cyan",
+				canvasHeight: canvas.height
 			});
-			drawLineDDA({
-				ctx: context,
-				start: { x: 0, y: -mirrorObjectHeight  },
-				end: { x: -mirrorObjectDistance, y: 0 },
-				color: "red",
-			});
+		
 		}
 	};
 
