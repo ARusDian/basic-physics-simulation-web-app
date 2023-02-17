@@ -125,9 +125,6 @@ export default function cermin() {
 
 		return (
 			<>
-<<<<<<< HEAD
-				<div className='flex my-[100px]'>
-=======
 				<div className='flex mt-4 mx-4'>
 					<div className={`text-xl ${(!isConvex) ? "text-cyan-400" : ""}`}>
 						Concave
@@ -148,7 +145,6 @@ export default function cermin() {
 					</div>
 				</div>
 				<div className='flex my-20'>
->>>>>>> 5b9dd00 (fix sidebar layout)
 					<Slider
 						handler={(e) => setmirrorFocus(parseInt(e.target.value))}
 						className="slider-vertical"
