@@ -36,28 +36,63 @@ export default function cermin() {
 			drawLine({
 				ctx: context,
 				start: { x: - mirrorFocus, y: 0 },
-				end: { x: -	mirrorFocus, y: 30 },
+				end: { x: -	mirrorFocus, y: 10 },
 				color: "purple",
 				text: "Focus",
+			});
+			drawLine({
+				ctx: context,
+				start: { x: - 2 * mirrorFocus, y: 0 },
+				end: { x: - 2 * mirrorFocus, y: 10 },
+				color: "blue",
+				text: "Curvature",
 			});
 
 			// Draw Mirror
 			if (isConvex) { 
 				const calculatedFocus = -mirrorFocus
-				setMirrorObjectDistance(objectDistance * calculatedFocus / (objectDistance - calculatedFocus));
-				setMirrorObjectHeight(mirrorObjectDistance * objectHeight / objectDistance);
+				setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
+				setMirrorObjectHeight((mirrorObjectDistance * objectHeight) / objectDistance);
 			} else {
 				const calculatedFocus = mirrorFocus
-				setMirrorObjectDistance(objectDistance * calculatedFocus / (objectDistance - calculatedFocus));
-				setMirrorObjectHeight(mirrorObjectDistance * objectHeight / objectDistance);
+				setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
+				setMirrorObjectHeight((mirrorObjectDistance * objectHeight) / objectDistance);
 			}
 
 			drawLine({
 				ctx: context,
-				start: { x: mirrorObjectDistance, y: 0 },
-				end: { x: mirrorObjectDistance, y: mirrorObjectHeight },
+				start: { x: -mirrorObjectDistance, y: 0 },
+				end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
 				color: "#FF0000",
 				text: "Image",
+			});
+
+			drawLine({
+				ctx: context,
+				start: { x: -objectDistance, y: -objectHeight},
+				end: {x: 0, y: objectHeight },
+				color: "red",
+			});
+
+			drawLine({
+				ctx: context,
+				start: { x: -mirrorObjectDistance, y: mirrorObjectHeight},
+				end: {x: 0, y: -mirrorObjectHeight },
+				color: "red",
+			});
+
+			drawLine({
+				ctx: context,
+				start: { x: -objectDistance, y: -objectHeight},
+				end: {x: 0, y: -mirrorObjectHeight },
+				color: "red",
+			});
+
+			drawLine({
+				ctx: context,
+				start: { x: -mirrorObjectDistance, y: mirrorObjectHeight },
+				end: {x: 0, y: objectHeight },
+				color: "red",
 			});
 		}
 	};
@@ -82,24 +117,24 @@ export default function cermin() {
 
 		return (
 			<>
-				<div className='flex my-20'>
+				<div className='flex my-[100px]'>
 					<Slider
 						handler={(e) => setmirrorFocus(parseInt(e.target.value))}
-						className="slider-vertical w-96"
+						className="slider-vertical"
 						value={mirrorFocus}
 						max={540}
 						min={-540}
 					/>
 					<Slider
 						handler={(e) => setObjectHeight(parseInt(e.target.value))}
-						className="slider-vertical w-96"
+						className="slider-vertical"
 						value={objectHeight}
 						max={360}
 						min={-360}
 					/>
 					<Slider
 						handler={(e) => setObjectDistance(parseInt(e.target.value))}
-						className="slider-vertical w-96"
+						className="slider-vertical"
 						value={objectDistance}
 						max={540}
 						min={0}
@@ -166,7 +201,7 @@ export default function cermin() {
 									/>
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-									{mirrorObjectDistance}
+									{mirrorObjectDistance.toFixed(2)}
 								</td>
 							</tr>
 							<tr>
@@ -184,7 +219,7 @@ export default function cermin() {
 									/>
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-									{mirrorObjectHeight}
+									{mirrorObjectHeight.toFixed(2)}
 								</td>
 							</tr>
 							<tr>
@@ -202,7 +237,7 @@ export default function cermin() {
 									/>
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-									M = {Math.abs(mirrorObjectDistance / objectDistance)}
+									M = {Math.abs(mirrorObjectDistance / objectDistance).toFixed(2)}
 								</td>
 							</tr>
 						</tbody>
