@@ -23,7 +23,7 @@ const DDA = (startC: { x: number, y: number }, endC: { x: number, y: number }) =
 		});
 	}
 
-	return values;
+	return {steps,values};
 
 };
 
