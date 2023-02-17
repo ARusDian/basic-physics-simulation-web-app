@@ -1,9 +1,9 @@
-interface Props {
-    ctx: CanvasRenderingContext2D;
-    start: { x: number, y: number };
-    end: { x: number, y: number };
-    color: string;
-    text?: string;
+export interface Props {
+	ctx: CanvasRenderingContext2D;
+	start: { x: number, y: number };
+	end: { x: number, y: number };
+	color: string;
+	text?: string;
 }
 
 

@@ -1,4 +1,5 @@
 import Slider from '@/components/Slider';
+import drawLineDDA from '@/utils/drawLineWDDa';
 import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
@@ -30,7 +31,7 @@ export default function cermin() {
 				ctx: context,
 				start: { x: -objectDistance, y: 0 },
 				end: { x: -objectDistance, y: objectHeight },
-				color: "#0096FF",
+				color: "#ea96FF",
 				text: "Object",
 			});
 			drawLine({
@@ -43,21 +44,51 @@ export default function cermin() {
 
 			// Draw Mirror
 			if (isConvex) { 
-				const calculatedFocus = -mirrorFocus
-				console.log(objectDistance,calculatedFocus)
+				const calculatedFocus = -mirrorFocus;
+				// console.log(objectDistance,calculatedFocus);
 				setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
 				setMirrorObjectHeight((mirrorObjectDistance * objectHeight) / objectDistance);
 			} else {
-				const calculatedFocus = mirrorFocus
+				const calculatedFocus = mirrorFocus;
 				setMirrorObjectDistance(objectDistance * calculatedFocus / (objectDistance - calculatedFocus));
 				setMirrorObjectHeight(mirrorObjectDistance * objectHeight / objectDistance);
+				drawLine({
+					ctx: context,
+					start: { x:-(mirrorObjectDistance), y: 0 },
+					end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
+					color: "green",
+					text: "Image",
+				});
 			}
 			drawLine({
 				ctx: context,
-				start: { x:-(mirrorObjectDistance), y: 0 },
-				end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
-				color: "#FF0000",
-				text: "Image",
+				start: { x: -objectDistance, y: -objectHeight },
+				end: { x: -0, y: objectHeight },
+				color: "red",
+			});
+			drawLineDDA({
+				ctx: context,
+				start: { x: 0, y: objectHeight  },
+				end: { x: -mirrorFocus, y: 0 },
+				color: "red",
+			});
+			drawLineDDA({
+				ctx: context,
+				start: { x: -mirrorFocus, y: 0 },
+				end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight  },
+				color: "red",
+			});
+			drawLineDDA({
+				ctx: context,
+				start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight  },
+				end: { x: 0, y: -mirrorObjectHeight  },
+				color: "red",
+			});
+			drawLineDDA({
+				ctx: context,
+				start: { x: 0, y: -mirrorObjectHeight  },
+				end: { x: -mirrorObjectDistance, y: 0 },
+				color: "red",
 			});
 		}
 	};
@@ -256,8 +287,8 @@ export default function cermin() {
 					</table>
 				</div>
 			</>
-		)
-	}
+		);
+	};
 
 	return (
 		<>
