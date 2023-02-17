@@ -51,8 +51,16 @@ export default function cermin() {
 			// Draw Mirror
 			if (isConvex) { 
 				const calculatedFocus = -mirrorFocus
+				console.log(objectDistance,calculatedFocus)
 				setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
 				setMirrorObjectHeight((mirrorObjectDistance * objectHeight) / objectDistance);
+				drawLine({
+					ctx: context,
+					start: { x: -(mirrorObjectDistance), y: 0 },
+					end: { x: -(mirrorObjectDistance), y: -(mirrorObjectHeight) },
+					color: "#FF0000",
+					text: "Image",
+				});
 			} else {
 				const calculatedFocus = mirrorFocus
 				setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
@@ -123,7 +131,7 @@ export default function cermin() {
 						className="slider-vertical"
 						value={mirrorFocus}
 						max={540}
-						min={-540}
+						min={0}
 					/>
 					<Slider
 						handler={(e) => setObjectHeight(parseInt(e.target.value))}
@@ -232,7 +240,7 @@ export default function cermin() {
 										className="w-20 bg-transparent"
 										value={mirrorFocus}
 										onChange={(e) => setmirrorFocus(parseFloat(e.target.value))}
-										min={-540}
+										min={0}
 										step={"any"}
 									/>
 								</td>
