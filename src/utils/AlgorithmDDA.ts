@@ -22,22 +22,12 @@ export default function AlgorithmDDA(props: Props) {
     let dx = 0;
     let dy = 0;
 
-    let nx = 0;
-    let ny = 0;
-
-    let slope = 0;
-
-    let intercept = 0;
-
     if(beyond) {
-        slope = (end.getY() - start.getY()) / (end.getX() - start.getX());
-        intercept = start.getY() - slope * start.getX();
+        const slope = (end.getY() - start.getY()) / (end.getX() - start.getX());
+        const intercept = start.getY() - slope * start.getX();
 
-        nx = (720 - intercept) / slope;
-        ny = slope * 1080 + intercept;
-
-        dx = nx;
-        dy = ny;
+        dx = (((start.getY() > 0 ? -720 : 720) - intercept) / slope) - start.getX();
+        dy = (start.getY() > 0 ? -720 : 720) - start.getY();
     }
     else {
         dx = end.getX() - start.getX();

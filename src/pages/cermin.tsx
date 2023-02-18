@@ -7,7 +7,7 @@ import Layout from '../components/Layout';
 import drawLine from '../utils/drawLine';
 import writeText from '@/utils/writeText';
 import AlgorithmDDA from '@/utils/AlgorithmDDA';
-import vector2f from '@/utils/Vector2f';
+import Vector2f from '@/utils/Vector2f';
 
 export default function cermin() {
 	const [objectDistance, setObjectDistance] = useState(100);
@@ -20,6 +20,9 @@ export default function cermin() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
 	const goDraw = () => {
+		const object = new Vector2f(-objectDistance, -objectHeight);
+		const mirrorObject = new Vector2f(-mirrorObjectDistance, mirrorObjectHeight);
+
 		if (!canvasRef.current) return;
 		const canvas: HTMLCanvasElement = canvasRef.current;
 		const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
@@ -104,35 +107,43 @@ export default function cermin() {
 
 			AlgorithmDDA({
 				ctx: context,
-				start: new vector2f(-objectDistance, -objectHeight),
-				end: new vector2f(0, -objectHeight),
+				start: object,
+				end: new Vector2f(0, -objectHeight),
 				color: "green",
 				beyond: false,
 			});
 
 			AlgorithmDDA({
 				ctx: context,
-				start: new vector2f(-mirrorObjectDistance, mirrorObjectHeight),
-				end: new vector2f(0, mirrorObjectHeight),
+				start: mirrorObject,
+				end: new Vector2f(0, mirrorObjectHeight),
 				color: "orange",
 				beyond: false,
 			});
 
 			AlgorithmDDA({
 				ctx: context,
-				start: new vector2f(-objectDistance, -objectHeight),
-				end: new vector2f(0, mirrorObjectHeight),
+				start: object,
+				end: new Vector2f(0, mirrorObjectHeight),
 				color: "red",
 				beyond: true,
 			});
 
-			drawInfiniteLine({
+			AlgorithmDDA({
 				ctx: context,
-				start: { x: 0, y: objectHeight },
-				end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+				start: new Vector2f(0, -objectHeight),
+				end: new Vector2f(-mirrorObjectDistance, mirrorObjectHeight),
 				color: "cyan",
-				canvasHeight: canvas.height
+				beyond: true,
 			});
+
+			// drawInfiniteLine({
+			// 	ctx: context,
+			// 	start: { x: 0, y: objectHeight },
+			// 	end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+			// 	color: "cyan",
+			// 	canvasHeight: canvas.height
+			// });
 		}
 	};
 
