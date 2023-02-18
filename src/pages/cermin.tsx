@@ -77,6 +77,7 @@ export default function Cermin() {
 					start: { x: - mirrorFocus + mirrorFocus * 0.5, y: 2 },
 					end: { x: -	mirrorFocus + mirrorFocus * 0.5, y: -20 },
 					text: "Ruang I",
+					color: 'black',
 				});
 				//text for 2nd object dimension(ruang cahaya II)
 				writeText({
@@ -84,6 +85,7 @@ export default function Cermin() {
 					start: { x: - mirrorFocus * 1.5, y: 2 },
 					end: { x: -	mirrorFocus * 1.5, y: -20 },
 					text: "Ruang II",
+					color: 'black',
 				});
 				//text for 3rd object dimension(ruang cahaya III)
 				writeText({
@@ -91,6 +93,7 @@ export default function Cermin() {
 					start: { x: - mirrorFocus * 2.5, y: 2 },
 					end: { x: -	mirrorFocus * 2.5, y: -20 },
 					text: "Ruang III",
+					color: 'black',
 				});
 				//text for 4th object dimension(ruang cahaya IV)
 				writeText({
@@ -98,6 +101,40 @@ export default function Cermin() {
 					start: { x: canvas.width / 3, y: 0 },
 					end: { x: canvas.width / 4, y: -20 },
 					text: "Ruang IV",
+					color: 'black',
+				});
+
+				//text keterangan ruang benda
+				writeText({
+					ctx: context,
+					start: { x: -  canvas.width / 2.5, y: 0 },
+					end: { x: - canvas.width / 2.5, y: 300 },
+					text: "Ruang benda(depan)",
+					color: '#7D3796',
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: -  canvas.width / 2.5, y: 0 },
+					end: { x: - canvas.width / 2.5, y: - 300 },
+					text: "Ruang bayangan(depan)",
+					color: '#3E8497',
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: canvas.width / 2.5, y: 0 },
+					end: { x: canvas.width / 2.5, y: 300 },
+					text: "Ruang benda(belakang)",
+					color: '#7D3796',
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: canvas.width / 2.5, y: 0 },
+					end: { x: canvas.width / 2.5, y: - 300 },
+					text: "Ruang bayangan(belakang)",
+					color: '#3E8497',
 				});
 
 				// Draw Mirror
