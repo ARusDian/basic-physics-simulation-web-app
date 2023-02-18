@@ -110,15 +110,17 @@ export default function Layout(props: Props) {
 							"fixed right-[-100%]"
 						}
 					>
-						<h1 className="text-3xl font-bold text-cyan-400 m-4">
-							Konfigurasi
-						</h1>
-						{props.configBar()}
-						<div className='flex justify-center'>
-							<div className='absolute text-3xl bottom-32' onClick={handleRightSidebar}>
-								<AiOutlineClose />
+						<div className="flex m-4 justify-between">
+							<h1 className="text-3xl font-bold text-cyan-400 ">
+								Konfigurasi
+							</h1>
+							<div className='flex justify-center'>
+								<div className=' text-3xl ' onClick={handleRightSidebar}>
+									<AiOutlineClose />
+								</div>
 							</div>
 						</div>
+						{props.configBar()}
 					</aside>
 				)}
 			</div >
