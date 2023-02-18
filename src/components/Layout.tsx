@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { useState } from 'react';
-import { AiOutlineClose, AiOutlineMenu, AiOutlineSetting } from 'react-icons/ai';
+import Link from "next/link";
+import { useState } from "react";
+import { AiOutlineClose, AiOutlineMenu, AiOutlineSetting } from "react-icons/ai";
 
 interface Props {
 	children: React.ReactNode;
@@ -68,17 +68,17 @@ export default function Layout(props: Props) {
 						</Link>
 					</h1>
 					<ul className="flex flex-col gap-4 uppercase p-4">
-						<li className='border-b border-gray-600'>
+						<li className="border-b border-gray-600">
 							<Link
 								legacyBehavior
-								href={'/lensa'}
+								href={"/lensa"}
 							>
 								<a>
 									Lensa
 								</a>
 							</Link>
 						</li>
-						<li className='border-b border-gray-600'>
+						<li className="border-b border-gray-600">
 							<Link
 								legacyBehavior
 								href={"/cermin"}
@@ -86,7 +86,7 @@ export default function Layout(props: Props) {
 								Cermin
 							</Link>
 						</li>
-						<li className='border-b border-gray-600'>
+						<li className="border-b border-gray-600">
 							<Link
 								legacyBehavior
 								href={"/gerak-bola"}
@@ -97,8 +97,8 @@ export default function Layout(props: Props) {
 							</Link>
 						</li>
 					</ul>
-					<div className='flex justify-center'>
-						<div className='absolute text-3xl bottom-32' onClick={handleLeftSidebar}>
+					<div className="flex justify-center">
+						<div className="absolute text-3xl bottom-32" onClick={handleLeftSidebar}>
 							<AiOutlineClose />
 						</div>
 					</div>
@@ -114,8 +114,8 @@ export default function Layout(props: Props) {
 							<h1 className="text-3xl font-bold text-cyan-400 ">
 								Konfigurasi
 							</h1>
-							<div className='flex justify-center'>
-								<div className=' text-3xl ' onClick={handleRightSidebar}>
+							<div className="flex justify-center">
+								<div className=" text-3xl " onClick={handleRightSidebar}>
 									<AiOutlineClose />
 								</div>
 							</div>

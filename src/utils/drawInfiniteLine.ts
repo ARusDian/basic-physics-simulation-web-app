@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 interface Props {
 	canvasHeight?: number;
 	canvasWidth?: number;
@@ -29,7 +30,7 @@ export default function drawInfiniteLine(props: Props) {
 		const intercept = start.y - slope * start.x;
 		const getY = (x: number) => {
 			return slope * x + intercept;
-		}
+		};
 
 		end.y = getY(end.x);
 
@@ -44,7 +45,7 @@ export default function drawInfiniteLine(props: Props) {
 		const intercept = start.y - slope * start.x;
 		const getX = (y: number) => {
 			return (y - intercept) / slope;
-		}
+		};
 		ctx.moveTo(start.x, -start.y);
 		ctx.lineTo(end.x, -end.y!);
 		ctx.lineTo(
