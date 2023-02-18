@@ -1,11 +1,13 @@
 import Slider from '@/components/Slider';
 import drawLineDDA from '@/utils/drawLineWDDa';
-import drawSlopeLine from '@/utils/drawSlopeLine';
+import drawInfiniteLine from '@/utils/drawInfiniteLine';
 import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
 import drawLine from '../utils/drawLine';
 import writeText from '@/utils/writeText';
+import AlgorithmDDA from '@/utils/AlgorithmDDA';
+import vector2f from '@/utils/Vector2f';
 
 export default function cermin() {
 	const [objectDistance, setObjectDistance] = useState(100);
@@ -99,36 +101,38 @@ export default function cermin() {
 				color: "green",
 				text: "Image",
 			});
-			drawLine({
+
+			AlgorithmDDA({
 				ctx: context,
-				start: { x: -objectDistance, y: -objectHeight },
-				end: { x: 0, y: objectHeight },
+				start: new vector2f(-objectDistance, -objectHeight),
+				end: new vector2f(0, -objectHeight),
 				color: "green",
+				beyond: false,
 			});
 
-			drawLine({
+			AlgorithmDDA({
 				ctx: context,
-				start: { x: -mirrorObjectDistance, y: mirrorObjectHeight },
-				end: { x: 0, y: -mirrorObjectHeight },
+				start: new vector2f(-mirrorObjectDistance, mirrorObjectHeight),
+				end: new vector2f(0, mirrorObjectHeight),
 				color: "orange",
+				beyond: false,
 			});
 
-			drawSlopeLine({
+			AlgorithmDDA({
 				ctx: context,
-				start: { x: -objectDistance, y: objectHeight },
-				end: { x: 0, y: -mirrorObjectHeight },
+				start: new vector2f(-objectDistance, -objectHeight),
+				end: new vector2f(0, mirrorObjectHeight),
 				color: "red",
-				canvasHeight: canvas.height
+				beyond: true,
 			});
 
-			drawSlopeLine({
+			drawInfiniteLine({
 				ctx: context,
 				start: { x: 0, y: objectHeight },
 				end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
 				color: "cyan",
 				canvasHeight: canvas.height
 			});
-		
 		}
 	};
 
