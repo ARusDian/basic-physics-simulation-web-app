@@ -137,7 +137,6 @@ export default function Cermin() {
 					color: '#3E8497',
 				});
 
-				// Draw Mirror
 				if (isConvex) {
 					const calculatedFocus = -mirrorFocus;
 					setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
