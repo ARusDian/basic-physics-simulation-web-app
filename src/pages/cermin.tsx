@@ -1,6 +1,5 @@
 import Slider from '@/components/Slider';
-import drawLineDDA from '@/utils/drawLineWDDa';
-import drawSlopeLine from '@/utils/drawSlopeLine';
+import drawInfiniteLine from '@/utils/drawInfiniteLine';
 import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
@@ -55,24 +54,24 @@ export default function cermin() {
 			//text for 1st object dimension(ruang cahaya I)
 			writeText({
 				ctx: context,
-				start: { x: - mirrorFocus + mirrorFocus*0.5, y: 2 },
-				end: { x: -	mirrorFocus + mirrorFocus*0.5, y: -20 },
+				start: { x: - mirrorFocus + mirrorFocus * 0.5, y: 2 },
+				end: { x: -	mirrorFocus + mirrorFocus * 0.5, y: -20 },
 				text: "Ruang I",
 			});
 			//text for 2nd object dimension(ruang cahaya II)
 			writeText({
 				ctx: context,
-				start: { x: - mirrorFocus *1.5, y: 2 },
-				end: { x: -	mirrorFocus *1.5, y: -20 },
+				start: { x: - mirrorFocus * 1.5, y: 2 },
+				end: { x: -	mirrorFocus * 1.5, y: -20 },
 				text: "Ruang II",
 			});
 			//text for 3rd object dimension(ruang cahaya III)
 			writeText({
 				ctx: context,
-				start: { x: - mirrorFocus *2.5, y: 2 },
-				end: { x: -	mirrorFocus *2.5, y: -20 },
+				start: { x: - mirrorFocus * 2.5, y: 2 },
+				end: { x: -	mirrorFocus * 2.5, y: -20 },
 				text: "Ruang III",
-			});	
+			});
 			//text for 4th object dimension(ruang cahaya IV)
 			writeText({
 				ctx: context,
@@ -82,53 +81,205 @@ export default function cermin() {
 			});
 
 			// Draw Mirror
-			if (isConvex) { 
+			if (isConvex) {
 				const calculatedFocus = -mirrorFocus;
 				setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
 				setMirrorObjectHeight((mirrorObjectDistance * objectHeight) / objectDistance);
+				drawLine({
+					ctx: context,
+					start: { x: -(mirrorObjectDistance), y: 0 },
+					end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
+					color: "green",
+					text: "Image",
+				});
+
+				drawLine({
+					ctx: context,
+					start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+					end: { x: 0, y: objectHeight },
+					color: "cyan",
+					isDash: true,
+				});
+				drawInfiniteLine({
+					ctx: context,
+					beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+					start: { x: 0, y: objectHeight },
+					end: { x: -canvas.width },
+					color: "cyan",
+					canvasWidth: canvas.width,
+				});
+				drawLine({
+					ctx: context,
+					start: { x: -objectDistance, y: objectHeight },
+					end: { x: 0, y: objectHeight },
+					color: "cyan",
+				});
+
+				drawLine({
+					ctx: context,
+					start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+					end: { x: 0, y: -mirrorObjectHeight },
+					color: "lime",
+					isDash: true,
+				});
+
+				drawLine({
+					ctx: context,
+					start: { x: -objectDistance, y: objectHeight },
+					end: { x: 0, y: -mirrorObjectHeight },
+					color: "lime",
+				});
+
+				drawLine({
+					ctx: context,
+					start: { x: 0, y: -mirrorObjectHeight },
+					end: { x: -canvas.width, y: -mirrorObjectHeight },
+					color: "lime",
+				});
+
+				drawLine({
+					ctx: context,
+					start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+					end: { x: 0, y: 0 },
+					color: "red",
+					isDash: true,
+				});
+				drawInfiniteLine({
+					ctx: context,
+					beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+					start: { x: 0, y: 0 },
+					end: { x: -canvas.width },
+					color: "red",
+					canvasWidth: canvas.width,
+				});
+				drawLine({
+					ctx: context,
+					start: { x: -objectDistance, y: objectHeight },
+					end: { x: 0, y: 0 },
+					color: "red",
+				});
+
 			} else {
 				const calculatedFocus = mirrorFocus;
 				setMirrorObjectDistance(objectDistance * calculatedFocus / (objectDistance - calculatedFocus));
 				setMirrorObjectHeight(mirrorObjectDistance * objectHeight / objectDistance);
+				if (objectDistance > calculatedFocus) {
+					drawLine({
+						ctx: context,
+						start: { x: -(mirrorObjectDistance), y: 0 },
+						end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
+						color: "green",
+						text: "Image",
+					});
+
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance, y: objectHeight },
+						end: { x: 0, y: objectHeight },
+						color: "magenta",
+					});
+
+					drawLine({
+						ctx: context,
+						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						end: { x: 0, y: -mirrorObjectHeight },
+						color: "orange",
+					});
+
+					drawInfiniteLine({
+						ctx: context,
+						start: { x: -objectDistance, y: objectHeight },
+						end: { x: 0, y: -mirrorObjectHeight },
+						color: "red",
+						canvasHeight: canvas.height
+					});
+
+					drawInfiniteLine({
+						ctx: context,
+						start: { x: 0, y: objectHeight },
+						end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						color: "cyan",
+						canvasHeight: canvas.height
+					});
+				} else {
+					drawLine({
+						ctx: context,
+						start: { x: -(mirrorObjectDistance), y: 0 },
+						end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
+						color: "green",
+						text: "Image",
+					});
+
+					drawLine({
+						ctx: context,
+						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						end: { x: 0, y: objectHeight },
+						color: "cyan",
+						isDash: true,
+					});
+					drawInfiniteLine({
+						ctx: context,
+						beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						start: { x: 0, y: objectHeight },
+						end: { x: -canvas.width },
+						color: "cyan",
+						canvasWidth: canvas.width,
+					});
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance, y: objectHeight },
+						end: { x: 0, y: objectHeight },
+						color: "cyan",
+					});
+
+					drawLine({
+						ctx: context,
+						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						end: { x: 0, y: -mirrorObjectHeight },
+						color: "lime",
+						isDash: true,
+					});
+
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance, y: objectHeight },
+						end: { x: 0, y: -mirrorObjectHeight },
+						color: "lime",
+					});
+
+					drawLine({
+						ctx: context,
+						start: { x: 0, y: -mirrorObjectHeight },
+						end: { x: -canvas.width, y: -mirrorObjectHeight },
+						color: "lime",
+					});
+
+					drawLine({
+						ctx: context,
+						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						end: { x: 0, y: 0 },
+						color: "red",
+						isDash: true,
+					});
+					drawInfiniteLine({
+						ctx: context,
+						beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						start: { x: 0, y: 0 },
+						end: { x: -canvas.width },
+						color: "red",
+						canvasWidth: canvas.width,
+					});
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance, y: objectHeight },
+						end: { x: 0, y: 0 },
+						color: "red",
+					});
+				}
 			}
-			
-			drawLine({
-				ctx: context,
-				start: { x:-(mirrorObjectDistance), y: 0 },
-				end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
-				color: "green",
-				text: "Image",
-			});
-			drawLine({
-				ctx: context,
-				start: { x: -objectDistance, y: -objectHeight },
-				end: { x: 0, y: objectHeight },
-				color: "green",
-			});
 
-			drawLine({
-				ctx: context,
-				start: { x: -mirrorObjectDistance, y: mirrorObjectHeight },
-				end: { x: 0, y: -mirrorObjectHeight },
-				color: "orange",
-			});
 
-			drawSlopeLine({
-				ctx: context,
-				start: { x: -objectDistance, y: objectHeight },
-				end: { x: 0, y: -mirrorObjectHeight },
-				color: "red",
-				canvasHeight: canvas.height
-			});
 
-			drawSlopeLine({
-				ctx: context,
-				start: { x: 0, y: objectHeight },
-				end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-				color: "cyan",
-				canvasHeight: canvas.height
-			});
-		
 		}
 	};
 
@@ -147,7 +298,7 @@ export default function cermin() {
 		ctx.closePath();
 	}
 
-	useEffect(() => goDraw(), [goDraw,setIsConvex]);
+	useEffect(() => goDraw(), [goDraw, setIsConvex]);
 	const configBar = () => {
 
 		return (
@@ -251,7 +402,7 @@ export default function cermin() {
 						</tbody>
 					</table>
 				</div>
-				
+
 				<div className='flex mt-4 mx-4'>
 					<table className="w-full text-sm text-left text-gray-500">
 						<thead>
