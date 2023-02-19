@@ -562,14 +562,17 @@ export default function Cermin() {
 									f
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-									<input
-										type="number"
-										className="w-20 bg-transparent"
-										value={mirrorFocus}
-										onChange={(e) => setmirrorFocus(parseFloat(e.target.value))}
-										min={0}
-										step={"any"}
-									/>
+									<div className="flex">
+										{isConvex ? "-" : ""}
+										<input
+											type="number"
+											className="w-20 bg-transparent"
+											value={mirrorFocus}
+											onChange={(e) => setmirrorFocus(parseFloat(e.target.value))}
+											min={0}
+											step={"any"}
+										/>
+									</div>
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
 									M = {Math.abs(mirrorObjectDistance / objectDistance)}
