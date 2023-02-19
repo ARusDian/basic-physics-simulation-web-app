@@ -104,43 +104,77 @@ export default function Cermin() {
 					color: 'black',
 				});
 
+				writeText({
+					ctx: context,
+					start: { x: - canvas.width / 2.5, y: 0 },
+					end: { x: - canvas.width / 2.5, y: 0 },
+					text: "",
+					color: "#7D379",
+				});
+
 				//text keterangan ruang benda
 				writeText({
 					ctx: context,
-					start: { x: -  canvas.width / 2.5, y: 0 },
+					start: { x: - canvas.width / 2.5, y: 0 },
 					end: { x: - canvas.width / 2.5, y: 300 },
-					text: "Ruang benda(depan)",
-					color: '#7D3796',
+					text: "Ruang benda (depan)",
+					color: "#3E8497",
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: - canvas.width / 2.5, y: 0 },
+					end: { x: - canvas.width / 2.5, y: 300 },
+					text: "Ruang benda (depan)",
+					color: "#7D3796",
 				});
 
 				writeText({
 					ctx: context,
 					start: { x: -  canvas.width / 2.5, y: 0 },
 					end: { x: - canvas.width / 2.5, y: - 300 },
-					text: "Ruang bayangan(depan)",
-					color: '#3E8497',
+					text: "Ruang bayangan (depan)",
+					color: "#3E8497",
 				});
 
 				writeText({
 					ctx: context,
 					start: { x: canvas.width / 2.5, y: 0 },
 					end: { x: canvas.width / 2.5, y: 300 },
-					text: "Ruang benda(belakang)",
-					color: '#7D3796',
+					text: "Ruang benda (belakang)",
+					color: "#7D3796",
 				});
 
 				writeText({
 					ctx: context,
 					start: { x: canvas.width / 2.5, y: 0 },
 					end: { x: canvas.width / 2.5, y: - 300 },
-					text: "Ruang bayangan(belakang)",
-					color: '#3E8497',
+					text: "Ruang bayangan (belakang)",
+					color: "#3E8497",
 				});
 
 				if (isConvex) {
 					const calculatedFocus = -mirrorFocus;
 					setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
 					setMirrorObjectHeight((mirrorObjectDistance * objectHeight) / objectDistance);
+
+					// Draw Focus coordinate behind mirror
+					drawLine({
+						ctx: context,
+						start: { x: mirrorFocus, y: 0 },
+						end: { x: mirrorFocus, y: 30 },
+						color: "purple",
+						text: "Focus",
+					});
+					// Draw Curvature Point behind mirror
+					drawLine({
+						ctx: context,
+						start: { x: mirrorFocus * 2, y: 2 },
+						end: { x: mirrorFocus * 2, y: 30 },
+						color: "brown",
+						text: "Curvature",
+					});
+
 					drawLine({
 						ctx: context,
 						start: { x: -(mirrorObjectDistance), y: 0 },
@@ -219,7 +253,7 @@ export default function Cermin() {
 					const calculatedFocus = mirrorFocus;
 					setMirrorObjectDistance(objectDistance * calculatedFocus / (objectDistance - calculatedFocus));
 					setMirrorObjectHeight(mirrorObjectDistance * objectHeight / objectDistance);
-					if (objectDistance > calculatedFocus) {
+					if (objectDistance >= calculatedFocus) {
 						drawLine({
 							ctx: context,
 							start: { x: -(mirrorObjectDistance), y: 0 },
@@ -232,21 +266,44 @@ export default function Cermin() {
 							ctx: context,
 							start: { x: -objectDistance, y: objectHeight },
 							end: { x: 0, y: objectHeight },
-							color: "magenta",
+							color: "cyan",
 						});
 
 						drawLine({
 							ctx: context,
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: 0, y: -mirrorObjectHeight },
-							color: "orange",
+							start: { x: -objectDistance, y: objectHeight },
+							end: { x: 0, y: 0 },
+							color: "red",
+						});
+
+						drawLine({
+							ctx: context,
+							start: { x: 0, y: 0 },
+							end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+							color: "red",
 						});
 
 						drawInfiniteLine({
 							ctx: context,
+							beforeStart: { x: 0, y: 0 },
+							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+							end: { x: -canvas.width },
+							color: "red",
+							canvasWidth: canvas.width,
+						});
+
+						drawLine({
+							ctx: context,
 							start: { x: -objectDistance, y: objectHeight },
 							end: { x: 0, y: -mirrorObjectHeight },
-							color: "red",
+							color: "lime",
+						});
+
+						drawInfiniteLine({
+							ctx: context,
+							start: { x: 0, y: -mirrorObjectHeight },
+							end: { x: -canvas.width, y: -mirrorObjectHeight },
+							color: "lime",
 							canvasHeight: canvas.height
 						});
 
