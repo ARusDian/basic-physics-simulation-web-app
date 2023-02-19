@@ -366,7 +366,7 @@ export default function Lensa() {
 						ctx: context,
 						start: { x: -objectDistance, y: objectHeight },
 						end: { x: 0, y: 0 },
-						color: "lime",
+						color: "red",
 						canvasHeight: canvas.height,
 					});
 
@@ -374,20 +374,20 @@ export default function Lensa() {
 						ctx: context,
 						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
 						end: { x: 0, y: -mirrorObjectHeight },
-						color: "red",
+						color: "lime",
 						isDash: true,
 					});
 					drawLine({
 						ctx: context,
 						start: { x: -objectDistance, y: objectHeight },
 						end: { x: 0, y: -mirrorObjectHeight },
-						color: "red",
+						color: "lime",
 					});
 					drawInfiniteLine({
 						ctx: context,
 						start: { x: 0, y: -mirrorObjectHeight },
 						end: { x: canvas.width, y: -mirrorObjectHeight },
-						color: "red",
+						color: "lime",
 						canvasHeight: canvas.height,
 					});
 				}
