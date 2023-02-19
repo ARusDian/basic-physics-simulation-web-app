@@ -24,7 +24,6 @@ export default function drawInfiniteLine(props: Props) {
 		ctx.setLineDash([]);
 	}
 
-
 	if (beforeStart && !end.y && canvasWidth) {
 		const slope = (start.y - beforeStart.y) / (start.x - beforeStart.x);
 		const intercept = start.y - slope * start.x;
@@ -37,7 +36,11 @@ export default function drawInfiniteLine(props: Props) {
 		console.log('end', end.y);
 		ctx.moveTo(start.x, -start.y);
 		ctx.lineTo(end.x, -end.y);
-		ctx.lineTo(canvasWidth, -end.y);
+		if (end.x < 0) {
+			ctx.lineTo(-canvasWidth, -getY(-canvasWidth));
+		} else {
+			ctx.lineTo(canvasWidth, -getY(canvasWidth));
+		}
 
 	} else {
 
