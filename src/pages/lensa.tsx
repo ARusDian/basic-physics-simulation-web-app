@@ -257,13 +257,17 @@ export default function Lensa() {
 							end: { x: -mirrorFocus, y: 0 },
 							color: "lime",
 						});
-						drawInfiniteLine({
+						drawLine({
 							ctx: context,
-							beforeStart: { x: -objectDistance, y: objectHeight },
 							start: { x: -mirrorFocus, y: 0 },
-							end: { x: 0 },
+							end: { x: 0, y: -mirrorObjectHeight },
 							color: "lime",
-							canvasWidth: canvas.width,
+						});
+						drawLine({
+							ctx: context,
+							start: { x: 0, y: -mirrorObjectHeight },
+							end: { x: canvas.width, y: -mirrorObjectHeight },
+							color: "lime",
 						});
 						drawInfiniteLine({
 							ctx: context,
