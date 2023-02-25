@@ -48,13 +48,13 @@ export default function Cermin() {
 				initDraw(context, canvas);
 
 				// Draw Object
-				drawLine({
-					ctx: context,
-					start: { x: -objectDistance, y: 0 },
-					end: { x: -objectDistance, y: objectHeight },
-					color: "#ea96FF",
-					text: "Object",
-				});
+				// drawLine({
+				// 	ctx: context,
+				// 	start: { x: -objectDistance, y: 0 },
+				// 	end: { x: -objectDistance, y: objectHeight },
+				// 	color: "#ea96FF",
+				// 	text: "Object",
+				// });
 				// Draw Focus coordinate
 				drawLine({
 					ctx: context,
@@ -153,6 +153,68 @@ export default function Cermin() {
 					color: "#3E8497",
 				});
 
+
+				//draw twin tower
+					//first tower
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance - 45, y: 0 },
+						end: { x: -objectDistance - 45, y: objectHeight - 20 },
+						color: "#931A1A",
+					});
+
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance - 10, y: 0 },
+						end: { x: -objectDistance - 10, y: objectHeight - 20 },
+						color: "#931A1A",
+					});
+
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance - 45, y: objectHeight - 20 },
+						end: { x: -objectDistance - 10, y: objectHeight - 20 },
+						color: "#931A1A",
+					});
+
+					//second tower
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance + 45, y: 0 },
+						end: { x: -objectDistance + 45, y: objectHeight - 20 },
+						color: "#931A1A",
+					});
+
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance + 10, y: 0 },
+						end: { x: -objectDistance + 10, y: objectHeight - 20 },
+						color: "#931A1A",
+					});
+
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance + 45, y: objectHeight - 20 },
+						end: { x: -objectDistance + 10, y: objectHeight - 20 },
+						color: "#931A1A",
+					});
+
+					//antenna
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance - 30, y: objectHeight - 20},
+						end: { x: -objectDistance, y: objectHeight},
+						color: "#931A1A",
+					});
+
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance + 30, y: objectHeight - 20},
+						end: { x: -objectDistance, y: objectHeight},
+						color: "#931A1A",
+					});
+
+
 				if (isConvex) {
 					const calculatedFocus = -mirrorFocus;
 					setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
@@ -174,14 +236,75 @@ export default function Cermin() {
 						color: "brown",
 						text: "Curvature",
 					});
+					//draw mirror image
+					// drawLine({
+					// 	ctx: context,
+					// 	start: { x: -(mirrorObjectDistance), y: 0 },
+					// 	end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
+					// 	color: "green",
+					// 	text: "Image",
+					// });
 
-					drawLine({
-						ctx: context,
-						start: { x: -(mirrorObjectDistance), y: 0 },
-						end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
-						color: "green",
-						text: "Image",
-					});
+					//draw twin tower
+						//first tower
+						drawLine({
+							ctx: context,
+							start: { x: -(mirrorObjectDistance) - 45, y: 0 },
+							end: { x: -	(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
+							color: "#D76D1B",
+						});
+
+						drawLine({
+							ctx: context,
+							start: { x: -(mirrorObjectDistance) - 10, y: 0 },
+							end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight - 20 },
+							color: "#D76D1B",
+						});
+
+						drawLine({
+							ctx: context,
+							start: { x: -(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
+							end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight - 20 },
+							color: "#D76D1B",
+						});
+
+						//second tower
+						drawLine({
+							ctx: context,
+							start: { x: -(mirrorObjectDistance) + 45, y: 0 },
+							end: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight - 20 },
+							color: "#D76D1B",
+						});
+
+						drawLine({
+							ctx: context,
+							start: { x: -(mirrorObjectDistance) + 10, y: 0 },
+							end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight - 20 },
+							color: "#D76D1B",
+						});
+
+						drawLine({
+							ctx: context,
+							start: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight - 20 },
+							end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight - 20 },
+							color: "#D76D1B",
+						});
+
+						//antenna
+						drawLine({
+							ctx: context,
+							start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight - 20},
+							end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
+							color: "#D76D1B",
+						});
+
+						drawLine({
+							ctx: context,
+							start: { x: -(mirrorObjectDistance) + 30, y: -mirrorObjectHeight - 20},
+							end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
+							color: "#D76D1B",
+						});
+
 
 					drawLine({
 						ctx: context,
@@ -254,13 +377,75 @@ export default function Cermin() {
 					setMirrorObjectDistance(objectDistance * calculatedFocus / (objectDistance - calculatedFocus));
 					setMirrorObjectHeight(mirrorObjectDistance * objectHeight / objectDistance);
 					if (objectDistance >= calculatedFocus) {
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance), y: 0 },
-							end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
-							color: "green",
-							text: "Image",
-						});
+						// drawLine({
+						// 	ctx: context,
+						// 	start: { x: -(mirrorObjectDistance), y: 0 },
+						// 	end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
+						// 	color: "green",
+						// 	text: "Image",
+						// });
+
+
+						//draw twin tower
+							//first tower
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 45, y: 0 },
+								end: { x: -	(mirrorObjectDistance) - 45, y: -mirrorObjectHeight + 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 10, y: 0 },
+								end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight + 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 45, y: -mirrorObjectHeight + 20 },
+								end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight + 20 },
+								color: "#D76D1B",
+							});
+
+							//second tower
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 45, y: 0 },
+								end: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight + 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 10, y: 0 },
+								end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight + 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight + 20 },
+								end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight + 20 },
+								color: "#D76D1B",
+							});
+
+							//antenna
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight + 20},
+								end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 30, y: -mirrorObjectHeight + 20},
+								end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
+								color: "#D76D1B",
+							});
+
 
 						drawLine({
 							ctx: context,
@@ -315,13 +500,75 @@ export default function Cermin() {
 							canvasHeight: canvas.height
 						});
 					} else {
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance), y: 0 },
-							end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
-							color: "green",
-							text: "Image",
-						});
+						// drawLine({
+						// 	ctx: context,
+						// 	start: { x: -(mirrorObjectDistance), y: 0 },
+						// 	end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
+						// 	color: "green",
+						// 	text: "Image",
+						// });
+
+
+						//draw twin tower
+							//first tower
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 45, y: 0 },
+								end: { x: -	(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 10, y: 0 },
+								end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight - 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
+								end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight - 20 },
+								color: "#D76D1B",
+							});
+
+							//second tower
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 45, y: 0 },
+								end: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight - 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 10, y: 0 },
+								end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight - 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight - 20 },
+								end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight - 20 },
+								color: "#D76D1B",
+							});
+
+							//antenna
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight - 20},
+								end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 30, y: -mirrorObjectHeight - 20},
+								end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
+								color: "#D76D1B",
+							});
+
 
 						drawLine({
 							ctx: context,
