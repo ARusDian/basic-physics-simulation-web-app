@@ -16,8 +16,6 @@ export default function Cermin() {
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
-
-
 	function initDraw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
 		ctx.strokeStyle = "#000000";
 		ctx.beginPath();
