@@ -11,6 +11,7 @@ export interface Props {
 export default function drawLine(props: Props) {
 	const { ctx, start, end, color,text, isDash } = props;
 	ctx.beginPath();
+	ctx.fillStyle = "black";
 	ctx.strokeStyle = color;
 	if (isDash) {
 		ctx.setLineDash([5, 5]);

@@ -75,6 +75,7 @@ export default function Cermin() {
 					start: { x: - mirrorFocus + mirrorFocus * 0.5, y: 2 },
 					end: { x: -	mirrorFocus + mirrorFocus * 0.5, y: -20 },
 					text: "Ruang I",
+					color: 'black',
 				});
 				//text for 2nd object dimension(ruang cahaya II)
 				writeText({
@@ -82,6 +83,7 @@ export default function Cermin() {
 					start: { x: - mirrorFocus * 1.5, y: 2 },
 					end: { x: -	mirrorFocus * 1.5, y: -20 },
 					text: "Ruang II",
+					color: 'black',
 				});
 				//text for 3rd object dimension(ruang cahaya III)
 				writeText({
@@ -89,6 +91,7 @@ export default function Cermin() {
 					start: { x: - mirrorFocus * 2.5, y: 2 },
 					end: { x: -	mirrorFocus * 2.5, y: -20 },
 					text: "Ruang III",
+					color: 'black',
 				});
 				//text for 4th object dimension(ruang cahaya IV)
 				writeText({
@@ -96,13 +99,80 @@ export default function Cermin() {
 					start: { x: canvas.width / 3, y: 0 },
 					end: { x: canvas.width / 4, y: -20 },
 					text: "Ruang IV",
+					color: 'black',
 				});
 
-				// Draw Mirror
+				writeText({
+					ctx: context,
+					start: { x: - canvas.width / 2.5, y: 0 },
+					end: { x: - canvas.width / 2.5, y: 0 },
+					text: "",
+					color: "#7D379",
+				});
+
+				//text keterangan ruang benda
+				writeText({
+					ctx: context,
+					start: { x: - canvas.width / 2.5, y: 0 },
+					end: { x: - canvas.width / 2.5, y: 300 },
+					text: "Ruang benda (depan)",
+					color: "#3E8497",
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: - canvas.width / 2.5, y: 0 },
+					end: { x: - canvas.width / 2.5, y: 300 },
+					text: "Ruang benda (depan)",
+					color: "#7D3796",
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: -  canvas.width / 2.5, y: 0 },
+					end: { x: - canvas.width / 2.5, y: - 300 },
+					text: "Ruang bayangan (depan)",
+					color: "#3E8497",
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: canvas.width / 2.5, y: 0 },
+					end: { x: canvas.width / 2.5, y: 300 },
+					text: "Ruang benda (belakang)",
+					color: "#7D3796",
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: canvas.width / 2.5, y: 0 },
+					end: { x: canvas.width / 2.5, y: - 300 },
+					text: "Ruang bayangan (belakang)",
+					color: "#3E8497",
+				});
+
 				if (isConvex) {
 					const calculatedFocus = -mirrorFocus;
 					setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
 					setMirrorObjectHeight((mirrorObjectDistance * objectHeight) / objectDistance);
+
+					// Draw Focus coordinate behind mirror
+					drawLine({
+						ctx: context,
+						start: { x: mirrorFocus, y: 0 },
+						end: { x: mirrorFocus, y: 30 },
+						color: "purple",
+						text: "Focus",
+					});
+					// Draw Curvature Point behind mirror
+					drawLine({
+						ctx: context,
+						start: { x: mirrorFocus * 2, y: 2 },
+						end: { x: mirrorFocus * 2, y: 30 },
+						color: "brown",
+						text: "Curvature",
+					});
+
 					drawLine({
 						ctx: context,
 						start: { x: -(mirrorObjectDistance), y: 0 },
@@ -181,7 +251,7 @@ export default function Cermin() {
 					const calculatedFocus = mirrorFocus;
 					setMirrorObjectDistance(objectDistance * calculatedFocus / (objectDistance - calculatedFocus));
 					setMirrorObjectHeight(mirrorObjectDistance * objectHeight / objectDistance);
-					if (objectDistance > calculatedFocus) {
+					if (objectDistance >= calculatedFocus) {
 						drawLine({
 							ctx: context,
 							start: { x: -(mirrorObjectDistance), y: 0 },
@@ -194,21 +264,44 @@ export default function Cermin() {
 							ctx: context,
 							start: { x: -objectDistance, y: objectHeight },
 							end: { x: 0, y: objectHeight },
-							color: "magenta",
+							color: "cyan",
 						});
 
 						drawLine({
 							ctx: context,
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: 0, y: -mirrorObjectHeight },
-							color: "orange",
+							start: { x: -objectDistance, y: objectHeight },
+							end: { x: 0, y: 0 },
+							color: "red",
+						});
+
+						drawLine({
+							ctx: context,
+							start: { x: 0, y: 0 },
+							end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+							color: "red",
 						});
 
 						drawInfiniteLine({
 							ctx: context,
+							beforeStart: { x: 0, y: 0 },
+							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+							end: { x: -canvas.width },
+							color: "red",
+							canvasWidth: canvas.width,
+						});
+
+						drawLine({
+							ctx: context,
 							start: { x: -objectDistance, y: objectHeight },
 							end: { x: 0, y: -mirrorObjectHeight },
-							color: "red",
+							color: "lime",
+						});
+
+						drawInfiniteLine({
+							ctx: context,
+							start: { x: 0, y: -mirrorObjectHeight },
+							end: { x: -canvas.width, y: -mirrorObjectHeight },
+							color: "lime",
 							canvasHeight: canvas.height
 						});
 
@@ -467,14 +560,17 @@ export default function Cermin() {
 									f
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-									<input
-										type="number"
-										className="w-20 bg-transparent"
-										value={mirrorFocus}
-										onChange={(e) => setmirrorFocus(parseFloat(e.target.value))}
-										min={0}
-										step={"any"}
-									/>
+									<div className="flex">
+										{isConvex ? "-" : ""}
+										<input
+											type="number"
+											className="w-20 bg-transparent"
+											value={mirrorFocus}
+											onChange={(e) => setmirrorFocus(parseFloat(e.target.value))}
+											min={0}
+											step={"any"}
+										/>
+									</div>
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
 									M = {Math.abs(mirrorObjectDistance / objectDistance)}

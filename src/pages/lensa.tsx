@@ -1,13 +1,10 @@
-import Slider from '@/components/Slider';
-import drawInfiniteLine from '@/utils/drawInfiniteLine';
-import Head from 'next/head';
-import { useEffect, useRef, useState } from 'react';
-import Layout from '../components/Layout';
-import drawLine from '../utils/drawLine';
-import writeText from '@/utils/writeText';
-import AlgorithmDDA from '@/utils/AlgorithmDDA';
-import Vector2f from '@/utils/Vector2f';
-import drawEllipse from '@/utils/drawEllipse';
+import Slider from "@/components/Slider";
+import drawInfiniteLine from "@/utils/drawInfiniteLine";
+import Head from "next/head";
+import { useEffect, useRef, useState } from "react";
+import Layout from "../components/Layout";
+import drawLine from "../utils/drawLine";
+import writeText from "@/utils/writeText";
 
 export default function Lensa() {
 	const [objectDistance, setObjectDistance] = useState(100);
@@ -60,57 +57,173 @@ export default function Lensa() {
 				drawLine({
 					ctx: context,
 					start: { x: - mirrorFocus, y: 0 },
-					end: { x: -	mirrorFocus, y: 30 },
+					end: { x: -	mirrorFocus, y: 60 },
 					color: "purple",
-					text: "Focus",
+					text: "F2",
 				});
 
 				drawLine({
 					ctx: context,
 					start: { x: mirrorFocus, y: 0 },
-					end: { x: mirrorFocus, y: 30 },
+					end: { x: mirrorFocus, y: -60 },
 					color: "purple",
-					text: "Focus",
+					text: "F1",
 				});
 
-				// Draw Curvature Point
+				// Draw Curvature Point left-side
 				drawLine({
 					ctx: context,
-					start: { x: - mirrorFocus * 2, y: 2 },
-					end: { x: -	mirrorFocus * 2, y: 30 },
+					start: { x: - mirrorFocus * 2, y: 0 },
+					end: { x: -	mirrorFocus * 2, y: 60 },
 					color: "brown",
-					text: "Curvature",
+					text: "M2",
 				});
-				//text for 1st object dimension(ruang cahaya I)
+				//text for 1st object dimension(ruang cahaya I) left-side
 				writeText({
 					ctx: context,
-					start: { x: - mirrorFocus + mirrorFocus * 0.5, y: 2 },
-					end: { x: -	mirrorFocus + mirrorFocus * 0.5, y: -20 },
+					start: { x: - mirrorFocus + mirrorFocus * 0.5, y: 0 },
+					end: { x: -	mirrorFocus + mirrorFocus * 0.5, y: 20 },
 					text: "Ruang I",
+					color: "black",
 				});
-				//text for 2nd object dimension(ruang cahaya II)
+				//text for 2nd object dimension(ruang cahaya II) left-side
 				writeText({
 					ctx: context,
-					start: { x: - mirrorFocus * 1.5, y: 2 },
-					end: { x: -	mirrorFocus * 1.5, y: -20 },
+					start: { x: - mirrorFocus * 1.5, y: 0 },
+					end: { x: -	mirrorFocus * 1.5, y: 20 },
 					text: "Ruang II",
+					color: "black",
 				});
-				//text for 3rd object dimension(ruang cahaya III)
+				//text for 3rd object dimension(ruang cahaya III) left-side
 				writeText({
 					ctx: context,
-					start: { x: - mirrorFocus * 2.5, y: 2 },
-					end: { x: -	mirrorFocus * 2.5, y: -20 },
+					start: { x: - mirrorFocus * 2.5, y: 0 },
+					end: { x: -	mirrorFocus * 2.5, y: 20 },
 					text: "Ruang III",
-				});
-				//text for 4th object dimension(ruang cahaya IV)
-				writeText({
-					ctx: context,
-					start: { x: canvas.width / 3, y: 0 },
-					end: { x: canvas.width / 4, y: -20 },
-					text: "Ruang IV",
+					color: "black",
 				});
 
-				// Draw Mirror
+				//text for 4th object dimension(ruang cahaya IV) left-side
+				writeText({
+					ctx: context,
+					start: { x: canvas.width / 4, y: 0 },
+					end: { x: - canvas.width / 4, y: -20 },
+					text: "(Ruang IV bayangan)",
+					color: "black",
+				});
+
+				// Draw Curvature Point right-side
+				drawLine({
+					ctx: context,
+					start: { x: mirrorFocus * 2, y: 0 },
+					end: { x: mirrorFocus * 2, y: -60 },
+					color: "brown",
+					text: "M1",
+				});
+				//text for 1st object dimension(ruang cahaya I) right-side
+				writeText({
+					ctx: context,
+					start: { x: mirrorFocus * 0.5, y: 0 },
+					end: { x: mirrorFocus * 0.5, y: - 20 },
+					text: "Ruang I",
+					color: "black",
+				});
+				writeText({
+					ctx: context,
+					start: { x: mirrorFocus * 0.5, y: 0 },
+					end: { x: mirrorFocus * 0.5, y: - 30 },
+					text: "(bayangan)",
+					color: "black",
+				});
+				//text for 2nd object dimension(ruang cahaya II) right-side
+				writeText({
+					ctx: context,
+					start: { x: mirrorFocus * 1.5, y: 0 },
+					end: { x: mirrorFocus * 1.5, y: - 20 },
+					text: "Ruang II",
+					color: "black",
+				});
+				writeText({
+					ctx: context,
+					start: { x: mirrorFocus * 1.5, y: 0 },
+					end: { x: mirrorFocus * 1.5, y: - 30 },
+					text: "(bayangan)",
+					color: "black",
+				});
+
+				//text for 3rd object dimension(ruang cahaya III) right-side
+				writeText({
+					ctx: context,
+					start: { x: mirrorFocus * 2.5, y: 0 },
+					end: { x: mirrorFocus * 2.5, y: - 20 },
+					text: "Ruang III",
+					color: "black",
+				});
+				writeText({
+					ctx: context,
+					start: { x: mirrorFocus * 2.5, y: 0 },
+					end: { x: mirrorFocus * 2.5, y: - 30 },
+					text: "(bayangan)",
+					color: "black",
+				});
+				//text for 4th object dimension(ruang cahaya IV) right-side
+				writeText({
+					ctx: context,
+					start: { x: canvas.width / 4, y: 0 },
+					end: { x: canvas.width / 4, y: 20 },
+					text: "Ruang IV",
+					color: "black",
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: - canvas.width / 2.5, y: 0 },
+					end: { x: - canvas.width / 2.5, y: 0 },
+					text: "",
+					color: "#7D379",
+				});
+
+				//text keterangan ruang benda
+				writeText({
+					ctx: context,
+					start: { x: - canvas.width / 2.5, y: 0 },
+					end: { x: - canvas.width / 2.5, y: 300 },
+					text: "Ruang benda (depan)",
+					color: "#3E8497",
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: - canvas.width / 2.5, y: 0 },
+					end: { x: - canvas.width / 2.5, y: 300 },
+					text: "Ruang benda (depan)",
+					color: "#7D3796",
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: -  canvas.width / 2.5, y: 0 },
+					end: { x: - canvas.width / 2.5, y: - 300 },
+					text: "Ruang bayangan (depan)",
+					color: "#3E8497",
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: canvas.width / 2.5, y: 0 },
+					end: { x: canvas.width / 2.5, y: 300 },
+					text: "Ruang benda (belakang)",
+					color: "#7D3796",
+				});
+
+				writeText({
+					ctx: context,
+					start: { x: canvas.width / 2.5, y: 0 },
+					end: { x: canvas.width / 2.5, y: - 300 },
+					text: "Ruang bayangan (belakang)",
+					color: "#3E8497",
+				});
+
 				if (isConvex) {
 					const calculatedFocus = mirrorFocus;
 					setMirrorObjectDistance(-(objectDistance * calculatedFocus / (objectDistance - calculatedFocus)));
@@ -144,13 +257,17 @@ export default function Lensa() {
 							end: { x: -mirrorFocus, y: 0 },
 							color: "lime",
 						});
-						drawInfiniteLine({
+						drawLine({
 							ctx: context,
-							beforeStart: { x: -objectDistance, y: objectHeight },
 							start: { x: -mirrorFocus, y: 0 },
-							end: { x: 0 },
+							end: { x: 0, y: -mirrorObjectHeight },
 							color: "lime",
-							canvasWidth: canvas.width,
+						});
+						drawLine({
+							ctx: context,
+							start: { x: 0, y: -mirrorObjectHeight },
+							end: { x: canvas.width, y: -mirrorObjectHeight },
+							color: "lime",
 						});
 						drawInfiniteLine({
 							ctx: context,
@@ -253,7 +370,7 @@ export default function Lensa() {
 						ctx: context,
 						start: { x: -objectDistance, y: objectHeight },
 						end: { x: 0, y: 0 },
-						color: "lime",
+						color: "red",
 						canvasHeight: canvas.height,
 					});
 
@@ -261,20 +378,20 @@ export default function Lensa() {
 						ctx: context,
 						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
 						end: { x: 0, y: -mirrorObjectHeight },
-						color: "red",
+						color: "lime",
 						isDash: true,
 					});
 					drawLine({
 						ctx: context,
 						start: { x: -objectDistance, y: objectHeight },
 						end: { x: 0, y: -mirrorObjectHeight },
-						color: "red",
+						color: "lime",
 					});
 					drawInfiniteLine({
 						ctx: context,
 						start: { x: 0, y: -mirrorObjectHeight },
 						end: { x: canvas.width, y: -mirrorObjectHeight },
-						color: "red",
+						color: "lime",
 						canvasHeight: canvas.height,
 					});
 				}
@@ -294,7 +411,7 @@ export default function Lensa() {
 
 		return (
 			<>
-				<div className='flex mt-4 mx-4'>
+				<div className="flex mt-4 mx-4">
 					<div className={`text-xl ${(!isConvex) ? "text-cyan-400" : ""}`}>
 						Concave
 					</div>
@@ -313,7 +430,7 @@ export default function Lensa() {
 						Convex
 					</div>
 				</div>
-				<div className='flex my-20'>
+				<div className="flex my-20">
 					<Slider
 						handler={(e) => setmirrorFocus(parseInt(e.target.value))}
 						className="slider-vertical"
@@ -336,18 +453,18 @@ export default function Lensa() {
 						min={0}
 					/>
 				</div>
-				<div className='flex justify-between mx-16'>
-					<div className='text-xl'>
+				<div className="flex justify-between mx-16">
+					<div className="text-xl">
 						f
 					</div>
-					<div className='text-xl'>
+					<div className="text-xl">
 						h
 					</div>
-					<div className='text-xl'>
+					<div className="text-xl">
 						s
 					</div>
 				</div>
-				<div className='flex mt-2 mx-4'>
+				<div className="flex mt-2 mx-4">
 					<table className="w-full text-sm text-left text-gray-500">
 						<thead>
 							<tr>
@@ -394,7 +511,7 @@ export default function Lensa() {
 					</table>
 				</div>
 
-				<div className='flex mt-4 mx-4'>
+				<div className="flex mt-4 mx-4">
 					<table className="w-full text-sm text-left text-gray-500">
 						<thead>
 							<tr>
@@ -451,17 +568,20 @@ export default function Lensa() {
 									f
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-									<input
-										type="number"
-										className="w-20 bg-transparent"
-										value={mirrorFocus}
-										onChange={(e) => setmirrorFocus(parseFloat(e.target.value))}
-										min={0}
-										step={"any"}
-									/>
+									<div className="flex">
+										{isConvex ? "" : "-"}
+										<input
+											type="number"
+											className="w-20 bg-transparent"
+											value={mirrorFocus}
+											onChange={(e) => setmirrorFocus(parseFloat(e.target.value))}
+											min={0}
+											step={"any"}
+										/>
+									</div>
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-									M = {Math.abs(mirrorObjectDistance / objectDistance)}
+									P = {100 / (isConvex ? mirrorFocus : -mirrorFocus)}
 								</td>
 							</tr>
 						</tbody>
