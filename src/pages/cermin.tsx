@@ -486,18 +486,4 @@ export default function Cermin() {
 			</>
 		);
 	};
-
-	return (
-		<>
-			<Head>
-				<title>Simulasi Cahaya</title>
-			</Head>
-			<Layout configBar={configBar}>
-				<div className="flex flex-col items-center justify-center w-full h-full">
-					<canvas ref={canvasRef} width={1080} height={720} className={"bg-white"}></canvas>
-				</div>
-			</Layout>
-		</>
-	);
 }
-

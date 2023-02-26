@@ -5,6 +5,9 @@ import { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
 import drawLine from '../utils/drawLine';
 import writeText from '@/utils/writeText';
+import AlgorithmDDA from '@/utils/AlgorithmDDA';
+import Vector2f from '@/utils/Vector2f';
+import drawEllipse from '@/utils/drawEllipse';
 
 export default function Lensa() {
 	const [objectDistance, setObjectDistance] = useState(100);
