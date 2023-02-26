@@ -23,20 +23,23 @@ export default function drawInfiniteLine(props: Props) {
 		ctx.setLineDash([]);
 	}
 
-
 	if (beforeStart && !end.y && canvasWidth) {
 		const slope = (start.y - beforeStart.y) / (start.x - beforeStart.x);
 		const intercept = start.y - slope * start.x;
 		const getY = (x: number) => {
 			return slope * x + intercept;
-		}
+		};
 
 		end.y = getY(end.x);
 
 		console.log('end', end.y);
 		ctx.moveTo(start.x, -start.y);
 		ctx.lineTo(end.x, -end.y);
-		ctx.lineTo(canvasWidth, -end.y);
+		if (end.x < 0) {
+			ctx.lineTo(-canvasWidth, -getY(-canvasWidth));
+		} else {
+			ctx.lineTo(canvasWidth, -getY(canvasWidth));
+		}
 
 	} else {
 
@@ -44,7 +47,7 @@ export default function drawInfiniteLine(props: Props) {
 		const intercept = start.y - slope * start.x;
 		const getX = (y: number) => {
 			return (y - intercept) / slope;
-		}
+		};
 		ctx.moveTo(start.x, -start.y);
 		ctx.lineTo(end.x, -end.y!);
 		ctx.lineTo(
@@ -53,10 +56,6 @@ export default function drawInfiniteLine(props: Props) {
 		);
 
 	}
-
-
-
-
 
 	if (text) {
 		ctx.fillText(text, start.x - end.x, -end.y! - 10);

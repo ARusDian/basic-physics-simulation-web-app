@@ -30,10 +30,10 @@ export default function drawEllipse(props: Props) {
     }
     else {
         if(!concave) {
-            ctx.ellipse(center.getX(), center.getY(), radius.getX(), radius.getY(), 0, -Math.PI * 0.23, 0.23 * Math.PI);
+            ctx.ellipse(center.getX() - (center.getX() / 4), center.getY(), radius.getX(), radius.getY(), 0, -Math.PI * 0.23, 0.23 * Math.PI);
         }
         else {
-            ctx.ellipse(-center.getX() + (center.getX() / 4), center.getY(), radius.getX(), radius.getY(), Math.PI, -Math.PI * 0.23, 0.23 * Math.PI);
+            ctx.ellipse(-center.getX(), center.getY(), radius.getX(), radius.getY(), Math.PI, -Math.PI * 0.23, 0.23 * Math.PI);
         }
     }
 
