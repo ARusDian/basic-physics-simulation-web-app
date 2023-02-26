@@ -8,6 +8,8 @@ import drawLine from '../utils/drawLine';
 import writeText from '@/utils/writeText';
 import AlgorithmDDA from '@/utils/AlgorithmDDA';
 import Vector2f from '@/utils/Vector2f';
+import AlgorithmBSM from '@/utils/AlgorithmBSM';
+import drawEllipse from '@/utils/drawEllipse';
 
 export default function cermin() {
 	const [objectDistance, setObjectDistance] = useState(100);
@@ -144,6 +146,22 @@ export default function cermin() {
 			// 	color: "cyan",
 			// 	canvasHeight: canvas.height
 			// });
+
+			// AlgorithmBSM({
+			// 	ctx: context,
+			// 	center: new Vector2f(0, 0),
+			// 	radius: 200,
+			// 	color: "gray",
+			// });
+
+			drawEllipse({
+				ctx: context,
+				center: new Vector2f(-mirrorFocus * 2, 0),
+				radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
+				color: "red",
+				concave: isConvex,
+				lens: false,
+			});
 		}
 	};
 

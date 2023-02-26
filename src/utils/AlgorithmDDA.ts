@@ -34,7 +34,8 @@ export default function AlgorithmDDA(props: Props) {
         dy = end.getY() - start.getY();
     }
     
-    const step = dx > dy ? dx : dy;
+    // const step = dx > dy ? dx : dy;
+    const step = Math.max(Math.abs(dx), Math.abs(dy));
 
     const x_inc = dx / step;
     const y_inc = dy / step;

@@ -5,6 +5,9 @@ import { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
 import drawLine from '../utils/drawLine';
 import writeText from '@/utils/writeText';
+import AlgorithmDDA from '@/utils/AlgorithmDDA';
+import Vector2f from '@/utils/Vector2f';
+import drawEllipse from '@/utils/drawEllipse';
 
 export default function Lensa() {
     const [objectDistance, setObjectDistance] = useState(100);
@@ -104,11 +107,18 @@ export default function Lensa() {
                 });
 
                 if (objectDistance > calculatedFocus) {
-                    drawLine({
+                    // drawLine({
+                    //     ctx: context,
+                    //     start: { x: -objectDistance, y: objectHeight },
+                    //     end: { x: 0, y: objectHeight },
+                    //     color: "cyan",
+                    // });
+                    AlgorithmDDA({
                         ctx: context,
-                        start: { x: -objectDistance, y: objectHeight },
-                        end: { x: 0, y: objectHeight },
+                        start: new Vector2f(-objectDistance, objectHeight),
+                        end: new Vector2f(0, objectHeight),
                         color: "cyan",
+                        beyond: false,
                     });
                     drawInfiniteLine({
                         ctx: context,
@@ -117,11 +127,18 @@ export default function Lensa() {
                         color: "cyan",
                         canvasHeight: canvas.height,
                     });
-                    drawLine({
+                    // drawLine({
+                    //     ctx: context,
+                    //     start: { x: -objectDistance, y: objectHeight },
+                    //     end: { x: -mirrorFocus, y: 0 },
+                    //     color: "lime",
+                    // });
+                    AlgorithmDDA({
                         ctx: context,
-                        start: { x: -objectDistance, y: objectHeight },
-                        end: { x: -mirrorFocus, y: 0 },
+                        start: new Vector2f(-objectDistance, objectHeight),
+                        end: new Vector2f(-mirrorFocus, 0),
                         color: "lime",
+                        beyond: false,
                     });
                     drawInfiniteLine({
                         ctx: context,
@@ -195,6 +212,14 @@ export default function Lensa() {
                         canvasHeight: canvas.height,
                     });
                 }
+                drawEllipse({
+                    ctx: context,
+                    center: new Vector2f(-mirrorFocus * 2, 0),
+                    radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
+                    color: "red",
+                    concave: !isConvex,
+                    lens: true,
+                });
             } else {
                 const calculatedFocus = -mirrorFocus;
                 setMirrorObjectDistance(-(objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
@@ -255,6 +280,15 @@ export default function Lensa() {
                     end: { x: canvas.width, y: -mirrorObjectHeight },
                     color: "lime",
                     canvasHeight: canvas.height,
+                });
+
+                drawEllipse({
+                    ctx: context,
+                    center: new Vector2f(-mirrorFocus * 2, 0),
+                    radius: new Vector2f(1.95 * mirrorFocus, 2 * mirrorFocus),
+                    color: "red",
+                    concave: !isConvex,
+                    lens: true,
                 });
             }
         }
