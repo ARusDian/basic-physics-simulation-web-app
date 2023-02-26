@@ -13,6 +13,12 @@ export default function Cermin() {
 	const [mirrorObjectHeight, setMirrorObjectHeight] = useState(0);
 	const [mirrorFocus, setmirrorFocus] = useState(70);
 	const [isConvex, setIsConvex] = useState(false);
+	const [planeTipHeight, setPlaneTipHeight] = useState(
+										3/4*objectHeight
+										)
+	const [planeTipDistance, setPlaneTipDistance] = useState(
+										2*objectDistance
+										)
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -213,7 +219,122 @@ export default function Cermin() {
 						end: { x: -objectDistance, y: objectHeight},
 						color: "#931A1A",
 					});
+				
+				//draw Boeing 767
+				writeText({
+					ctx: context,
+					start: { x: -planeTipDistance - 30, y: planeTipHeight + 12},
+					end: {x: -planeTipDistance - 30, y: planeTipHeight + 12},
+					text: "boeing 767",
+					color: "black",
+				})
+					//plane's head
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance, y: planeTipHeight},
+						end: { x: -planeTipDistance - 10, y: planeTipHeight + 10},
+						color: "#5A5A5A",
+					})
+					//plane's pilot window
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 15, y: planeTipHeight + 6},
+						end: { x: -planeTipDistance - 6, y: planeTipHeight + 6},
+						color: "#5A5A5A",
+					})
+					//plane's bottom 1
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance, y: planeTipHeight},
+						end: { x: -planeTipDistance - 25, y: planeTipHeight},
+						color: "#5A5A5A",
+					})
+					//plane's bottom 2
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 35, y: planeTipHeight + 1},
+						end: { x: -planeTipDistance - 52, y: planeTipHeight + 2},
+						color: "#5A5A5A",
+					})
+					//plane's upper
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 10, y: planeTipHeight + 10},
+						end: { x: -planeTipDistance - 50, y: planeTipHeight + 10},
+						color: "#5A5A5A",
+					})
+					//plane's tail
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 50, y: planeTipHeight + 10},
+						end: { x: -planeTipDistance - 55, y: planeTipHeight + 17},
+						color: "#5A5A5A",
+					})
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 55, y: planeTipHeight + 17},
+						end: { x: -planeTipDistance - 59, y: planeTipHeight + 17},
+						color: "#5A5A5A",
+					})
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 59, y: planeTipHeight + 17},
+						end: { x: -planeTipDistance - 56, y: planeTipHeight + 5},
+						color: "#5A5A5A",
+					})
+					//plane's wing 1
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 47, y: planeTipHeight + 5},
+						end: { x: -planeTipDistance - 56, y: planeTipHeight},
+						color: "#5A5A5A",
+					})
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 56, y: planeTipHeight},
+						end: { x: -planeTipDistance - 62, y: planeTipHeight},
+						color: "#5A5A5A",
+					})
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 60, y: planeTipHeight},
+						end: { x: -planeTipDistance - 54, y: planeTipHeight + 5},
+						color: "#5A5A5A",
+					})
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 54, y: planeTipHeight + 5},
+						end: { x: -planeTipDistance - 47, y: planeTipHeight + 5},
+						color: "#5A5A5A",
+					})
+					//plane's wing 2
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 20, y: planeTipHeight + 3},
+						end: { x: -planeTipDistance - 42, y: planeTipHeight - 10},
+						color: "#5A5A5A",
+					})
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 42, y: planeTipHeight - 10},
+						end: { x: -planeTipDistance - 50, y: planeTipHeight - 10},
+						color: "#5A5A5A",
+					})
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 48, y: planeTipHeight - 10},
+						end: { x: -planeTipDistance - 32, y: planeTipHeight + 3},
+						color: "#5A5A5A",
+					})
+					drawLine({
+						ctx: context,
+						start: { x: -planeTipDistance - 32, y: planeTipHeight + 3},
+						end: { x: -planeTipDistance - 20, y: planeTipHeight + 3},
+						color: "#5A5A5A",
+					})
 
+				
+				
 
 				if (isConvex) {
 					const calculatedFocus = -mirrorFocus;
@@ -251,7 +372,7 @@ export default function Cermin() {
 							ctx: context,
 							start: { x: -(mirrorObjectDistance) - 45, y: 0 },
 							end: { x: -	(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
-							color: "#D76D1B",
+							color: "#761BD7",
 						});
 
 						drawLine({
@@ -684,7 +805,7 @@ export default function Cermin() {
 						className="slider-vertical"
 						value={objectHeight}
 						max={360}
-						min={-360}
+						min={30}
 					/>
 					<Slider
 						handler={(e) => setObjectDistance(parseInt(e.target.value))}
