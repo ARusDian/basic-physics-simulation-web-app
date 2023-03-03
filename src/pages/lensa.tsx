@@ -343,6 +343,7 @@ export default function Lensa() {
 						color: "red",
 						concave: isConvex,
 						lens: true,
+						height: canvas.height,
 					});
 
 				} else {
@@ -414,6 +415,7 @@ export default function Lensa() {
 						color: "red",
 						concave: isConvex,
 						lens: true,
+						height: canvas.height,
 					});
 				}
 			}

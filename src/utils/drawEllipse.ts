@@ -7,10 +7,11 @@ export interface Props {
     color: string;
     concave: boolean;
     lens: boolean;
+    height?: number;
 }
 
 export default function drawEllipse(props: Props) {
-    const {ctx, center, radius, color, concave, lens} = props;
+    const {ctx, center, radius, color, concave, lens, height} = props;
 
     ctx.beginPath();
     ctx.strokeStyle = color;
@@ -19,21 +20,21 @@ export default function drawEllipse(props: Props) {
 
     if(lens) {
         if(concave) {
-            ctx.ellipse(center.getX(), center.getY(), radius.getX(), radius.getY(), 0, -Math.PI * 0.23, 0.23 * Math.PI);
-            ctx.ellipse(-center.getX(), center.getY(), radius.getX(), radius.getY(), Math.PI, -Math.PI * 0.23, 0.23 * Math.PI);
-            ctx.ellipse(center.getX(), center.getY(), radius.getX(), radius.getY(), 0, -Math.PI * 0.23, -Math.PI * 0.23);
+            ctx.ellipse(center.getX(), center.getY(), radius.getX(), (height ? height : radius.getY()), 0, -Math.PI * 0.23, 0.23 * Math.PI);
+            ctx.ellipse(-center.getX(), center.getY(), radius.getX(), (height ? height : radius.getY()), Math.PI, -Math.PI * 0.23, 0.23 * Math.PI);
+            ctx.ellipse(center.getX(), center.getY(), radius.getX(), (height ? height : radius.getY()), 0, -Math.PI * 0.23, -Math.PI * 0.23);
         }
         else {
-            ctx.ellipse(center.getX() - (center.getX() / 4), center.getY(), radius.getX(), radius.getY(), 0, -Math.PI * 0.23, 0.23 * Math.PI);
-            ctx.ellipse(-center.getX() + (center.getX() / 4), center.getY(), radius.getX(), radius.getY(), 0, 0.77 * Math.PI, Math.PI * 1.23);
+            ctx.ellipse(center.getX() - (center.getX() / 7), center.getY(), radius.getX(), (height ? height : radius.getY()), 0, -Math.PI * 0.23, 0.23 * Math.PI);
+            ctx.ellipse(-center.getX() + (center.getX() / 7), center.getY(), radius.getX(), (height ? height : radius.getY()), 0, 0.77 * Math.PI, Math.PI * 1.23);
         }
     }
     else {
         if(!concave) {
-            ctx.ellipse(center.getX() - (center.getX() / 4), center.getY(), radius.getX(), radius.getY(), 0, -Math.PI * 0.23, 0.23 * Math.PI);
+            ctx.ellipse(center.getX(), center.getY(), radius.getX(), (height ? height : radius.getY()), 0, -Math.PI * 0.23, 0.23 * Math.PI);
         }
         else {
-            ctx.ellipse(-center.getX(), center.getY(), radius.getX(), radius.getY(), Math.PI, -Math.PI * 0.23, 0.23 * Math.PI);
+            ctx.ellipse(-center.getX(), center.getY(), radius.getX(), (height ? height : radius.getY()), Math.PI, -Math.PI * 0.23, 0.23 * Math.PI);
         }
     }
 

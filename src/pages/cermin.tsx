@@ -277,6 +277,7 @@ export default function Cermin() {
 						color: "red",
 						concave: isConvex,
 						lens: false,
+						height: canvas.height,
 					});
 
 				} else {
@@ -428,6 +429,7 @@ export default function Cermin() {
 						color: "red",
 						concave: isConvex,
 						lens: false,
+						height: canvas.height,
 					});
 				}
 			}
