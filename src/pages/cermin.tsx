@@ -19,8 +19,6 @@ export default function Cermin() {
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
-
-
 	function initDraw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
 		ctx.strokeStyle = "#000000";
 		ctx.beginPath();
@@ -47,7 +45,6 @@ export default function Cermin() {
 				// eslint-disable-next-line no-self-assign
 				context.canvas.width = context.canvas.width;
 				context.setTransform(1, 0, 0, 1, canvas.width / 2, canvas.height / 2);
-				context.clearRect(0, 0, canvas.width / 2, canvas.height / 2);
 				initDraw(context, canvas);
 
 				// Draw Object
@@ -179,96 +176,117 @@ export default function Cermin() {
 						text: "Curvature",
 					});
 
-					drawLine({
-						ctx: context,
-						start: { x: -(mirrorObjectDistance), y: 0 },
-						end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
-						color: "green",
-						text: "Image",
-					});
+					if(objectDistance != calculatedFocus) {
+						drawLine({
+							ctx: context,
+							start: { x: -(mirrorObjectDistance), y: 0 },
+							end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
+							color: "green",
+							text: "Image",
+						});
+					}
 
-					drawLine({
-						ctx: context,
-						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						end: { x: 0, y: objectHeight },
-						color: "cyan",
-						isDash: true,
-					});
+					if(objectDistance == 0) {
+						return;
+					} 
+					
+					else if(calculatedFocus == 0) {
+						return;
+					}
 
-					drawInfiniteLine({
-						ctx: context,
-						beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						start: { x: 0, y: objectHeight },
-						end: { x: -canvas.width },
-						color: "cyan",
-						canvasWidth: canvas.width,
-					});
-					// drawLine({
-					// 	ctx: context,
-					// 	start: { x: -objectDistance, y: objectHeight },
-					// 	end: { x: 0, y: objectHeight },
-					// 	color: "cyan",
-					// });
+					else if (objectHeight == 0) {
+						return;
+					}
 
-					AlgorithmDDA({
-						ctx: context,
-						start: new vector2f(-objectDistance, -objectHeight ),
-						end: new vector2f(0, -objectHeight),
-						color: "cyan",
-						beyond: false,
-					});
+					else {
+	
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f( -mirrorObjectDistance, mirrorObjectHeight ),
+							end: new vector2f(0, -objectHeight),
+							color: "cyan",
+							isDash: true,
+							beyond: false,
+						});
+	
+						// drawInfiniteLine({
+						// 	ctx: context,
+						// 	beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						// 	start: { x: 0, y: objectHeight },
+						// 	end: { x: -canvas.width },
+						// 	color: "cyan",
+						// 	canvasWidth: canvas.width,
+						// });
 
-					drawLine({
-						ctx: context,
-						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						end: { x: 0, y: -mirrorObjectHeight },
-						color: "lime",
-						isDash: true,
-					});
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new vector2f(-mirrorObjectDistance, -mirrorObjectHeight),
+							start: new vector2f( 0, objectHeight),
+							end: new vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "cyan",
+							beyond: true,
+						});
+	
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f(-objectDistance, -objectHeight ),
+							end: new vector2f(0, -objectHeight),
+							color: "cyan",
+							beyond: false,
+						});
+	
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f( -mirrorObjectDistance, mirrorObjectHeight ),
+							end: new vector2f(0, mirrorObjectHeight ),
+							color: "lime",
+							isDash: true,
+							beyond: false,
+						});
+	
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f(-objectDistance, -objectHeight ),
+							end: new vector2f(0, mirrorObjectHeight),
+							color: "lime",
+						});
 
-					// drawLine({
-					// 	ctx: context,
-					// 	start: { x: -objectDistance, y: objectHeight },
-					// 	end: { x: 0, y: -mirrorObjectHeight },
-					// 	color: "lime",
-					// });
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f(0, mirrorObjectHeight),
+							end: new vector2f(-canvas.width, mirrorObjectHeight),
+							color: "lime",
+							beyond: false,
+						});
 
-					AlgorithmDDA({
-						ctx: context,
-						start: new vector2f(-objectDistance, -objectHeight ),
-						end: new vector2f(0, mirrorObjectHeight),
-						color: "lime",
-						beyond: false,
-					});
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f(-mirrorObjectDistance, mirrorObjectHeight),
+							end: new vector2f(0, 0),
+							color: "red",
+							isDash: true,
+						});
+	
+						// drawInfiniteLine({
+						// 	ctx: context,
+						// 	beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						// 	start: { x: 0, y: 0 },
+						// 	end: { x: -canvas.width },
+						// 	color: "red",
+						// 	canvasWidth: canvas.width,
+						// });
 
-					drawLine({
-						ctx: context,
-						start: { x: 0, y: -mirrorObjectHeight },
-						end: { x: -canvas.width, y: -mirrorObjectHeight },
-						color: "lime",
-					});
-
-					drawLine({
-						ctx: context,
-						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						end: { x: 0, y: 0 },
-						color: "red",
-						isDash: true,
-					});
-					drawInfiniteLine({
-						ctx: context,
-						beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						start: { x: 0, y: 0 },
-						end: { x: -canvas.width },
-						color: "red",
-						canvasWidth: canvas.width,
-					});
-					drawLine({
-						ctx: context,
-						start: { x: -objectDistance, y: objectHeight },
-						end: { x: 0, y: 0 },
-						color: "red",
-					});
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new vector2f(-mirrorObjectDistance, -mirrorObjectHeight),
+							start: new vector2f( 0, 0),
+							end: new vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
+					}
 
 					drawEllipse({
 						ctx: context,
@@ -284,7 +302,149 @@ export default function Cermin() {
 					const calculatedFocus = mirrorFocus;
 					setMirrorObjectDistance(objectDistance * calculatedFocus / (objectDistance - calculatedFocus));
 					setMirrorObjectHeight(mirrorObjectDistance * objectHeight / objectDistance);
-					if (objectDistance >= calculatedFocus) {
+
+					if (objectDistance == 0) {
+						return;
+					}
+
+					else if (calculatedFocus == 0) {
+						return;
+					} 
+
+					else if (objectHeight == 0) {
+						return;
+					}
+					
+					else if(mirrorObjectDistance == Infinity || mirrorObjectHeight == Infinity) {
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f(-objectDistance, -objectHeight ),
+							end: new vector2f(-objectDistance, canvas.height),
+							color: "lime",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f(-objectDistance, -objectHeight ),
+							end: new vector2f(0, 0),
+							color: "red",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f( -objectDistance, -objectHeight ),
+							end: new vector2f(0, -objectHeight ),
+							color: "cyan",
+						});
+
+						drawEllipse({
+							ctx: context,
+							center: new vector2f(-mirrorFocus * 2, 0),
+							radius: new vector2f(2 * mirrorFocus, 2 * mirrorFocus),
+							color: "red",
+							concave: isConvex,
+							lens: false,
+							height: canvas.height,
+						});
+
+						return;
+					}
+
+					else if (objectDistance > calculatedFocus) {
+						if(objectDistance != calculatedFocus) {
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance), y: 0 },
+								end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
+								color: "green",
+								text: "Image",
+							});
+						}
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f(-objectDistance, -objectHeight ),
+							end: new vector2f(0, -objectHeight),
+							color: "cyan",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f(-objectDistance, -objectHeight ),
+							end: new vector2f(0, 0),
+							color: "red",
+							beyond: false,
+							isDash: false,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f(0, 0),
+							end: new vector2f(-mirrorObjectDistance, mirrorObjectHeight),
+							color: "red",
+						});
+
+						// drawInfiniteLine({
+						// 	ctx: context,
+						// 	beforeStart: { x: 0, y: 0 },
+						// 	start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						// 	end: { x: -canvas.width },
+						// 	color: "red",
+						// 	canvasWidth: canvas.width,
+						// });
+
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new vector2f(0, 0),
+							start: new vector2f( -mirrorObjectDistance, -mirrorObjectHeight),
+							end: new vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f(-objectDistance, -objectHeight ),
+							end: new vector2f(0, mirrorObjectHeight),
+							color: "lime",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f(0, mirrorObjectHeight),
+							end: new vector2f(-canvas.width, mirrorObjectHeight),
+							color: "lime",
+						});
+
+						// AlgorithmDDA({
+						// 	ctx: context,
+						// 	start: new vector2f( -mirrorObjectDistance, mirrorObjectHeight ),
+						// 	end: new vector2f(0, -objectHeight ),
+						// 	color: "cyan",
+						// 	isDash: true,
+						// });
+
+						// drawInfiniteLine({
+						// 	ctx: context,
+						// 	beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						// 	start: { x: 0, y: objectHeight },
+						// 	end: { x: -canvas.width },
+						// 	color: "cyan",
+						// 	canvasWidth: canvas.width,
+						// });
+
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new vector2f(-mirrorObjectDistance, -mirrorObjectHeight),
+							start: new vector2f( 0, objectHeight),
+							end: new vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "cyan",
+							beyond: true,
+						});
+
+					} else if(objectDistance < calculatedFocus) {
 						drawLine({
 							ctx: context,
 							start: { x: -(mirrorObjectDistance), y: 0 },
@@ -293,133 +453,137 @@ export default function Cermin() {
 							text: "Image",
 						});
 
-						drawLine({
+						// drawLine({
+						// 	ctx: context,
+						// 	start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						// 	end: { x: 0, y: objectHeight },
+						// 	color: "cyan",
+						// 	isDash: true,
+						// });
+
+						AlgorithmDDA({
 							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: objectHeight },
+							start: new vector2f( -mirrorObjectDistance, mirrorObjectHeight ),
+							end: new vector2f(0, -objectHeight ),
 							color: "cyan",
+							isDash: true,
+							beyond: false,
 						});
 
-						drawLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: 0 },
-							color: "red",
-						});
+						// drawInfiniteLine({
+						// 	ctx: context,
+						// 	beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						// 	start: { x: 0, y: objectHeight },
+						// 	end: { x: -canvas.width },
+						// 	color: "cyan",
+						// 	canvasWidth: canvas.width,
+						// });
 
-						drawLine({
+						AlgorithmDDA({
 							ctx: context,
-							start: { x: 0, y: 0 },
-							end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							color: "red",
-						});
-
-						drawInfiniteLine({
-							ctx: context,
-							beforeStart: { x: 0, y: 0 },
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: -canvas.width },
-							color: "red",
+							beforeStart: new vector2f(-mirrorObjectDistance, -mirrorObjectHeight),
+							start: new vector2f( 0, objectHeight),
+							end: new vector2f(-canvas.width, 0),
 							canvasWidth: canvas.width,
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: -mirrorObjectHeight },
-							color: "lime",
-						});
-
-						drawInfiniteLine({
-							ctx: context,
-							start: { x: 0, y: -mirrorObjectHeight },
-							end: { x: -canvas.width, y: -mirrorObjectHeight },
-							color: "lime",
-							canvasHeight: canvas.height
-						});
-
-						drawInfiniteLine({
-							ctx: context,
-							start: { x: 0, y: objectHeight },
-							end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
 							color: "cyan",
-							canvasHeight: canvas.height
+							beyond: true,
 						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f( -objectDistance, -objectHeight ),
+							end: new vector2f(0, -objectHeight ),
+							color: "cyan",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f( -mirrorObjectDistance, mirrorObjectHeight ),
+							end: new vector2f(0, mirrorObjectHeight ),
+							color: "lime",
+							isDash: true,
+							beyond: false,
+						});
+
+						// drawLine({
+						// 	ctx: context,
+						// 	start: { x: -objectDistance, y: objectHeight },
+						// 	end: { x: 0, y: -mirrorObjectHeight },
+						// 	color: "lime",
+						// });
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f( -objectDistance, -objectHeight ),
+							end: new vector2f(0, mirrorObjectHeight ),
+							color: "lime",
+						});
+
+						// drawLine({
+						// 	ctx: context,
+						// 	start: { x: 0, y: -mirrorObjectHeight },
+						// 	end: { x: -canvas.width, y: -mirrorObjectHeight },
+						// 	color: "lime",
+						// });
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f( 0, mirrorObjectHeight ),
+							end: new vector2f(-canvas.width, mirrorObjectHeight ),
+							color: "lime",
+						});
+
+						// drawLine({
+						// 	ctx: context,
+						// 	start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						// 	end: { x: 0, y: 0 },
+						// 	color: "red",
+						// 	isDash: true,
+						// });
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f( -mirrorObjectDistance, mirrorObjectHeight),
+							end: new vector2f(0, 0),
+							color: "red",
+							isDash: true,
+						});
+						
+						// drawInfiniteLine({
+						// 	ctx: context,
+						// 	beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+						// 	start: { x: 0, y: 0 },
+						// 	end: { x: -canvas.width },
+						// 	color: "red",
+						// 	canvasWidth: canvas.width,
+						// });
+
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new vector2f(-mirrorObjectDistance, -mirrorObjectHeight),
+							start: new vector2f( 0, 0),
+							end: new vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
+
+						// drawLine({
+						// 	ctx: context,
+						// 	start: { x: -objectDistance, y: objectHeight },
+						// 	end: { x: 0, y: 0 },
+						// 	color: "red",
+						// });
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new vector2f( -objectDistance, -objectHeight ),
+							end: new vector2f(0, 0),
+							color: "red",
+						});
+
 					} else {
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance), y: 0 },
-							end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
-							color: "green",
-							text: "Image",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: 0, y: objectHeight },
-							color: "cyan",
-							isDash: true,
-						});
-						drawInfiniteLine({
-							ctx: context,
-							beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							start: { x: 0, y: objectHeight },
-							end: { x: -canvas.width },
-							color: "cyan",
-							canvasWidth: canvas.width,
-						});
-						drawLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: objectHeight },
-							color: "cyan",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: 0, y: -mirrorObjectHeight },
-							color: "lime",
-							isDash: true,
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: -mirrorObjectHeight },
-							color: "lime",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: 0, y: -mirrorObjectHeight },
-							end: { x: -canvas.width, y: -mirrorObjectHeight },
-							color: "lime",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: 0, y: 0 },
-							color: "red",
-							isDash: true,
-						});
-						drawInfiniteLine({
-							ctx: context,
-							beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							start: { x: 0, y: 0 },
-							end: { x: -canvas.width },
-							color: "red",
-							canvasWidth: canvas.width,
-						});
-						drawLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: 0 },
-							color: "red",
-						});
-
+						return;
 					}
 					
 					drawEllipse({
