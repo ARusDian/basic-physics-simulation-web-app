@@ -62,24 +62,26 @@ export default function AlgorithmDDA(props: Props) {
 			} else {
 				ctx.lineTo(canvasWidth, -getY(canvasWidth));
 			}
-		} else {
+		} else if(canvasHeight) {
 			const slope =
-				(end.getY()! - start.getY()) / (end.getX() - start.getX());
+				(end.getY() - start.getY()) / (end.getX() - start.getX());
 			const intercept = start.getY() - slope * start.getX();
 			const getX = (y: number) => {
 				return (y - intercept) / slope;
 			};
 			ctx.moveTo(start.getX(), -start.getY());
-			ctx.lineTo(end.getX(), -end.getY()!);
+			ctx.lineTo(end.getX(), -end.getY());
 			ctx.lineTo(
-				getX(start.getY() > 0 ? -canvasHeight! : canvasHeight!),
-				start.getY() < 0 ? -canvasHeight! : canvasHeight!
+				getX(start.getY() > 0 ? -canvasHeight : canvasHeight),
+				start.getY() < 0 ? -canvasHeight : canvasHeight
 			);
+		}else{
+			return;
 		}
 	} else {
 
-		let dx = end.getX() - start.getX();
-		let dy = end.getY() - start.getY();
+		const dx = end.getX() - start.getX();
+		const dy = end.getY() - start.getY();
 		const step = Math.max(Math.abs(dx), Math.abs(dy));
 
 		const x_inc = dx / step;

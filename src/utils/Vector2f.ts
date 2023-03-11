@@ -8,19 +8,19 @@ class Vector2f {
 	}
 
 	public getX(): number {
-		return this.x
+		return this.x;
 	}
 
 	public getY(): number {
-		return this.y
+		return this.y;
 	}
 
 	public setX(x: number): void {
-		this.x = x
+		this.x = x;
 	}
 
 	public setY(y: number): void {
-		this.y = y
+		this.y = y;
 	}
 }
 
