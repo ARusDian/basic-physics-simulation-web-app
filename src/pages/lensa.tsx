@@ -83,17 +83,6 @@ export default function Lensa() {
 							objectDistance
 						)
 					);
-					// Draw MirrorObject
-					drawLine({
-						ctx: context,
-						start: { x: -mirrorObjectDistance, y: 0 },
-						end: {
-							x: -mirrorObjectDistance,
-							y: -mirrorObjectHeight,
-						},
-						color: "green",
-						text: "Image",
-					});
 
 					drawEllipse({
 						ctx: context,
@@ -106,6 +95,54 @@ export default function Lensa() {
 						concave: isConvex,
 						lens: true,
 						height: canvas.height,
+					});
+					
+					if (objectDistance == 0) {
+						return;
+					} else if (calculatedFocus == 0) {
+						return;
+					} else if (objectHeight == 0) {
+						return;
+					} else if (
+						mirrorObjectDistance == Infinity ||
+						mirrorObjectHeight == Infinity ||
+						objectDistance == calculatedFocus
+					) {
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(-objectDistance, canvas.height),
+							color: "lime",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, 0),
+							color: "red",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, -objectHeight),
+							color: "cyan",
+						});
+						return;
+					}
+
+					
+
+					// Draw MirrorObject
+					drawLine({
+						ctx: context,
+						start: { x: -mirrorObjectDistance, y: 0 },
+						end: {
+							x: -mirrorObjectDistance,
+							y: -mirrorObjectHeight,
+						},
+						color: "green",
+						text: "Image",
 					});
 
 					if (objectDistance > calculatedFocus) {
@@ -241,6 +278,38 @@ export default function Lensa() {
 						lens: true,
 						height: canvas.height,
 					});
+					if (objectDistance == 0) {
+						return;
+					} else if (calculatedFocus == 0) {
+						return;
+					} else if (objectHeight == 0) {
+						return;
+					} else if (
+						mirrorObjectDistance == Infinity ||
+						mirrorObjectHeight == Infinity
+					) {
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(-objectDistance, canvas.height),
+							color: "lime",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, 0),
+							color: "red",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, -objectHeight),
+							color: "cyan",
+						});
+						return;
+					}
 					drawLine({
 						ctx: context,
 						start: { x: -mirrorObjectDistance, y: 0 },

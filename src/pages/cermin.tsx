@@ -55,7 +55,7 @@ export default function Cermin() {
 					canvas.width / 2,
 					canvas.height / 2
 				);
-				context.clearRect(0, 0, canvas.width / 2, canvas.height / 2);
+				context.clearRect(0, 0, canvas.width, canvas.height);
 				initDraw(context, canvas);
 
 				drawBaseView(context, canvas, mirrorFocus, true);
@@ -246,20 +246,15 @@ export default function Cermin() {
 							end: new Vector2f(0, -objectHeight),
 							color: "cyan",
 						});
-
 						drawEllipse({
 							ctx: context,
 							center: new Vector2f(-mirrorFocus * 2, 0),
-							radius: new Vector2f(
-								2 * mirrorFocus,
-								2 * mirrorFocus
-							),
-							color: "red",
+							radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
+							color: "blue",
 							concave: isConvex,
 							lens: false,
 							height: canvas.height,
 						});
-
 						return;
 					} else if (objectDistance > calculatedFocus) {
 						if (objectDistance != calculatedFocus) {
