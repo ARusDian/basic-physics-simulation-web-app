@@ -51,7 +51,7 @@ export default function drawBaseView (
 		//text for 4th object dimension(ruang cahaya IV)
 		writeText({
 			ctx: context,
-			start: { x: canvas.width / 3, y: 0 },
+			start: { x: canvas.width / 4, y: 0 },
 			end: { x: canvas.width / 4, y: -20 },
 			text: "Ruang IV",
 			color: 'black',
