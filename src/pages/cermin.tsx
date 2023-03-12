@@ -13,12 +13,6 @@ export default function Cermin() {
 	const [mirrorObjectHeight, setMirrorObjectHeight] = useState(0);
 	const [mirrorFocus, setmirrorFocus] = useState(70);
 	const [isConvex, setIsConvex] = useState(false);
-	const [planeTipHeight, setPlaneTipHeight] = useState(
-										3/4*objectHeight
-										)
-	const [planeTipDistance, setPlaneTipDistance] = useState(
-										2*objectDistance
-										)
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -221,6 +215,8 @@ export default function Cermin() {
 					});
 				
 				//draw Boeing 767
+				const planeTipDistance =  2* objectDistance
+				const planeTipHeight = 3/4 *objectHeight
 				writeText({
 					ctx: context,
 					start: { x: -planeTipDistance - 30, y: planeTipHeight + 12},
