@@ -4,25 +4,26 @@ import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import Layout from "../components/Layout";
 import drawLine from "../utils/drawLine";
-import writeText from "@/utils/writeText";
+import drawBaseView from "@/components/drawBaseView";
+import AlgorithmDDA from "@/utils/AlgorithmDDA";
+import Vector2f from "../utils/Vector2f";
+import drawEllipse from "@/utils/drawEllipse";
+import drawPlane from "@/components/drawPlane";
 
 export default function Lensa() {
-	const [objectDistance, setObjectDistance] = useState(100);
+	const [objectDistance, setObjectDistance] = useState(122);
 	const [objectHeight, setObjectHeight] = useState(80);
 	const [mirrorObjectDistance, setMirrorObjectDistance] = useState(0);
 	const [mirrorObjectHeight, setMirrorObjectHeight] = useState(0);
-	const [mirrorFocus, setmirrorFocus] = useState(70);
-	const [isConvex, setIsConvex] = useState(false);
-	// const [planeTipHeight, setPlaneTipHeight] = useState(
-	// 	3 / 4 * objectHeight
-	// )
-	// const [planeTipDistance, setPlaneTipDistance] = useState(
-	// 	2 * objectDistance
-	// )
+	const [mirrorFocus, setmirrorFocus] = useState(250);
+	const [isConvex, setIsConvex] = useState(true);
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
-	function initDraw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
+	function initDraw(
+		ctx: CanvasRenderingContext2D,
+		canvas: HTMLCanvasElement
+	): void {
 		ctx.strokeStyle = "#000000";
 		ctx.beginPath();
 
@@ -41,15 +42,24 @@ export default function Lensa() {
 		const goDraw = () => {
 			if (!canvasRef.current) return;
 			const canvas: HTMLCanvasElement = canvasRef.current;
-			const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
-
+			const context: CanvasRenderingContext2D | null =
+				canvas.getContext("2d");
 			if (context) {
 				// For clear canvas
 				// eslint-disable-next-line no-self-assign
 				context.canvas.width = context.canvas.width;
-				context.setTransform(1, 0, 0, 1, canvas.width / 2, canvas.height / 2);
-				context.clearRect(0, 0, canvas.width / 2, canvas.height / 2);
+				context.setTransform(
+					1,
+					0,
+					0,
+					1,
+					canvas.width / 2,
+					canvas.height / 2
+				);
+				context.clearRect(0, 0, canvas.width, canvas.height);
 				initDraw(context, canvas);
+
+				drawBaseView(context, canvas, mirrorFocus, false);
 
 				// Draw Object
 				// drawLine({
@@ -60,368 +70,441 @@ export default function Lensa() {
 				// 	text: "Object",
 				// });
 
+				drawPlane(context, objectDistance, objectHeight);
 
 				//draw twin tower
-				//first tower
-				drawLine({
-					ctx: context,
-					start: { x: -objectDistance - 45, y: 0 },
-					end: { x: -objectDistance - 45, y: objectHeight - 20 },
-					color: "#931A1A",
-				});
+					//first tower
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance - 45, y: 0 },
+						end: { x: -objectDistance - 45, y: objectHeight - 20 },
+						color: "#931A1A",
+					});
 
-				drawLine({
-					ctx: context,
-					start: { x: -objectDistance - 10, y: 0 },
-					end: { x: -objectDistance - 10, y: objectHeight - 20 },
-					color: "#931A1A",
-				});
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance - 10, y: 0 },
+						end: { x: -objectDistance - 10, y: objectHeight - 20 },
+						color: "#931A1A",
+					});
 
-				drawLine({
-					ctx: context,
-					start: { x: -objectDistance - 45, y: objectHeight - 20 },
-					end: { x: -objectDistance - 10, y: objectHeight - 20 },
-					color: "#931A1A",
-				});
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance - 45, y: objectHeight - 20 },
+						end: { x: -objectDistance - 10, y: objectHeight - 20 },
+						color: "#931A1A",
+					});
 
-				//second tower
-				drawLine({
-					ctx: context,
-					start: { x: -objectDistance + 45, y: 0 },
-					end: { x: -objectDistance + 45, y: objectHeight - 20 },
-					color: "#931A1A",
-				});
+					//second tower
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance + 45, y: 0 },
+						end: { x: -objectDistance + 45, y: objectHeight - 20 },
+						color: "#931A1A",
+					});
 
-				drawLine({
-					ctx: context,
-					start: { x: -objectDistance + 10, y: 0 },
-					end: { x: -objectDistance + 10, y: objectHeight - 20 },
-					color: "#931A1A",
-				});
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance + 10, y: 0 },
+						end: { x: -objectDistance + 10, y: objectHeight - 20 },
+						color: "#931A1A",
+					});
 
-				drawLine({
-					ctx: context,
-					start: { x: -objectDistance + 45, y: objectHeight - 20 },
-					end: { x: -objectDistance + 10, y: objectHeight - 20 },
-					color: "#931A1A",
-				});
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance + 45, y: objectHeight - 20 },
+						end: { x: -objectDistance + 10, y: objectHeight - 20 },
+						color: "#931A1A",
+					});
 
-				//antenna
-				drawLine({
-					ctx: context,
-					start: { x: -objectDistance - 30, y: objectHeight - 20 },
-					end: { x: -objectDistance, y: objectHeight },
-					color: "#931A1A",
-				});
+					//antenna
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance - 30, y: objectHeight - 20},
+						end: { x: -objectDistance, y: objectHeight},
+						color: "#931A1A",
+					});
 
-				drawLine({
-					ctx: context,
-					start: { x: -objectDistance + 30, y: objectHeight - 20 },
-					end: { x: -objectDistance, y: objectHeight },
-					color: "#931A1A",
-				});
-
-				//draw Boeing 767
-				const planeTipDistance =  2* objectDistance
-				const planeTipHeight = 3/4 *objectHeight
-				writeText({
-					ctx: context,
-					start: { x: -planeTipDistance - 50, y: planeTipHeight + 12 },
-					end: { x: -planeTipDistance - 50, y: planeTipHeight + 12 },
-					text: "boeing 767",
-					color: "black",
-				})
-				//plane's head
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance, y: planeTipHeight },
-					end: { x: -planeTipDistance - 10, y: planeTipHeight + 10 },
-					color: "#5A5A5A",
-				})
-				//plane's pilot window
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 15, y: planeTipHeight + 6 },
-					end: { x: -planeTipDistance - 6, y: planeTipHeight + 6 },
-					color: "#5A5A5A",
-				})
-				//plane's bottom 1
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance, y: planeTipHeight },
-					end: { x: -planeTipDistance - 25, y: planeTipHeight },
-					color: "#5A5A5A",
-				})
-				//plane's bottom 2
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 35, y: planeTipHeight + 1 },
-					end: { x: -planeTipDistance - 52, y: planeTipHeight + 2 },
-					color: "#5A5A5A",
-				})
-				//plane's upper
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 10, y: planeTipHeight + 10 },
-					end: { x: -planeTipDistance - 50, y: planeTipHeight + 10 },
-					color: "#5A5A5A",
-				})
-				//plane's tail
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 50, y: planeTipHeight + 10 },
-					end: { x: -planeTipDistance - 55, y: planeTipHeight + 17 },
-					color: "#5A5A5A",
-				})
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 55, y: planeTipHeight + 17 },
-					end: { x: -planeTipDistance - 59, y: planeTipHeight + 17 },
-					color: "#5A5A5A",
-				})
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 59, y: planeTipHeight + 17 },
-					end: { x: -planeTipDistance - 56, y: planeTipHeight + 5 },
-					color: "#5A5A5A",
-				})
-				//plane's wing 1
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 47, y: planeTipHeight + 5 },
-					end: { x: -planeTipDistance - 56, y: planeTipHeight },
-					color: "#5A5A5A",
-				})
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 56, y: planeTipHeight },
-					end: { x: -planeTipDistance - 62, y: planeTipHeight },
-					color: "#5A5A5A",
-				})
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 60, y: planeTipHeight },
-					end: { x: -planeTipDistance - 54, y: planeTipHeight + 5 },
-					color: "#5A5A5A",
-				})
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 54, y: planeTipHeight + 5 },
-					end: { x: -planeTipDistance - 47, y: planeTipHeight + 5 },
-					color: "#5A5A5A",
-				})
-				//plane's wing 2
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 20, y: planeTipHeight + 3 },
-					end: { x: -planeTipDistance - 42, y: planeTipHeight - 10 },
-					color: "#5A5A5A",
-				})
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 42, y: planeTipHeight - 10 },
-					end: { x: -planeTipDistance - 50, y: planeTipHeight - 10 },
-					color: "#5A5A5A",
-				})
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 48, y: planeTipHeight - 10 },
-					end: { x: -planeTipDistance - 32, y: planeTipHeight + 3 },
-					color: "#5A5A5A",
-				})
-				drawLine({
-					ctx: context,
-					start: { x: -planeTipDistance - 32, y: planeTipHeight + 3 },
-					end: { x: -planeTipDistance - 20, y: planeTipHeight + 3 },
-					color: "#5A5A5A",
-				})
-
-				// Draw Focus coordinate
-				drawLine({
-					ctx: context,
-					start: { x: - mirrorFocus, y: 0 },
-					end: { x: -	mirrorFocus, y: 60 },
-					color: "purple",
-					text: "F2",
-				});
-
-				drawLine({
-					ctx: context,
-					start: { x: mirrorFocus, y: 0 },
-					end: { x: mirrorFocus, y: -60 },
-					color: "purple",
-					text: "F1",
-				});
-
-				// Draw Curvature Point left-side
-				drawLine({
-					ctx: context,
-					start: { x: - mirrorFocus * 2, y: 0 },
-					end: { x: -	mirrorFocus * 2, y: 60 },
-					color: "brown",
-					text: "M2",
-				});
-				//text for 1st object dimension(ruang cahaya I) left-side
-				writeText({
-					ctx: context,
-					start: { x: - mirrorFocus + mirrorFocus * 0.5, y: 0 },
-					end: { x: -	mirrorFocus + mirrorFocus * 0.5, y: 20 },
-					text: "Ruang I",
-					color: "black",
-				});
-				//text for 2nd object dimension(ruang cahaya II) left-side
-				writeText({
-					ctx: context,
-					start: { x: - mirrorFocus * 1.5, y: 0 },
-					end: { x: -	mirrorFocus * 1.5, y: 20 },
-					text: "Ruang II",
-					color: "black",
-				});
-				//text for 3rd object dimension(ruang cahaya III) left-side
-				writeText({
-					ctx: context,
-					start: { x: - mirrorFocus * 2.5, y: 0 },
-					end: { x: -	mirrorFocus * 2.5, y: 20 },
-					text: "Ruang III",
-					color: "black",
-				});
-
-				//text for 4th object dimension(ruang cahaya IV) left-side
-				writeText({
-					ctx: context,
-					start: { x: canvas.width / 4, y: 0 },
-					end: { x: - canvas.width / 4, y: -20 },
-					text: "(Ruang IV bayangan)",
-					color: "black",
-				});
-
-				// Draw Curvature Point right-side
-				drawLine({
-					ctx: context,
-					start: { x: mirrorFocus * 2, y: 0 },
-					end: { x: mirrorFocus * 2, y: -60 },
-					color: "brown",
-					text: "M1",
-				});
-				//text for 1st object dimension(ruang cahaya I) right-side
-				writeText({
-					ctx: context,
-					start: { x: mirrorFocus * 0.5, y: 0 },
-					end: { x: mirrorFocus * 0.5, y: - 20 },
-					text: "Ruang I",
-					color: "black",
-				});
-				writeText({
-					ctx: context,
-					start: { x: mirrorFocus * 0.5, y: 0 },
-					end: { x: mirrorFocus * 0.5, y: - 30 },
-					text: "(bayangan)",
-					color: "black",
-				});
-				//text for 2nd object dimension(ruang cahaya II) right-side
-				writeText({
-					ctx: context,
-					start: { x: mirrorFocus * 1.5, y: 0 },
-					end: { x: mirrorFocus * 1.5, y: - 20 },
-					text: "Ruang II",
-					color: "black",
-				});
-				writeText({
-					ctx: context,
-					start: { x: mirrorFocus * 1.5, y: 0 },
-					end: { x: mirrorFocus * 1.5, y: - 30 },
-					text: "(bayangan)",
-					color: "black",
-				});
-
-				//text for 3rd object dimension(ruang cahaya III) right-side
-				writeText({
-					ctx: context,
-					start: { x: mirrorFocus * 2.5, y: 0 },
-					end: { x: mirrorFocus * 2.5, y: - 20 },
-					text: "Ruang III",
-					color: "black",
-				});
-				writeText({
-					ctx: context,
-					start: { x: mirrorFocus * 2.5, y: 0 },
-					end: { x: mirrorFocus * 2.5, y: - 30 },
-					text: "(bayangan)",
-					color: "black",
-				});
-				//text for 4th object dimension(ruang cahaya IV) right-side
-				writeText({
-					ctx: context,
-					start: { x: canvas.width / 4, y: 0 },
-					end: { x: canvas.width / 4, y: 20 },
-					text: "Ruang IV",
-					color: "black",
-				});
-
-				writeText({
-					ctx: context,
-					start: { x: - canvas.width / 2.5, y: 0 },
-					end: { x: - canvas.width / 2.5, y: 0 },
-					text: "",
-					color: "#7D379",
-				});
-
-				//text keterangan ruang benda
-				writeText({
-					ctx: context,
-					start: { x: - canvas.width / 2.5, y: 0 },
-					end: { x: - canvas.width / 2.5, y: 300 },
-					text: "Ruang benda (depan)",
-					color: "#3E8497",
-				});
-
-				writeText({
-					ctx: context,
-					start: { x: - canvas.width / 2.5, y: 0 },
-					end: { x: - canvas.width / 2.5, y: 300 },
-					text: "Ruang benda (depan)",
-					color: "#7D3796",
-				});
-
-				writeText({
-					ctx: context,
-					start: { x: -  canvas.width / 2.5, y: 0 },
-					end: { x: - canvas.width / 2.5, y: - 300 },
-					text: "Ruang bayangan (depan)",
-					color: "#3E8497",
-				});
-
-				writeText({
-					ctx: context,
-					start: { x: canvas.width / 2.5, y: 0 },
-					end: { x: canvas.width / 2.5, y: 300 },
-					text: "Ruang benda (belakang)",
-					color: "#7D3796",
-				});
-
-				writeText({
-					ctx: context,
-					start: { x: canvas.width / 2.5, y: 0 },
-					end: { x: canvas.width / 2.5, y: - 300 },
-					text: "Ruang bayangan (belakang)",
-					color: "#3E8497",
-				});
+					drawLine({
+						ctx: context,
+						start: { x: -objectDistance + 30, y: objectHeight - 20},
+						end: { x: -objectDistance, y: objectHeight},
+						color: "#931A1A",
+					});
 
 				if (isConvex) {
 					const calculatedFocus = mirrorFocus;
-					setMirrorObjectDistance(-(objectDistance * calculatedFocus / (objectDistance - calculatedFocus)));
-					setMirrorObjectHeight(-(mirrorObjectDistance * objectHeight / objectDistance));
+					setMirrorObjectDistance(
+						-(
+							(objectDistance * calculatedFocus) /
+							(objectDistance - calculatedFocus)
+						)
+					);
+					setMirrorObjectHeight(
+						-(
+							(mirrorObjectDistance * objectHeight) /
+							objectDistance
+						)
+					);
+
+					drawEllipse({
+						ctx: context,
+						center: new Vector2f(-mirrorFocus * 2, 0),
+						radius: new Vector2f(
+							1.95 * mirrorFocus,
+							2 * mirrorFocus
+						),
+						color: "blue",
+						concave: isConvex,
+						lens: true,
+						height: canvas.height,
+					});
+					
+					if (objectDistance == 0) {
+						return;
+					} else if (calculatedFocus == 0) {
+						return;
+					} else if (objectHeight == 0) {
+						return;
+					} else if (
+						mirrorObjectDistance == Infinity ||
+						mirrorObjectHeight == Infinity ||
+						objectDistance == calculatedFocus
+					) {
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(-objectDistance, canvas.height),
+							color: "lime",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, 0),
+							color: "red",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, -objectHeight),
+							color: "cyan",
+						});
+						return;
+					}
+
+					
+
 					// Draw MirrorObject
 					// drawLine({
 					// 	ctx: context,
 					// 	start: { x: -mirrorObjectDistance, y: 0 },
-					// 	end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+					// 	end: {
+					// 		x: -mirrorObjectDistance,
+					// 		y: -mirrorObjectHeight,
+					// 	},
 					// 	color: "green",
 					// 	text: "Image",
 					// });
 
-					if (objectDistance <= calculatedFocus) {
+					if (objectDistance > calculatedFocus) {
+						drawLine({
+							ctx: context,
+							start: { x: -objectDistance, y: objectHeight },
+							end: { x: 0, y: objectHeight },
+							color: "cyan",
+						});
+						drawInfiniteLine({
+							ctx: context,
+							start: { x: 0, y: objectHeight },
+							end: { x: mirrorFocus, y: 0 },
+							color: "cyan",
+							canvasHeight: canvas.height,
+						});
+						drawLine({
+							ctx: context,
+							start: { x: -objectDistance, y: objectHeight },
+							end: { x: -mirrorFocus, y: 0 },
+							color: "lime",
+						});
+						drawLine({
+							ctx: context,
+							start: { x: -mirrorFocus, y: 0 },
+							end: { x: 0, y: -mirrorObjectHeight },
+							color: "lime",
+						});
+						drawLine({
+							ctx: context,
+							start: { x: 0, y: -mirrorObjectHeight },
+							end: { x: canvas.width, y: -mirrorObjectHeight },
+							color: "lime",
+						});
+						drawInfiniteLine({
+							ctx: context,
+							start: { x: -objectDistance, y: objectHeight },
+							end: { x: 0, y: 0 },
+							color: "red",
+							canvasHeight: canvas.height,
+						});
+
 						//draw twin tower
+							//first tower
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 45, y: 0 },
+								end: { x: -	(mirrorObjectDistance) - 45, y: -mirrorObjectHeight + 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 10, y: 0 },
+								end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight + 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 45, y: -mirrorObjectHeight + 20 },
+								end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight + 20 },
+								color: "#D76D1B",
+							});
+
+							//second tower
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 45, y: 0 },
+								end: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight + 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 10, y: 0 },
+								end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight + 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight + 20 },
+								end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight + 20 },
+								color: "#D76D1B",
+							});
+
+							//antenna
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight + 20},
+								end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 30, y: -mirrorObjectHeight + 20},
+								end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
+								color: "#D76D1B",
+							});
+					} else {
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(
+								-mirrorObjectDistance,
+								mirrorObjectHeight
+							),
+							end: new Vector2f(0, mirrorObjectHeight),
+							color: "cyan",
+							isDash: true,
+						});
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(
+								-mirrorObjectDistance,
+								mirrorObjectHeight
+							),
+							end: new Vector2f(0, -objectHeight),
+							color: "lime",
+							isDash: true,
+						});
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(
+								-mirrorObjectDistance,
+								mirrorObjectHeight
+							),
+							end: new Vector2f(-objectDistance, -objectHeight),
+							color: "red",
+							isDash: true,
+						});
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new Vector2f(
+								-objectDistance,
+								objectHeight
+							),
+							start: new Vector2f(0, -mirrorObjectHeight),
+							end: new Vector2f(0),
+							color: "cyan",
+							canvasWidth: canvas.width,
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, mirrorObjectHeight),
+							color: "cyan",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(0, objectHeight),
+							end: new Vector2f(mirrorFocus, 0),
+							color: "lime",
+							canvasHeight: canvas.height,
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, -objectHeight),
+							color: "lime",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(0, 0),
+							color: "red",
+							canvasHeight: canvas.height,
+							beyond: true,
+						});
+
+						//draw twin tower
+							//first tower
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 45, y: 0 },
+								end: { x: -	(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 10, y: 0 },
+								end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight - 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
+								end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight - 20 },
+								color: "#D76D1B",
+							});
+
+							//second tower
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 45, y: 0 },
+								end: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight - 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 10, y: 0 },
+								end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight - 20 },
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight - 20 },
+								end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight - 20 },
+								color: "#D76D1B",
+							});
+
+							//antenna
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight - 20},
+								end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
+								color: "#D76D1B",
+							});
+
+							drawLine({
+								ctx: context,
+								start: { x: -(mirrorObjectDistance) + 30, y: -mirrorObjectHeight - 20},
+								end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
+								color: "#D76D1B",
+							});
+					}
+				} else {
+					const calculatedFocus = -mirrorFocus;
+					setMirrorObjectDistance(
+						-(objectDistance * calculatedFocus) /
+							(objectDistance - calculatedFocus)
+					);
+					setMirrorObjectHeight(
+						-(mirrorObjectDistance * objectHeight) / objectDistance
+					);
+					drawEllipse({
+						ctx: context,
+						center: new Vector2f(-mirrorFocus * 2, 0),
+						radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
+						color: "blue",
+						concave: isConvex,
+						lens: true,
+						height: canvas.height,
+					});
+					if (objectDistance == 0) {
+						return;
+					} else if (calculatedFocus == 0) {
+						return;
+					} else if (objectHeight == 0) {
+						return;
+					} else if (
+						mirrorObjectDistance == Infinity ||
+						mirrorObjectHeight == Infinity
+					) {
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(-objectDistance, canvas.height),
+							color: "lime",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, 0),
+							color: "red",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, -objectHeight),
+							color: "cyan",
+						});
+						return;
+					}
+					// drawLine({
+					// 	ctx: context,
+					// 	start: { x: -mirrorObjectDistance, y: 0 },
+					// 	end: {
+					// 		x: -mirrorObjectDistance,
+					// 		y: -mirrorObjectHeight,
+					// 	},
+					// 	color: "green",
+					// 	text: "Image",
+					// });
+
+					//draw twin tower
 						//first tower
 						drawLine({
 							ctx: context,
@@ -469,299 +552,78 @@ export default function Lensa() {
 						//antenna
 						drawLine({
 							ctx: context,
-							start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight - 20 },
-							end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight },
+							start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight - 20},
+							end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
 							color: "#D76D1B",
 						});
 
 						drawLine({
 							ctx: context,
-							start: { x: -(mirrorObjectDistance) + 30, y: -mirrorObjectHeight - 20 },
-							end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight },
+							start: { x: -(mirrorObjectDistance) + 30, y: -mirrorObjectHeight - 20},
+							end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
 							color: "#D76D1B",
 						});
-					} else {
-						//draw twin tower
-						//first tower
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) - 45, y: 0 },
-							end: { x: -	(mirrorObjectDistance) - 45, y: -mirrorObjectHeight + 20 },
-							color: "#D76D1B",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) - 10, y: 0 },
-							end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight + 20 },
-							color: "#D76D1B",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) - 45, y: -mirrorObjectHeight + 20 },
-							end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight + 20 },
-							color: "#D76D1B",
-						});
-
-						//second tower
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) + 45, y: 0 },
-							end: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight + 20 },
-							color: "#D76D1B",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) + 10, y: 0 },
-							end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight + 20 },
-							color: "#D76D1B",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight + 20 },
-							end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight + 20 },
-							color: "#D76D1B",
-						});
-
-						//antenna
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight + 20 },
-							end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight },
-							color: "#D76D1B",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) + 30, y: -mirrorObjectHeight + 20 },
-							end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight },
-							color: "#D76D1B",
-						});
-
-					}
-
-					if (objectDistance > calculatedFocus) {
-						drawLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: objectHeight },
-							color: "cyan",
-						});
-						drawInfiniteLine({
-							ctx: context,
-							start: { x: 0, y: objectHeight },
-							end: { x: mirrorFocus, y: 0 },
-							color: "cyan",
-							canvasHeight: canvas.height,
-						});
-						drawLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: -mirrorFocus, y: 0 },
-							color: "lime",
-						});
-						drawLine({
-							ctx: context,
-							start: { x: -mirrorFocus, y: 0 },
-							end: { x: 0, y: -mirrorObjectHeight },
-							color: "lime",
-						});
-						drawLine({
-							ctx: context,
-							start: { x: 0, y: -mirrorObjectHeight },
-							end: { x: canvas.width, y: -mirrorObjectHeight },
-							color: "lime",
-						});
-						drawInfiniteLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: 0 },
-							color: "red",
-							canvasHeight: canvas.height,
-						});
-					} else {
-						drawLine({
-							ctx: context,
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: 0, y: -mirrorObjectHeight },
-							color: "cyan",
-							isDash: true,
-						});
-						drawLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: -mirrorObjectHeight },
-							color: "cyan",
-						});
-						drawInfiniteLine({
-							ctx: context,
-							beforeStart: { x: -objectDistance, y: objectHeight },
-							start: { x: 0, y: -mirrorObjectHeight },
-							end: { x: 0 },
-							color: "cyan",
-							canvasWidth: canvas.width,
-						});
-						drawLine({
-							ctx: context,
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: 0, y: objectHeight },
-							color: "lime",
-							isDash: true,
-						});
-						drawLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: objectHeight },
-							color: "lime",
-						});
-						drawInfiniteLine({
-							ctx: context,
-							start: { x: 0, y: objectHeight },
-							end: { x: mirrorFocus, y: 0 },
-							color: "lime",
-							canvasHeight: canvas.height,
-						});
-						drawLine({
-							ctx: context,
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: -objectDistance, y: objectHeight },
-							color: "red",
-							isDash: true,
-						});
-						drawInfiniteLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: 0 },
-							color: "red",
-							canvasHeight: canvas.height,
-						});
-					}
-				} else {
-					const calculatedFocus = -mirrorFocus;
-					setMirrorObjectDistance(-(objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
-					setMirrorObjectHeight(-(mirrorObjectDistance * objectHeight) / objectDistance);
-					// drawLine({
-					// 	ctx: context,
-					// 	start: { x: -mirrorObjectDistance, y: 0 },
-					// 	end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-					// 	color: "green",
-					// 	text: "Image",
-					// });
-
-
-					//draw twin tower
-					//first tower
-					drawLine({
+					AlgorithmDDA({
 						ctx: context,
-						start: { x: -(mirrorObjectDistance) - 45, y: 0 },
-						end: { x: -	(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
-						color: "#D76D1B",
-					});
-
-					drawLine({
-						ctx: context,
-						start: { x: -(mirrorObjectDistance) - 10, y: 0 },
-						end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight - 20 },
-						color: "#D76D1B",
-					});
-
-					drawLine({
-						ctx: context,
-						start: { x: -(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
-						end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight - 20 },
-						color: "#D76D1B",
-					});
-
-					//second tower
-					drawLine({
-						ctx: context,
-						start: { x: -(mirrorObjectDistance) + 45, y: 0 },
-						end: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight - 20 },
-						color: "#D76D1B",
-					});
-
-					drawLine({
-						ctx: context,
-						start: { x: -(mirrorObjectDistance) + 10, y: 0 },
-						end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight - 20 },
-						color: "#D76D1B",
-					});
-
-					drawLine({
-						ctx: context,
-						start: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight - 20 },
-						end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight - 20 },
-						color: "#D76D1B",
-					});
-
-					//antenna
-					drawLine({
-						ctx: context,
-						start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight - 20 },
-						end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight },
-						color: "#D76D1B",
-					});
-
-					drawLine({
-						ctx: context,
-						start: { x: -(mirrorObjectDistance) + 30, y: -mirrorObjectHeight - 20 },
-						end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight },
-						color: "#D76D1B",
-					});
-
-
-					drawLine({
-						ctx: context,
-						start: { x: -objectDistance, y: objectHeight },
-						end: { x: 0, y: objectHeight },
+						start: new Vector2f(-objectDistance, -objectHeight),
+						end: new Vector2f(0, -objectHeight),
 						color: "cyan",
 					});
-					drawLine({
+					AlgorithmDDA({
 						ctx: context,
-						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						end: { x: 0, y: objectHeight },
+						start: new Vector2f(
+							-mirrorObjectDistance,
+							mirrorObjectHeight
+						),
+						end: new Vector2f(0, -objectHeight),
 						color: "cyan",
 						isDash: true,
 					});
-					drawInfiniteLine({
+					AlgorithmDDA({
 						ctx: context,
-						beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						start: { x: 0, y: objectHeight },
-						end: { x: canvas.width },
+						beforeStart: new Vector2f(
+							-mirrorObjectDistance,
+							-mirrorObjectHeight
+						),
+						start: new Vector2f(0, objectHeight),
+						end: new Vector2f(canvas.width, 0),
 						color: "cyan",
 						canvasWidth: canvas.width,
+						beyond: true,
 					});
 
-					drawInfiniteLine({
+					AlgorithmDDA({
 						ctx: context,
-						start: { x: -objectDistance, y: objectHeight },
-						end: { x: 0, y: 0 },
+						start: new Vector2f(-objectDistance, objectHeight),
+						end: new Vector2f(0, 0),
 						color: "red",
 						canvasHeight: canvas.height,
+						beyond: true,
 					});
 
-					drawLine({
+					AlgorithmDDA({
 						ctx: context,
-						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						end: { x: 0, y: -mirrorObjectHeight },
+						start: new Vector2f(
+							-mirrorObjectDistance,
+							mirrorObjectHeight
+						),
+						end: new Vector2f(0, mirrorObjectHeight),
 						color: "lime",
 						isDash: true,
 					});
-					drawLine({
+					AlgorithmDDA({
 						ctx: context,
-						start: { x: -objectDistance, y: objectHeight },
-						end: { x: 0, y: -mirrorObjectHeight },
+						start: new Vector2f(-objectDistance, -objectHeight),
+						end: new Vector2f(0, mirrorObjectHeight),
 						color: "lime",
 					});
-					drawInfiniteLine({
+					AlgorithmDDA({
 						ctx: context,
-						start: { x: 0, y: -mirrorObjectHeight },
-						end: { x: canvas.width, y: -mirrorObjectHeight },
+						start: new Vector2f(0, -mirrorObjectHeight),
+						end: new Vector2f(canvas.width, -mirrorObjectHeight),
 						color: "lime",
 						canvasHeight: canvas.height,
+						beyond: true,
 					});
 				}
 			}
@@ -774,48 +636,63 @@ export default function Lensa() {
 		mirrorObjectHeight,
 		objectDistance,
 		objectHeight,
-		setIsConvex
+		setIsConvex,
 	]);
 	const configBar = () => {
-
 		return (
 			<>
 				<div className="flex mt-4 mx-4">
-					<div className={`text-xl ${(!isConvex) ? "text-cyan-400" : ""}`}>
+					<div
+						className={`text-xl ${
+							!isConvex ? "text-cyan-400" : ""
+						}`}
+					>
 						Concave
 					</div>
 					<div className="flex items-center justify-center w-full">
 						<label className="flex items-center cursor-pointer">
 							<div className="relative">
-								<input type="checkbox" id="toggleB" className="sr-only" onChange={() => setIsConvex(!isConvex)} />
+								<input
+									type="checkbox"
+									id="toggleB"
+									className="sr-only"
+									onChange={() => setIsConvex(!isConvex)}
+								/>
 								<div className="block bg-gray-600 w-14 h-8 rounded-full" />
 								<div className="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition" />
 							</div>
-							<div className="ml-3 text-gray-700 font-medium">
-							</div>
+							<div className="ml-3 text-gray-700 font-medium"></div>
 						</label>
 					</div>
-					<div className={`text-xl ${(isConvex) ? "text-cyan-400" : ""}`}>
+					<div
+						className={`text-xl ${isConvex ? "text-cyan-400" : ""}`}
+					>
 						Convex
 					</div>
 				</div>
 				<div className="flex my-20">
 					<Slider
-						handler={(e) => setmirrorFocus(parseInt(e.target.value))}
+						handler={(e) =>
+							setmirrorFocus(parseInt(e.target.value))
+						}
 						className="slider-vertical"
 						value={mirrorFocus}
 						max={540}
 						min={0}
 					/>
 					<Slider
-						handler={(e) => setObjectHeight(parseInt(e.target.value))}
+						handler={(e) =>
+							setObjectHeight(parseInt(e.target.value))
+						}
 						className="slider-vertical"
 						value={objectHeight}
 						max={360}
 						min={-360}
 					/>
 					<Slider
-						handler={(e) => setObjectDistance(parseInt(e.target.value))}
+						handler={(e) =>
+							setObjectDistance(parseInt(e.target.value))
+						}
 						className="slider-vertical"
 						value={objectDistance}
 						max={540}
@@ -823,15 +700,9 @@ export default function Lensa() {
 					/>
 				</div>
 				<div className="flex justify-between mx-16">
-					<div className="text-xl">
-						f
-					</div>
-					<div className="text-xl">
-						h
-					</div>
-					<div className="text-xl">
-						s
-					</div>
+					<div className="text-xl">f</div>
+					<div className="text-xl">h</div>
+					<div className="text-xl">s</div>
 				</div>
 				<div className="flex mt-2 mx-4">
 					<table className="w-full text-sm text-left text-gray-500">
@@ -853,8 +724,7 @@ export default function Lensa() {
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
 									Distance between Object and Mirror
 								</td>
-								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-								</td>
+								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500"></td>
 							</tr>
 							<tr>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
@@ -863,8 +733,7 @@ export default function Lensa() {
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
 									Height of Object
 								</td>
-								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-								</td>
+								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500"></td>
 							</tr>
 							<tr>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
@@ -873,8 +742,7 @@ export default function Lensa() {
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
 									Focus of Mirror
 								</td>
-								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-								</td>
+								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500"></td>
 							</tr>
 						</tbody>
 					</table>
@@ -905,10 +773,11 @@ export default function Lensa() {
 										type="number"
 										className="w-20 bg-transparent"
 										value={objectDistance}
-										onChange={(e) => {
-											setObjectDistance(parseFloat(e.target.value))
-											// setPlaneTipDistance(2 * objectDistance)
-										}}
+										onChange={(e) =>
+											setObjectDistance(
+												parseFloat(e.target.value)
+											)
+										}
 										min={0}
 										step={"any"}
 									/>
@@ -926,7 +795,11 @@ export default function Lensa() {
 										type="number"
 										className="w-20 bg-transparent"
 										value={objectHeight}
-										onChange={(e) => setObjectHeight(parseFloat(e.target.value))}
+										onChange={(e) =>
+											setObjectHeight(
+												parseFloat(e.target.value)
+											)
+										}
 										min={-360}
 										step={"any"}
 									/>
@@ -946,14 +819,20 @@ export default function Lensa() {
 											type="number"
 											className="w-20 bg-transparent"
 											value={mirrorFocus}
-											onChange={(e) => setmirrorFocus(parseFloat(e.target.value))}
+											onChange={(e) =>
+												setmirrorFocus(
+													parseFloat(e.target.value)
+												)
+											}
 											min={0}
 											step={"any"}
 										/>
 									</div>
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-									P = {100 / (isConvex ? mirrorFocus : -mirrorFocus)}
+									P ={" "}
+									{100 /
+										(isConvex ? mirrorFocus : -mirrorFocus)}
 								</td>
 							</tr>
 						</tbody>
@@ -970,10 +849,14 @@ export default function Lensa() {
 			</Head>
 			<Layout configBar={configBar}>
 				<div className="flex flex-col items-center justify-center w-full h-full">
-					<canvas ref={canvasRef} width={1080} height={720} className={"bg-white"}></canvas>
+					<canvas
+						ref={canvasRef}
+						width={1080}
+						height={720}
+						className={"bg-white"}
+					></canvas>
 				</div>
 			</Layout>
 		</>
 	);
 }
-
