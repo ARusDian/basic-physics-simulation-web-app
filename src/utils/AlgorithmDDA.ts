@@ -1,15 +1,15 @@
 import Vector2f from "./Vector2f";
 
 export interface Props {
-	ctx: CanvasRenderingContext2D;
-	canvasHeight?: number;
-	canvasWidth?: number;
-	beforeStart?: Vector2f;
-	start: Vector2f;
-	end: Vector2f;
-	color: string;
-	beyond?: boolean | false;
-	isDash?: boolean | false;
+    ctx: CanvasRenderingContext2D;
+    canvasHeight?: number;
+    canvasWidth?: number;
+    beforeStart?: Vector2f;
+    start: Vector2f;
+    end: Vector2f;
+    color: string;
+    beyond?: boolean | false;
+    isDash?: boolean | false;
 }
 
 export default function AlgorithmDDA(props: Props) {
@@ -25,16 +25,10 @@ export default function AlgorithmDDA(props: Props) {
 		beforeStart,
 	} = props;
 
-
 	ctx.beginPath();
 	ctx.strokeStyle = color;
 	ctx.fillStyle = color;
 	ctx.lineWidth = 1;
-
-	let x = start.getX();
-	let y = start.getY();
-
-
 
 	if (beyond) {
 		if (isDash) {
@@ -45,8 +39,8 @@ export default function AlgorithmDDA(props: Props) {
 
 		if (beforeStart && !end.getY() && canvasWidth) {
 			const slope =
-				(start.getY() - beforeStart.getY()) /
-				(start.getX() - beforeStart.getX());
+                (start.getY() - beforeStart.getY()) /
+                (start.getX() - beforeStart.getX());
 			const intercept = start.getY() - slope * start.getX();
 			const getY = (x: number) => {
 				return slope * x + intercept;
@@ -62,9 +56,9 @@ export default function AlgorithmDDA(props: Props) {
 			} else {
 				ctx.lineTo(canvasWidth, -getY(canvasWidth));
 			}
-		} else if(canvasHeight) {
+		} else if (canvasHeight) {
 			const slope =
-				(end.getY() - start.getY()) / (end.getX() - start.getX());
+                (end.getY() - start.getY()) / (end.getX() - start.getX());
 			const intercept = start.getY() - slope * start.getX();
 			const getX = (y: number) => {
 				return (y - intercept) / slope;
@@ -75,17 +69,19 @@ export default function AlgorithmDDA(props: Props) {
 				getX(start.getY() > 0 ? -canvasHeight : canvasHeight),
 				start.getY() < 0 ? -canvasHeight : canvasHeight
 			);
-		}else{
+		} else {
 			return;
 		}
 	} else {
-
 		const dx = end.getX() - start.getX();
 		const dy = end.getY() - start.getY();
 		const step = Math.max(Math.abs(dx), Math.abs(dy));
 
 		const x_inc = dx / step;
 		const y_inc = dy / step;
+
+		let x = start.getX();
+		let y = start.getY();
 
 		if (isDash) {
 			for (let i = 0; i <= step; i++) {
@@ -97,16 +93,13 @@ export default function AlgorithmDDA(props: Props) {
 				x += x_inc;
 				y += y_inc;
 			}
-		}
-		else {
+		} else {
 			for (let i = 0; i <= step; i++) {
 				ctx.fillRect(x, y, 1, 1);
 				x += x_inc;
 				y += y_inc;
 			}
 		}
-		// ctx.clearRect(0, 0, 1080, 720);
-
 	}
 
 	ctx.stroke();
