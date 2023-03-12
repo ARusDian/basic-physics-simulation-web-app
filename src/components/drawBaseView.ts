@@ -60,7 +60,7 @@ export default function drawBaseView(
 		//text keterangan ruang benda
 		writeText({
 			ctx: context,
-			start: { x: -canvas.width / 2.5, y: 0 },
+			start: { x: -canvas.width / 2.5, y: 300 },
 			end: { x: -canvas.width / 2.5, y: 300 },
 			text: "Ruang benda (depan)",
 			color: "#3E8497",
@@ -68,7 +68,7 @@ export default function drawBaseView(
 
 		writeText({
 			ctx: context,
-			start: { x: -canvas.width / 2.5, y: 0 },
+			start: { x: -canvas.width / 2.5, y: 300 },
 			end: { x: -canvas.width / 2.5, y: 300 },
 			text: "Ruang benda (depan)",
 			color: "#7D3796",
@@ -76,7 +76,7 @@ export default function drawBaseView(
 
 		writeText({
 			ctx: context,
-			start: { x: -canvas.width / 2.5, y: 0 },
+			start: { x: -canvas.width / 2.5, y: -300 },
 			end: { x: -canvas.width / 2.5, y: -300 },
 			text: "Ruang bayangan (depan)",
 			color: "#3E8497",
@@ -84,7 +84,7 @@ export default function drawBaseView(
 
 		writeText({
 			ctx: context,
-			start: { x: canvas.width / 2.5, y: 0 },
+			start: { x: canvas.width / 2.5, y: 300 },
 			end: { x: canvas.width / 2.5, y: 300 },
 			text: "Ruang benda (belakang)",
 			color: "#7D3796",
@@ -92,7 +92,7 @@ export default function drawBaseView(
 
 		writeText({
 			ctx: context,
-			start: { x: canvas.width / 2.5, y: 0 },
+			start: { x: canvas.width / 2.5, y: -300  },
 			end: { x: canvas.width / 2.5, y: -300 },
 			text: "Ruang bayangan (belakang)",
 			color: "#3E8497",
