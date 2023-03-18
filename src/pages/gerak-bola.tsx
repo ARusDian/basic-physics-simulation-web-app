@@ -1,9 +1,9 @@
-import Layout from '@/components/Layout';
-import WorkInProgress from '@/components/WorkInProgress';
+import Layout from "@/components/Layout";
+import WorkInProgress from "@/components/WorkInProgress";
 export default function GerakBola() {
-    return (
-        <Layout>
-            <WorkInProgress/>
-        </Layout>
-    )
+	return (
+		<Layout>
+			<WorkInProgress/>
+		</Layout>
+	);
 }

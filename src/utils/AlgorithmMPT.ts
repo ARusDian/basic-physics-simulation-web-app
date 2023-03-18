@@ -3,42 +3,99 @@ import vector2f from "./Vector2f";
 export interface Props {
     ctx: CanvasRenderingContext2D;
     center: vector2f;
-    radius: number;
+    radius: vector2f;
     color: string;
+    height?: number;
+    concave: boolean;
+	lens: boolean;
 }
 
 export default function AlgorithmMPT(props: Props) {
-    const {ctx, center, radius, color} = props;
+    const {ctx, center, radius, color, height, concave, lens} = props;
 
     ctx.beginPath();
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
     ctx.lineWidth = 1;
 
-    let x = radius;
-    let y = 0;
-    let p = 1 - x;
+    let rx = radius.getX();
+    let ry = height ? height : radius.getY();
 
-    while(x >= y) {
-        ctx.fillRect((x + center.getX()), (y + center.getY()), 1, 1);
-        ctx.fillRect((y + center.getY()), (x + center.getX()), 1, 1);
-        ctx.fillRect((-x + center.getX()), (y + center.getY()), 1, 1);
-        ctx.fillRect((-y + center.getY()), (x + center.getX()), 1, 1);
-        ctx.fillRect((-x + center.getX()), (-y + center.getY()), 1, 1);
-        ctx.fillRect((-y + center.getY()), (-x + center.getX()), 1, 1);
-        ctx.fillRect((x + center.getX()), (-y + center.getY()), 1, 1);
-        ctx.fillRect((y + center.getY()), (-x + center.getX()), 1, 1);
-        y++;
+    let srx = rx * rx;
+    let sry = ry * ry;
 
+    let twoSRX = 2 * srx;
+    let twoSRY = 2 * sry;
+
+    let p = 0;
+    let x = 0;
+    let y = ry;
+    let px = 0;
+    let py = twoSRX * y;
+    let i = 0;
+
+    drawMPTEllipese(x, y);
+
+    p = Math.round(sry - (srx * ry) + (0.25 * srx));
+    while(px < py) {
+        x++;
+        px += twoSRY;
         if(p < 0) {
-            p += 2 * y + 1;
+            p += sry + px;
         }
         else {
-            x--;
-            p += 2 * (y - x + 1);
+            y--;
+            py -= twoSRX;
+            p += sry + px - py;
         }
-     }
+        drawMPTEllipese(x, y);
+        i++;
+    }
+
+    p = Math.round(sry * (x + 0.5) * (x + 0.5) + srx * (y-1) * (y - 1) - srx * sry);
+    while(y > 0) {
+        y--;
+        py -= twoSRX;
+        if(p > 0) {
+            p += srx - py;
+        }
+        else {
+            x++;
+            px += twoSRY;
+            p += srx - py + px;
+        }
+        drawMPTEllipese(x, y);
+        i++;
+    }
 
     ctx.stroke();
     ctx.closePath();
+
+    function drawMPTEllipese(x: number, y: number) {
+        if(lens) {
+            if(concave) {
+                ctx.fillRect((center.getX() + x + rx / 7), (center.getY() + y), 1, 1);
+                ctx.fillRect((-center.getX() - x - rx / 7), (center.getY() + y), 1, 1);
+                ctx.fillRect((center.getX() + x + rx / 7), (center.getY() - y), 1, 1);
+                ctx.fillRect((-center.getX() - x - rx / 7), (center.getY() - y), 1, 1);
+            }
+            else {
+                ctx.fillRect((center.getX() + x - rx / 100), (center.getY() + y), 1, 1);
+                ctx.fillRect((-center.getX() - x + rx / 100), (center.getY() + y), 1, 1);
+                ctx.fillRect((center.getX() + x - rx / 100), (center.getY() - y), 1, 1);
+                ctx.fillRect((-center.getX() - x + rx / 100), (center.getY() - y), 1, 1);
+            }
+        }
+        else {
+            if(concave) {
+                ctx.fillRect((center.getX() + x), (center.getY() + y), 1, 1);
+                ctx.fillRect((center.getX() + x), (center.getY() - y), 1, 1);
+            }
+            else {
+                ctx.fillRect((-center.getX() - x), (center.getY() + y), 1, 1);
+                ctx.fillRect((-center.getX() - x), (center.getY() - y), 1, 1);
+            }
+        }
+        
+    }
 }

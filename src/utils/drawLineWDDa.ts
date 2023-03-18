@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import DDA from "./DDA";
 
 interface Props {
@@ -26,14 +27,14 @@ const drawLineDDA = (props: Props) => {
 
 		const getX = (y: number) => {
 			return (y - intercept) / slope;
-		}
+		};
 
 		console.log(start, { x: getX(canvasHeight), y: - canvasHeight });
 
 
-		let { values, steps } = DDA(start, { x: getX(canvasHeight), y: - canvasHeight });
+		const { values, steps } = DDA(start, { x: getX(canvasHeight), y: - canvasHeight });
 
-		console.log(steps)
+		console.log(steps);
 	
 		ctx.moveTo(values[0].x, -values[0].y);
 		for (let i = 1; i < values.length; i += 10) {

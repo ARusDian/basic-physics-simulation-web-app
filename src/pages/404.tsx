@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import Image from 'next/image';
+import Image from "next/image";
 
 export default function Custom404() {
 	return (
@@ -12,11 +12,11 @@ export default function Custom404() {
 						height={500}
 						width={500}
 					/>
-					<div className='mx-auto font-bold'>
+					<div className="mx-auto font-bold">
 						<span className="text-red-400">404</span> - Not Found
 					</div>
 				</div>
 			</div>
 		</Layout>
-	)
+	);
 }

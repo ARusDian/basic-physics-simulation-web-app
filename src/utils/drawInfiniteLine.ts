@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 interface Props {
 	canvasHeight?: number;
 	canvasWidth?: number;
@@ -56,6 +57,10 @@ export default function drawInfiniteLine(props: Props) {
 		);
 
 	}
+
+
+
+
 
 	if (text) {
 		ctx.fillText(text, start.x - end.x, -end.y! - 10);
