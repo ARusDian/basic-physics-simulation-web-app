@@ -8,7 +8,7 @@ import drawBaseView from "@/components/drawBaseView";
 import AlgorithmDDA from "@/utils/AlgorithmDDA";
 import Vector2f from "../utils/Vector2f";
 import drawEllipse from "@/utils/drawEllipse";
-import drawPlane from "@/components/drawPlane";
+import drawPlane, { drawMirrorTowers_kuadranAtas, drawMirrorTowers_kuadranBawah, drawTowers } from "@/components/DLC";
 
 export default function Lensa() {
 	const [objectDistance, setObjectDistance] = useState(122);
@@ -17,6 +17,7 @@ export default function Lensa() {
 	const [mirrorObjectHeight, setMirrorObjectHeight] = useState(0);
 	const [mirrorFocus, setmirrorFocus] = useState(250);
 	const [isConvex, setIsConvex] = useState(true);
+	const [isBuilding, setIsBuilding] = useState(false);
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -70,67 +71,8 @@ export default function Lensa() {
 				// 	text: "Object",
 				// });
 
-				drawPlane(context, objectDistance, objectHeight);
-
-				//draw twin tower
-					//first tower
-					drawLine({
-						ctx: context,
-						start: { x: -objectDistance - 45, y: 0 },
-						end: { x: -objectDistance - 45, y: objectHeight - 20 },
-						color: "#931A1A",
-					});
-
-					drawLine({
-						ctx: context,
-						start: { x: -objectDistance - 10, y: 0 },
-						end: { x: -objectDistance - 10, y: objectHeight - 20 },
-						color: "#931A1A",
-					});
-
-					drawLine({
-						ctx: context,
-						start: { x: -objectDistance - 45, y: objectHeight - 20 },
-						end: { x: -objectDistance - 10, y: objectHeight - 20 },
-						color: "#931A1A",
-					});
-
-					//second tower
-					drawLine({
-						ctx: context,
-						start: { x: -objectDistance + 45, y: 0 },
-						end: { x: -objectDistance + 45, y: objectHeight - 20 },
-						color: "#931A1A",
-					});
-
-					drawLine({
-						ctx: context,
-						start: { x: -objectDistance + 10, y: 0 },
-						end: { x: -objectDistance + 10, y: objectHeight - 20 },
-						color: "#931A1A",
-					});
-
-					drawLine({
-						ctx: context,
-						start: { x: -objectDistance + 45, y: objectHeight - 20 },
-						end: { x: -objectDistance + 10, y: objectHeight - 20 },
-						color: "#931A1A",
-					});
-
-					//antenna
-					drawLine({
-						ctx: context,
-						start: { x: -objectDistance - 30, y: objectHeight - 20},
-						end: { x: -objectDistance, y: objectHeight},
-						color: "#931A1A",
-					});
-
-					drawLine({
-						ctx: context,
-						start: { x: -objectDistance + 30, y: objectHeight - 20},
-						end: { x: -objectDistance, y: objectHeight},
-						color: "#931A1A",
-					});
+				drawPlane(context, objectDistance, objectHeight, isBuilding);
+				drawTowers(context, objectDistance, objectHeight,isBuilding);
 
 				if (isConvex) {
 					const calculatedFocus = mirrorFocus;
@@ -248,65 +190,8 @@ export default function Lensa() {
 							canvasHeight: canvas.height,
 						});
 
-						//draw twin tower
-							//first tower
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) - 45, y: 0 },
-								end: { x: -	(mirrorObjectDistance) - 45, y: -mirrorObjectHeight + 20 },
-								color: "#D76D1B",
-							});
-
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) - 10, y: 0 },
-								end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight + 20 },
-								color: "#D76D1B",
-							});
-
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) - 45, y: -mirrorObjectHeight + 20 },
-								end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight + 20 },
-								color: "#D76D1B",
-							});
-
-							//second tower
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) + 45, y: 0 },
-								end: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight + 20 },
-								color: "#D76D1B",
-							});
-
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) + 10, y: 0 },
-								end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight + 20 },
-								color: "#D76D1B",
-							});
-
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight + 20 },
-								end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight + 20 },
-								color: "#D76D1B",
-							});
-
-							//antenna
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight + 20},
-								end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
-								color: "#D76D1B",
-							});
-
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) + 30, y: -mirrorObjectHeight + 20},
-								end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
-								color: "#D76D1B",
-							});
+						drawMirrorTowers_kuadranBawah(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
+						
 					} else {
 						AlgorithmDDA({
 							ctx: context,
@@ -383,65 +268,8 @@ export default function Lensa() {
 							beyond: true,
 						});
 
-						//draw twin tower
-							//first tower
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) - 45, y: 0 },
-								end: { x: -	(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
-								color: "#D76D1B",
-							});
+						drawMirrorTowers_kuadranAtas(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
 
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) - 10, y: 0 },
-								end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight - 20 },
-								color: "#D76D1B",
-							});
-
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
-								end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight - 20 },
-								color: "#D76D1B",
-							});
-
-							//second tower
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) + 45, y: 0 },
-								end: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight - 20 },
-								color: "#D76D1B",
-							});
-
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) + 10, y: 0 },
-								end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight - 20 },
-								color: "#D76D1B",
-							});
-
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight - 20 },
-								end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight - 20 },
-								color: "#D76D1B",
-							});
-
-							//antenna
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight - 20},
-								end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
-								color: "#D76D1B",
-							});
-
-							drawLine({
-								ctx: context,
-								start: { x: -(mirrorObjectDistance) + 30, y: -mirrorObjectHeight - 20},
-								end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
-								color: "#D76D1B",
-							});
 					}
 				} else {
 					const calculatedFocus = -mirrorFocus;
@@ -504,65 +332,8 @@ export default function Lensa() {
 					// 	text: "Image",
 					// });
 
-					//draw twin tower
-						//first tower
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) - 45, y: 0 },
-							end: { x: -	(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
-							color: "#D76D1B",
-						});
+					drawMirrorTowers_kuadranAtas(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
 
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) - 10, y: 0 },
-							end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight - 20 },
-							color: "#D76D1B",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) - 45, y: -mirrorObjectHeight - 20 },
-							end: { x: -(mirrorObjectDistance) - 10, y: -mirrorObjectHeight - 20 },
-							color: "#D76D1B",
-						});
-
-						//second tower
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) + 45, y: 0 },
-							end: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight - 20 },
-							color: "#D76D1B",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) + 10, y: 0 },
-							end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight - 20 },
-							color: "#D76D1B",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) + 45, y: -mirrorObjectHeight - 20 },
-							end: { x: -(mirrorObjectDistance) + 10, y: -mirrorObjectHeight - 20 },
-							color: "#D76D1B",
-						});
-
-						//antenna
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight - 20},
-							end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
-							color: "#D76D1B",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance) + 30, y: -mirrorObjectHeight - 20},
-							end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight},
-							color: "#D76D1B",
-						});
 					AlgorithmDDA({
 						ctx: context,
 						start: new Vector2f(-objectDistance, -objectHeight),
@@ -636,7 +407,7 @@ export default function Lensa() {
 		mirrorObjectHeight,
 		objectDistance,
 		objectHeight,
-		setIsConvex,
+		isBuilding,
 	]);
 	const configBar = () => {
 		return (
@@ -687,7 +458,7 @@ export default function Lensa() {
 						className="slider-vertical"
 						value={objectHeight}
 						max={360}
-						min={-360}
+						min={30}
 					/>
 					<Slider
 						handler={(e) =>
@@ -696,7 +467,7 @@ export default function Lensa() {
 						className="slider-vertical"
 						value={objectDistance}
 						max={540}
-						min={0}
+						min={isBuilding ? 45 : 0}
 					/>
 				</div>
 				<div className="flex justify-between mx-16">
@@ -855,6 +626,28 @@ export default function Lensa() {
 						height={720}
 						className={"bg-white"}
 					></canvas>
+				</div>
+				<div className="flex mt-4 mx-4">
+				<div
+					className={`text-xl text-white`}
+				>
+					Buildings DLC
+				</div>
+				<div className="flex items-center justify-start w-full">
+					<label className="flex items-center cursor-pointer">
+						<div className="relative">
+							<input
+								type="checkbox"
+								id="toggleB"
+								className="sr-only"
+								onChange={() => setIsBuilding(!isBuilding)}
+							/>
+							<div className="block bg-gray-600 w-14 h-8 rounded-full" />
+							<div className="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition" />
+						</div>
+						<div className="ml-3 text-gray-700 font-medium"></div>
+					</label>
+				</div>
 				</div>
 			</Layout>
 		</>
