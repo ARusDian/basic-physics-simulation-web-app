@@ -6,7 +6,7 @@ import drawLine from "../utils/drawLine";
 import drawBaseView from "../components/drawBaseView";
 import AlgorithmDDA from "@/utils/AlgorithmDDA";
 import Vector2f from "@/utils/Vector2f";
-import drawEllipse from "@/utils/drawEllipse";
+import AlgorithmMPT from '../utils/AlgorithmMPT';
 
 export default function Cermin() {
 	const [objectDistance, setObjectDistance] = useState(100);
@@ -147,6 +147,14 @@ export default function Cermin() {
 						beyond: false,
 					});
 
+					AlgorithmDDA({ //Sinar Datang
+						ctx: context,
+						start: new Vector2f(-canvas.width, -objectHeight),
+						end: new Vector2f(-objectDistance, -objectHeight),
+						color: "cyan",
+						beyond: false,
+					});
+
 					AlgorithmDDA({
 						ctx: context,
 						start: new Vector2f(
@@ -174,6 +182,16 @@ export default function Cermin() {
 						beyond: false,
 					});
 
+					AlgorithmDDA({ //Sinar Datang
+						ctx: context,
+						beforeStart: new Vector2f(0, -mirrorObjectHeight),
+						start: new Vector2f(-objectDistance, objectHeight),
+						end: new Vector2f(-canvas.width, 0),
+						canvasWidth: canvas.width,
+						color: "lime",
+						beyond: true,
+					});
+
 					AlgorithmDDA({
 						ctx: context,
 						start: new Vector2f(
@@ -198,14 +216,14 @@ export default function Cermin() {
 						beyond: true,
 					});
 
-					drawEllipse({
+					AlgorithmMPT({
 						ctx: context,
 						center: new Vector2f(-mirrorFocus * 2, 0),
 						radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
 						color: "blue",
-						concave: isConvex,
-						lens: false,
 						height: canvas.height,
+						concave: false,
+						lens: false,
 					});
 				} else {
 					const calculatedFocus = mirrorFocus;
@@ -246,14 +264,35 @@ export default function Cermin() {
 							end: new Vector2f(0, -objectHeight),
 							color: "cyan",
 						});
-						drawEllipse({
+						AlgorithmMPT({
 							ctx: context,
 							center: new Vector2f(-mirrorFocus * 2, 0),
 							radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
 							color: "blue",
-							concave: isConvex,
-							lens: false,
 							height: canvas.height,
+							concave: true,
+							lens: false,
+						});
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							start: new Vector2f(-canvas.width, -objectHeight),
+							end: new Vector2f(-objectDistance, -objectHeight),
+							color: "cyan",
+						});
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, 0),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							start: new Vector2f(-objectDistance, -canvas.height),
+							end: new Vector2f(-objectDistance, -objectHeight),
+							color: "lime",
 						});
 						return;
 					} else if (objectDistance > calculatedFocus) {
@@ -296,6 +335,13 @@ export default function Cermin() {
 							color: "red",
 						});
 
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							start: new Vector2f(-canvas.width, -objectHeight),
+							end: new Vector2f(-objectDistance, -objectHeight),
+							color: "cyan",
+						});
+
 						AlgorithmDDA({
 							ctx: context,
 							beforeStart: new Vector2f(0, 0),
@@ -314,6 +360,16 @@ export default function Cermin() {
 							start: new Vector2f(-objectDistance, -objectHeight),
 							end: new Vector2f(0, mirrorObjectHeight),
 							color: "lime",
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, 0),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
 						});
 
 						AlgorithmDDA({
@@ -336,6 +392,16 @@ export default function Cermin() {
 							end: new Vector2f(-canvas.width, 0),
 							canvasWidth: canvas.width,
 							color: "cyan",
+							beyond: true,
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, -mirrorObjectHeight),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "lime",
 							beyond: true,
 						});
 					} else if (objectDistance < calculatedFocus) {
@@ -401,6 +467,13 @@ export default function Cermin() {
 							color: "lime",
 						});
 
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							start: new Vector2f(-canvas.width, -objectHeight),
+							end: new Vector2f(-objectDistance, -objectHeight),
+							color: "cyan",
+						});
+
 						AlgorithmDDA({
 							ctx: context,
 							start: new Vector2f(0, mirrorObjectHeight),
@@ -409,6 +482,16 @@ export default function Cermin() {
 								mirrorObjectHeight
 							),
 							color: "lime",
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, -mirrorObjectHeight),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "lime",
+							beyond: true,
 						});
 
 						AlgorithmDDA({
@@ -441,17 +524,27 @@ export default function Cermin() {
 							end: new Vector2f(0, 0),
 							color: "red",
 						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, 0),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
 					} else {
 						return;
 					}
-					drawEllipse({
+					AlgorithmMPT({
 						ctx: context,
 						center: new Vector2f(-mirrorFocus * 2, 0),
 						radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
 						color: "blue",
-						concave: isConvex,
-						lens: false,
 						height: canvas.height,
+						concave: true,
+						lens: false,
 					});
 				}
 			}

@@ -97,6 +97,7 @@ export default function drawBaseView(
 			text: "Ruang bayangan (belakang)",
 			color: "#3E8497",
 		});
+		
 	} else {
 		// Draw Focus coordinate
 		drawLine({
