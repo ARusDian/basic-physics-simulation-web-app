@@ -1,15 +1,15 @@
 import Vector2f from "./Vector2f";
 
 export interface Props {
-    ctx: CanvasRenderingContext2D;
-    canvasHeight?: number;
-    canvasWidth?: number;
-    beforeStart?: Vector2f;
-    start: Vector2f;
-    end: Vector2f;
-    color: string;
-    beyond?: boolean | false;
-    isDash?: boolean | false;
+	ctx: CanvasRenderingContext2D;
+	canvasHeight?: number;
+	canvasWidth?: number;
+	beforeStart?: Vector2f;
+	start: Vector2f;
+	end: Vector2f;
+	color: string;
+	beyond?: boolean | false;
+	isDash?: boolean | false;
 }
 
 export default function AlgorithmDDA(props: Props) {
@@ -39,8 +39,8 @@ export default function AlgorithmDDA(props: Props) {
 
 		if (beforeStart && !end.getY() && canvasWidth) {
 			const slope =
-                (start.getY() - beforeStart.getY()) /
-                (start.getX() - beforeStart.getX());
+				(start.getY() - beforeStart.getY()) /
+				(start.getX() - beforeStart.getX());
 			const intercept = start.getY() - slope * start.getX();
 			const getY = (x: number) => {
 				return slope * x + intercept;
@@ -58,7 +58,7 @@ export default function AlgorithmDDA(props: Props) {
 			}
 		} else if (canvasHeight) {
 			const slope =
-                (end.getY() - start.getY()) / (end.getX() - start.getX());
+				(end.getY() - start.getY()) / (end.getX() - start.getX());
 			const intercept = start.getY() - slope * start.getX();
 			const getX = (y: number) => {
 				return (y - intercept) / slope;

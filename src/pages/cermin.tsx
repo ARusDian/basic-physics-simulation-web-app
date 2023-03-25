@@ -471,7 +471,7 @@ export default function Cermin() {
 				<div className="flex mt-4 mx-4">
 					<div
 						className={`text-xl ${!isConvex ? "text-cyan-400" : ""
-							}`}
+						}`}
 					>
 						Concave
 					</div>

@@ -23,3 +23,5 @@ class Vector2f {
 		this.y = y;
 	}
 }
+
+export default Vector2f;

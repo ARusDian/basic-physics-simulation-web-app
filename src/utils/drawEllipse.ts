@@ -11,15 +11,15 @@ export interface Props {
 }
 
 export default function drawEllipse(props: Props) {
-	const {ctx, center, radius, color, concave, lens, height} = props;
+	const { ctx, center, radius, color, concave, lens, height } = props;
 
 	ctx.beginPath();
 	ctx.strokeStyle = color;
 	ctx.fillStyle = color;
 	ctx.lineWidth = 1;
 
-	if(lens) {
-		if(concave) {
+	if (lens) {
+		if (concave) {
 			ctx.ellipse(center.getX(), center.getY(), radius.getX(), (height ? height : radius.getY()), 0, -Math.PI * 0.23, 0.23 * Math.PI);
 			ctx.ellipse(-center.getX(), center.getY(), radius.getX(), (height ? height : radius.getY()), Math.PI, -Math.PI * 0.23, 0.23 * Math.PI);
 			ctx.ellipse(center.getX(), center.getY(), radius.getX(), (height ? height : radius.getY()), 0, -Math.PI * 0.23, -Math.PI * 0.23);
@@ -30,7 +30,7 @@ export default function drawEllipse(props: Props) {
 		}
 	}
 	else {
-		if(!concave) {
+		if (!concave) {
 			ctx.ellipse(center.getX(), center.getY(), radius.getX(), (height ? height : radius.getY()), 0, -Math.PI * 0.23, 0.23 * Math.PI);
 		}
 		else {
@@ -41,3 +41,4 @@ export default function drawEllipse(props: Props) {
 
 
 	// ctx.ellipse(0, 0, 50, 75, Math.PI / 4, 0, Math.PI);
+}

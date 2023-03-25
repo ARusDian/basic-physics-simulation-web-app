@@ -73,7 +73,7 @@ export default function Lensa() {
 				// });
 
 				drawPlane(context, objectDistance, objectHeight, isBuilding, planeDistanceCoefficient);
-				drawTowers(context, objectDistance, objectHeight,isBuilding);
+				drawTowers(context, objectDistance, objectHeight, isBuilding);
 
 				if (isConvex) {
 					const calculatedFocus = mirrorFocus;
@@ -102,7 +102,7 @@ export default function Lensa() {
 						lens: true,
 						height: canvas.height,
 					});
-					
+
 					if (objectDistance == 0) {
 						return;
 					} else if (calculatedFocus == 0) {
@@ -137,7 +137,7 @@ export default function Lensa() {
 						return;
 					}
 
-					
+
 
 					// Draw MirrorObject
 					// drawLine({
@@ -192,7 +192,7 @@ export default function Lensa() {
 						});
 
 						drawMirrorTowers_kuadranBawah(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
-						
+
 					} else {
 						AlgorithmDDA({
 							ctx: context,
@@ -276,7 +276,7 @@ export default function Lensa() {
 					const calculatedFocus = -mirrorFocus;
 					setMirrorObjectDistance(
 						-(objectDistance * calculatedFocus) /
-							(objectDistance - calculatedFocus)
+						(objectDistance - calculatedFocus)
 					);
 					setMirrorObjectHeight(
 						-(mirrorObjectDistance * objectHeight) / objectDistance
@@ -415,8 +415,7 @@ export default function Lensa() {
 			<>
 				<div className="flex mt-4 mx-4">
 					<div
-						className={`text-xl ${
-							!isConvex ? "text-cyan-400" : ""
+						className={`text-xl ${!isConvex ? "text-cyan-400" : ""
 						}`}
 					>
 						Concave
@@ -629,26 +628,26 @@ export default function Lensa() {
 					></canvas>
 				</div>
 				<div className="flex mt-4 mx-4">
-				<div
-					className={`text-xl text-white`}
-				>
-					Buildings DLC
-				</div>
-				<div className="flex items-center justify-start w-full">
-					<label className="flex items-center cursor-pointer">
-						<div className="relative">
-							<input
-								type="checkbox"
-								id="toggleB"
-								className="sr-only"
-								onChange={() => setIsBuilding(!isBuilding)}
-							/>
-							<div className="block bg-gray-600 w-14 h-8 rounded-full" />
-							<div className="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition" />
-						</div>
-						<div className="ml-3 text-gray-700 font-medium"></div>
-					</label>
-				</div>
+					<div
+						className={`text-xl text-white`}
+					>
+						Buildings DLC
+					</div>
+					<div className="flex items-center justify-start w-full">
+						<label className="flex items-center cursor-pointer">
+							<div className="relative">
+								<input
+									type="checkbox"
+									id="toggleB"
+									className="sr-only"
+									onChange={() => setIsBuilding(!isBuilding)}
+								/>
+								<div className="block bg-gray-600 w-14 h-8 rounded-full" />
+								<div className="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition" />
+							</div>
+							<div className="ml-3 text-gray-700 font-medium"></div>
+						</label>
+					</div>
 				</div>
 			</Layout>
 		</>
