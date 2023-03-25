@@ -6,6 +6,7 @@ import drawLine from "../utils/drawLine";
 import drawBaseView from "../components/drawBaseView";
 import AlgorithmDDA from "@/utils/AlgorithmDDA";
 import Vector2f from "@/utils/Vector2f";
+import drawEllipse from "@/utils/drawEllipse";
 
 import drawPlane, { drawExplosion, drawMirrorTowers_kuadranAtas, drawMirrorTowers_kuadranBawah, drawTowers } from "@/components/DLC";
 import AlgorithmMPT from '../utils/AlgorithmMPT';
@@ -401,6 +402,16 @@ export default function Cermin() {
 							end: new Vector2f(-canvas.width, 0),
 							canvasWidth: canvas.width,
 							color: "cyan",
+							beyond: true,
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, -mirrorObjectHeight),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "lime",
 							beyond: true,
 						});
 					} else if (objectDistance < calculatedFocus) {

@@ -191,50 +191,7 @@ export default function Lensa() {
 							color: "red",
 							canvasHeight: canvas.height,
 						});
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(-objectDistance, objectHeight),
-							end: new Vector2f(0, 0),
-							color: "red",
-							canvasHeight: canvas.height,
-							beyond: true,
-						});
 
-						drawMirrorTowers_kuadranBawah(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
-						AlgorithmDDA({ //Sinar Datang
-							ctx: context,
-							start: new Vector2f(-canvas.width, -objectHeight),
-							end: new Vector2f(-objectDistance, -objectHeight),
-							color: "cyan",
-						});
-						AlgorithmDDA({ //Sinar Datang
-							ctx: context,
-							beforeStart: new Vector2f(0, -mirrorObjectHeight),
-							start: new Vector2f(-objectDistance, objectHeight),
-							end: new Vector2f(-canvas.width, 0),
-							canvasWidth: canvas.width,
-							color: "lime",
-							beyond: true,
-						});
-						AlgorithmDDA({ //Sinar Datang
-							ctx: context,
-							beforeStart: new Vector2f(0, 0),
-							start: new Vector2f(-objectDistance, objectHeight),
-							end: new Vector2f(-canvas.width, 0),
-							canvasWidth: canvas.width,
-							color: "red",
-							beyond: true,
-						});
-
-						AlgorithmDDA({ //Sinar Datang
-							ctx: context,
-							beforeStart: new Vector2f(0, 0),
-							start: new Vector2f(-objectDistance, objectHeight),
-							end: new Vector2f(canvas.width, 0),
-							canvasWidth: canvas.width,
-							color: "red",
-							beyond: true,
-						});
 					} else {
 						AlgorithmDDA({ //Sinar Datang
 							ctx: context,
