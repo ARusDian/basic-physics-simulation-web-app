@@ -8,11 +8,12 @@ export default function drawPlane(
 	objectDistance: number,
 	objectHeight: number,
     isBuilding: boolean,
+    planeDistanceCoefficient: number,
 ) {
 if (isBuilding) {
     if (objectHeight >= 130) {
         //draw Boeing 767
-        const planeTipDistance =  1.3* objectDistance
+        const planeTipDistance =  planeDistanceCoefficient* objectDistance
         const planeTipHeight = 5/8 *objectHeight
         writeText({
             ctx: context,

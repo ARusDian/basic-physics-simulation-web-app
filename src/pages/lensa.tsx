@@ -18,6 +18,7 @@ export default function Lensa() {
 	const [mirrorFocus, setmirrorFocus] = useState(250);
 	const [isConvex, setIsConvex] = useState(true);
 	const [isBuilding, setIsBuilding] = useState(false);
+	const [planeDistanceCoefficient, setPlaneDistanceCoeffiecient] = useState(1.3);
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -71,7 +72,7 @@ export default function Lensa() {
 				// 	text: "Object",
 				// });
 
-				drawPlane(context, objectDistance, objectHeight, isBuilding);
+				drawPlane(context, objectDistance, objectHeight, isBuilding, planeDistanceCoefficient);
 				drawTowers(context, objectDistance, objectHeight,isBuilding);
 
 				if (isConvex) {

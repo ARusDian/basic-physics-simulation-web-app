@@ -17,6 +17,7 @@ export default function Cermin() {
 	const [mirrorFocus, setmirrorFocus] = useState(70);
 	const [isConvex, setIsConvex] = useState(false);
 	const [isBuilding, setIsBuilding] = useState(false);
+	const [planeDistanceCoefficient, setPlaneDistanceCoeffiecient] = useState(1.3);
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -63,7 +64,7 @@ export default function Cermin() {
 				drawBaseView(context, canvas, mirrorFocus, true);
 
 				drawTowers(context, objectDistance, objectHeight, isBuilding);				
-				drawPlane(context, objectDistance, objectHeight, isBuilding);
+				drawPlane(context, objectDistance, objectHeight, isBuilding, planeDistanceCoefficient);
 
 				if (isConvex) {
 					const calculatedFocus = -mirrorFocus;
@@ -462,6 +463,7 @@ export default function Cermin() {
 		objectDistance,
 		objectHeight,
 		isBuilding,
+		planeDistanceCoefficient,
 	]);
 	const configBar = () => {
 		return (
@@ -702,6 +704,22 @@ export default function Cermin() {
 						</div>
 						<div className="ml-3 text-gray-700 font-medium"></div>
 					</label>
+					<div className="flex-row items-center justify-center">
+						<div
+							className={`text-xl text-white`}
+						>
+							Plane Distance from Towers
+						</div>
+						<Slider
+							handler={(e) =>
+								setPlaneDistanceCoeffiecient(parseFloat(e.target.value))
+							}
+							className="slider-horizontal"
+							value={planeDistanceCoefficient}
+							max={2}
+							min={1.2}
+						/>
+					</div>
 				</div>
 				</div>
 			</Layout>
