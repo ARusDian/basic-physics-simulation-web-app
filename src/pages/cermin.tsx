@@ -17,6 +17,7 @@ export default function Cermin() {
 	const [mirrorFocus, setmirrorFocus] = useState(70);
 	const [isConvex, setIsConvex] = useState(false);
 	const [isBuilding, setIsBuilding] = useState(false);
+	const [planeToggle, setPlaneToggle] = useState(false);
 	const [planeDistanceCoefficient, setPlaneDistanceCoeffiecient] = useState(1.3);
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -64,7 +65,7 @@ export default function Cermin() {
 				drawBaseView(context, canvas, mirrorFocus, true);
 
 				drawTowers(context, objectDistance, objectHeight, isBuilding);
-				drawPlane(context, objectDistance, objectHeight, isBuilding, planeDistanceCoefficient);
+				drawPlane(context, objectDistance, objectHeight, planeToggle, planeDistanceCoefficient);
 
 				if (isConvex) {
 					const calculatedFocus = -mirrorFocus;
@@ -464,6 +465,7 @@ export default function Cermin() {
 		objectHeight,
 		isBuilding,
 		planeDistanceCoefficient,
+		planeToggle
 	]);
 	const configBar = () => {
 		return (
@@ -471,7 +473,7 @@ export default function Cermin() {
 				<div className="flex mt-4 mx-4">
 					<div
 						className={`text-xl ${!isConvex ? "text-cyan-400" : ""
-						}`}
+							}`}
 					>
 						Concave
 					</div>
@@ -684,12 +686,10 @@ export default function Cermin() {
 					></canvas>
 				</div>
 				<div className="flex mt-4 mx-4">
-					<div
-						className={`text-xl text-white`}
-					>
+					<div className={`text-xl text-white`}>
 						Buildings DLC
 					</div>
-					<div className="flex items-center justify-start w-full">
+					<div className="flex items-center gap-5 justify-start w-full">
 						<label className="flex items-center cursor-pointer">
 							<div className="relative">
 								<input
@@ -703,22 +703,45 @@ export default function Cermin() {
 							</div>
 							<div className="ml-3 text-gray-700 font-medium"></div>
 						</label>
-						<div className="flex-row items-center justify-center">
-							<div
-								className={`text-xl text-white`}
-							>
-								Plane Distance from Towers
+						{isBuilding && (
+							<div className="flex">
+								<div className="text-xl text-white w-20">
+									Plane Toggle
+								</div>
+								<label className="flex items-center cursor-pointer">
+									<div className="relative">
+										<input
+											type="checkbox"
+											id="toggleB"
+											className="sr-only"
+											onChange={() => setPlaneToggle(!planeToggle)}
+										/>
+										<div className="block bg-gray-600 w-14 h-8 rounded-full" />
+										<div className="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition" />
+									</div>
+									<div className="ml-3 text-gray-700 font-medium"></div>
+								</label>
 							</div>
-							<Slider
-								handler={(e) =>
-									setPlaneDistanceCoeffiecient(parseFloat(e.target.value))
-								}
-								className="slider-horizontal"
-								value={planeDistanceCoefficient}
-								max={2}
-								min={1.2}
-							/>
-						</div>
+						)}
+						{planeToggle && (
+							<div className="flex-row items-center justify-center w-fit">
+								<div
+									className={`text-lg text-white`}
+								>
+									Plane Distance from Towers
+								</div>
+								<Slider
+									handler={(e) => {
+										setPlaneDistanceCoeffiecient(parseFloat(e.target.value));
+										console.log(planeDistanceCoefficient);
+									}}
+									className="slider-horizontal w-full"
+									value={planeDistanceCoefficient}
+									max={2}
+									min={1.3}
+								/>
+							</div>
+						)}
 					</div>
 				</div>
 			</Layout>
