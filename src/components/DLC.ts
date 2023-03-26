@@ -191,6 +191,7 @@ export function drawTowers(
 			start: { x: -objectDistance - 30, y: objectHeight - 20 },
 			end: { x: -objectDistance, y: objectHeight },
 			color: "#931A1A",
+			text: "Object",
 		});
 
 		drawLine({
@@ -272,6 +273,7 @@ export function drawMirrorTowers_kuadranAtas(
 			start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight - 20 },
 			end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight },
 			color: "#D76D1B",
+			text: "Image",
 		});
 
 		drawLine({
@@ -351,6 +353,7 @@ export function drawMirrorTowers_kuadranBawah(
 			start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight + 20 },
 			end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight },
 			color: "#D76D1B",
+			text: "Image",
 		});
 
 		drawLine({

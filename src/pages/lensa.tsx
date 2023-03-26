@@ -3,22 +3,18 @@ import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import Layout from "../components/Layout";
 import drawLine from "../utils/drawLine";
-import drawBaseView from "@/components/drawBaseView";
+import drawBaseView from "../components/drawBaseView";
 import AlgorithmDDA from "@/utils/AlgorithmDDA";
-import AlgorithmMPT from "@/utils/AlgorithmMPT";
-import Vector2f from "../utils/Vector2f";
-import drawEllipse from "@/utils/drawEllipse";
-import drawPlane, { drawMirrorTowers_kuadranAtas, drawMirrorTowers_kuadranBawah, drawTowers } from "@/components/DLC";
+import Vector2f from "@/utils/Vector2f";
+import AlgorithmMPT from '../utils/AlgorithmMPT';
 
-export default function Lensa() {
-	const [objectDistance, setObjectDistance] = useState(122);
+export default function Cermin() {
+	const [objectDistance, setObjectDistance] = useState(100);
 	const [objectHeight, setObjectHeight] = useState(80);
 	const [mirrorObjectDistance, setMirrorObjectDistance] = useState(0);
 	const [mirrorObjectHeight, setMirrorObjectHeight] = useState(0);
-	const [mirrorFocus, setmirrorFocus] = useState(250);
-	const [isConvex, setIsConvex] = useState(true);
-	const [isBuilding, setIsBuilding] = useState(false);
-	const [planeDistanceCoefficient, setPlaneDistanceCoeffiecient] = useState(1.3);
+	const [mirrorFocus, setmirrorFocus] = useState(70);
+	const [isConvex, setIsConvex] = useState(false);
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -46,8 +42,9 @@ export default function Lensa() {
 			const canvas: HTMLCanvasElement = canvasRef.current;
 			const context: CanvasRenderingContext2D | null =
 				canvas.getContext("2d");
+
 			if (context) {
-				// For clear canvas
+				// For refresh canvas
 				// eslint-disable-next-line no-self-assign
 				context.canvas.width = context.canvas.width;
 				context.setTransform(
@@ -61,34 +58,163 @@ export default function Lensa() {
 				context.clearRect(0, 0, canvas.width, canvas.height);
 				initDraw(context, canvas);
 
-				drawBaseView(context, canvas, mirrorFocus, false);
+				drawBaseView(context, canvas, mirrorFocus, true);
 
 				// Draw Object
-				// drawLine({
-				// 	ctx: context,
-				// 	start: { x: -objectDistance, y: 0 },
-				// 	end: { x: -objectDistance, y: objectHeight },
-				// 	color: "#ea96FF",
-				// 	text: "Object",
-				// });
-
-				drawPlane(context, objectDistance, objectHeight, isBuilding, planeDistanceCoefficient);
-				drawTowers(context, objectDistance, objectHeight, isBuilding);
+				drawLine({
+					ctx: context,
+					start: { x: -objectDistance, y: 0 },
+					end: { x: -objectDistance, y: objectHeight },
+					color: "#ea96FF",
+					text: "Object",
+				});
 
 				if (isConvex) {
-					const calculatedFocus = mirrorFocus;
+					const calculatedFocus = -mirrorFocus;
 					setMirrorObjectDistance(
-						-(
-							(objectDistance * calculatedFocus) /
-							(objectDistance - calculatedFocus)
-						)
+						(objectDistance * calculatedFocus) /
+						(objectDistance - calculatedFocus)
 					);
 					setMirrorObjectHeight(
-						-(
-							(mirrorObjectDistance * objectHeight) /
-							objectDistance
-						)
+						(mirrorObjectDistance * objectHeight) / objectDistance
 					);
+
+					if (objectDistance == 0) {
+						return;
+					} else if (calculatedFocus == 0) {
+						return;
+					} else if (objectHeight == 0) {
+						return;
+					}
+					// Draw Focus coordinate behind mirror
+					drawLine({
+						ctx: context,
+						start: { x: mirrorFocus, y: 0 },
+						end: { x: mirrorFocus, y: 30 },
+						color: "purple",
+						text: "Focus",
+					});
+					// Draw Curvature Point behind mirror
+					drawLine({
+						ctx: context,
+						start: { x: mirrorFocus * 2, y: 2 },
+						end: { x: mirrorFocus * 2, y: 30 },
+						color: "brown",
+						text: "Curvature",
+					});
+
+					if (objectDistance != calculatedFocus) {
+						drawLine({
+							ctx: context,
+							start: { x: -mirrorObjectDistance, y: 0 },
+							end: {
+								x: -mirrorObjectDistance,
+								y: -mirrorObjectHeight,
+							},
+							color: "green",
+							text: "Image",
+						});
+					}
+
+					AlgorithmDDA({
+						ctx: context,
+						start: new Vector2f(
+							-mirrorObjectDistance,
+							mirrorObjectHeight
+						),
+						end: new Vector2f(0, -objectHeight),
+						color: "cyan",
+						isDash: true,
+						beyond: false,
+					});
+					AlgorithmDDA({
+						ctx: context,
+						beforeStart: new Vector2f(
+							-mirrorObjectDistance,
+							-mirrorObjectHeight
+						),
+						start: new Vector2f(0, objectHeight),
+						end: new Vector2f(-canvas.width, 0),
+						canvasWidth: canvas.width,
+						color: "cyan",
+						beyond: true,
+					});
+					AlgorithmDDA({
+						ctx: context,
+						start: new Vector2f(-objectDistance, -objectHeight),
+						end: new Vector2f(0, -objectHeight),
+						color: "cyan",
+						beyond: false,
+					});
+
+					AlgorithmDDA({ //Sinar Datang
+						ctx: context,
+						start: new Vector2f(-canvas.width, -objectHeight),
+						end: new Vector2f(-objectDistance, -objectHeight),
+						color: "cyan",
+						beyond: false,
+					});
+
+					AlgorithmDDA({
+						ctx: context,
+						start: new Vector2f(
+							-mirrorObjectDistance,
+							mirrorObjectHeight
+						),
+						end: new Vector2f(0, mirrorObjectHeight),
+						color: "lime",
+						isDash: true,
+						beyond: false,
+					});
+
+					AlgorithmDDA({
+						ctx: context,
+						start: new Vector2f(-objectDistance, -objectHeight),
+						end: new Vector2f(0, mirrorObjectHeight),
+						color: "lime",
+					});
+
+					AlgorithmDDA({
+						ctx: context,
+						start: new Vector2f(0, mirrorObjectHeight),
+						end: new Vector2f(-canvas.width, mirrorObjectHeight),
+						color: "lime",
+						beyond: false,
+					});
+
+					AlgorithmDDA({ //Sinar Datang
+						ctx: context,
+						beforeStart: new Vector2f(0, -mirrorObjectHeight),
+						start: new Vector2f(-objectDistance, objectHeight),
+						end: new Vector2f(-canvas.width, 0),
+						canvasWidth: canvas.width,
+						color: "lime",
+						beyond: true,
+					});
+
+					AlgorithmDDA({
+						ctx: context,
+						start: new Vector2f(
+							-mirrorObjectDistance,
+							mirrorObjectHeight
+						),
+						end: new Vector2f(0, 0),
+						color: "red",
+						isDash: true,
+					});
+
+					AlgorithmDDA({
+						ctx: context,
+						beforeStart: new Vector2f(
+							-mirrorObjectDistance,
+							-mirrorObjectHeight
+						),
+						start: new Vector2f(0, 0),
+						end: new Vector2f(-canvas.width, 0),
+						canvasWidth: canvas.width,
+						color: "red",
+						beyond: true,
+					});
 
 					AlgorithmMPT({
 						ctx: context,
@@ -97,253 +223,17 @@ export default function Lensa() {
 						color: "blue",
 						height: canvas.height,
 						concave: false,
-						lens: true,
+						lens: false,
 					});
-
-					if (objectDistance == 0) {
-						return;
-					} else if (calculatedFocus == 0) {
-						return;
-					} else if (objectHeight == 0) {
-						return;
-					} else if (
-						mirrorObjectDistance == Infinity ||
-						mirrorObjectHeight == Infinity ||
-						objectDistance == calculatedFocus
-					) {
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(-objectDistance, -objectHeight),
-							end: new Vector2f(-objectDistance, canvas.height),
-							color: "lime",
-						});
-
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(-objectDistance, -objectHeight),
-							end: new Vector2f(0, 0),
-							color: "red",
-						});
-
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(-objectDistance, -objectHeight),
-							end: new Vector2f(0, -objectHeight),
-							color: "cyan",
-						});
-						return;
-					}
-
-
-
-					// Draw MirrorObject
-					// drawLine({
-					// 	ctx: context,
-					// 	start: { x: -mirrorObjectDistance, y: 0 },
-					// 	end: {
-					// 		x: -mirrorObjectDistance,
-					// 		y: -mirrorObjectHeight,
-					// 	},
-					// 	color: "green",
-					// 	text: "Image",
-					// });
-
-					if (objectDistance > calculatedFocus) {
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(-objectDistance, -objectHeight),
-							end: new Vector2f(0, -objectHeight),
-							color: "cyan",
-						});
-						
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(0, objectHeight),
-							end: new Vector2f(-mirrorObjectDistance, -mirrorObjectHeight),
-							color: "cyan",
-							canvasHeight: canvas.height,
-							beyond: true,
-						});
-
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(-objectDistance, -objectHeight),
-							end: new Vector2f(-mirrorFocus, 0),
-							color: "lime",
-						});
-
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(-mirrorFocus, 0),
-							end: new Vector2f(0, mirrorObjectHeight),
-							color: "lime",
-						});
-
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(0, mirrorObjectHeight),
-							end: new Vector2f(canvas.width, mirrorObjectHeight),
-							color: "lime",
-						});
-
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(-objectDistance, objectHeight),
-							end: new Vector2f(0, 0),
-							color: "red",
-							canvasHeight: canvas.height,
-							beyond: true,
-						});
-
-						drawMirrorTowers_kuadranBawah(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
-						AlgorithmDDA({ //Sinar Datang
-							ctx: context,
-							start: new Vector2f(-canvas.width, -objectHeight),
-							end: new Vector2f(-objectDistance, -objectHeight),
-							color: "cyan",
-						});
-						AlgorithmDDA({ //Sinar Datang
-							ctx: context,
-							beforeStart: new Vector2f(0, -mirrorObjectHeight),
-							start: new Vector2f(-objectDistance, objectHeight),
-							end: new Vector2f(-canvas.width, 0),
-							canvasWidth: canvas.width,
-							color: "lime",
-							beyond: true,
-						});
-						AlgorithmDDA({ //Sinar Datang
-							ctx: context,
-							beforeStart: new Vector2f(0, 0),
-							start: new Vector2f(-objectDistance, objectHeight),
-							end: new Vector2f(-canvas.width, 0),
-							canvasWidth: canvas.width,
-							color: "red",
-							beyond: true,
-						});
-
-					} else {
-						AlgorithmDDA({ //Sinar Datang
-							ctx: context,
-							start: new Vector2f(-canvas.width, -objectHeight),
-							end: new Vector2f(-objectDistance, -objectHeight),
-							color: "lime",
-						});
-						AlgorithmDDA({ //Sinar Datang
-							ctx: context,
-							beforeStart: new Vector2f(0, -mirrorObjectHeight),
-							start: new Vector2f(-objectDistance, objectHeight),
-							end: new Vector2f(-canvas.width, 0),
-							canvasWidth: canvas.width,
-							color: "cyan",
-							beyond: true,
-						});
-
-						AlgorithmDDA({ //Sinar Datang
-							ctx: context,
-							beforeStart: new Vector2f(0, 0),
-							start: new Vector2f(-objectDistance, objectHeight),
-							end: new Vector2f(-canvas.width, 0),
-							canvasWidth: canvas.width,
-							color: "red",
-							beyond: true,
-						});	
-
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(
-								-mirrorObjectDistance,
-								mirrorObjectHeight
-							),
-							end: new Vector2f(0, mirrorObjectHeight),
-							color: "cyan",
-							isDash: true,
-						});
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(
-								-mirrorObjectDistance,
-								mirrorObjectHeight
-							),
-							end: new Vector2f(0, -objectHeight),
-							color: "lime",
-							isDash: true,
-						});
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(
-								-mirrorObjectDistance,
-								mirrorObjectHeight
-							),
-							end: new Vector2f(-objectDistance, -objectHeight),
-							color: "red",
-							isDash: true,
-						});
-						AlgorithmDDA({
-							ctx: context,
-							beforeStart: new Vector2f(
-								-objectDistance,
-								objectHeight
-							),
-							start: new Vector2f(0, -mirrorObjectHeight),
-							end: new Vector2f(0),
-							color: "cyan",
-							canvasWidth: canvas.width,
-							beyond: true,
-						});
-
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(-objectDistance, -objectHeight),
-							end: new Vector2f(0, mirrorObjectHeight),
-							color: "cyan",
-						});
-
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(0, objectHeight),
-							end: new Vector2f(mirrorFocus, 0),
-							color: "lime",
-							canvasHeight: canvas.height,
-							beyond: true,
-						});
-
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(-objectDistance, -objectHeight),
-							end: new Vector2f(0, -objectHeight),
-							color: "lime",
-						});
-
-						AlgorithmDDA({
-							ctx: context,
-							start: new Vector2f(-objectDistance, objectHeight),
-							end: new Vector2f(0, 0),
-							color: "red",
-							canvasHeight: canvas.height,
-							beyond: true,
-						});
-
-						drawMirrorTowers_kuadranAtas(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
-
-					}
 				} else {
-					const calculatedFocus = -mirrorFocus;
+					const calculatedFocus = mirrorFocus;
 					setMirrorObjectDistance(
-						-(objectDistance * calculatedFocus) /
+						(objectDistance * calculatedFocus) /
 						(objectDistance - calculatedFocus)
 					);
 					setMirrorObjectHeight(
-						-(mirrorObjectDistance * objectHeight) / objectDistance
+						(mirrorObjectDistance * objectHeight) / objectDistance
 					);
-					AlgorithmMPT({
-						ctx: context,
-						center: new Vector2f(-mirrorFocus * 2, 0),
-						radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
-						color: "blue",
-						height: canvas.height,
-						concave: true,
-						lens: true,
-					});
 					if (objectDistance == 0) {
 						return;
 					} else if (calculatedFocus == 0) {
@@ -374,107 +264,287 @@ export default function Lensa() {
 							end: new Vector2f(0, -objectHeight),
 							color: "cyan",
 						});
+						AlgorithmMPT({
+							ctx: context,
+							center: new Vector2f(-mirrorFocus * 2, 0),
+							radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
+							color: "blue",
+							height: canvas.height,
+							concave: true,
+							lens: false,
+						});
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							start: new Vector2f(-canvas.width, -objectHeight),
+							end: new Vector2f(-objectDistance, -objectHeight),
+							color: "cyan",
+						});
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, 0),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							start: new Vector2f(-objectDistance, -canvas.height),
+							end: new Vector2f(-objectDistance, -objectHeight),
+							color: "lime",
+						});
+						return;
+					} else if (objectDistance > calculatedFocus) {
+						if (objectDistance != calculatedFocus) {
+							drawLine({
+								ctx: context,
+								start: { x: -mirrorObjectDistance, y: 0 },
+								end: {
+									x: -mirrorObjectDistance,
+									y: -mirrorObjectHeight,
+								},
+								color: "green",
+								text: "Image",
+							});
+						}
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, -objectHeight),
+							color: "cyan",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, 0),
+							color: "red",
+							beyond: false,
+							isDash: false,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(0, 0),
+							end: new Vector2f(
+								-mirrorObjectDistance,
+								mirrorObjectHeight
+							),
+							color: "red",
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							start: new Vector2f(-canvas.width, -objectHeight),
+							end: new Vector2f(-objectDistance, -objectHeight),
+							color: "cyan",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new Vector2f(0, 0),
+							start: new Vector2f(
+								-mirrorObjectDistance,
+								-mirrorObjectHeight
+							),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, mirrorObjectHeight),
+							color: "lime",
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, 0),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(0, mirrorObjectHeight),
+							end: new Vector2f(
+								-canvas.width,
+								mirrorObjectHeight
+							),
+							color: "lime",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new Vector2f(
+								-mirrorObjectDistance,
+								-mirrorObjectHeight
+							),
+							start: new Vector2f(0, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "cyan",
+							beyond: true,
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, -mirrorObjectHeight),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "lime",
+							beyond: true,
+						});
+					} else if (objectDistance < calculatedFocus) {
+						drawLine({
+							ctx: context,
+							start: { x: -mirrorObjectDistance, y: 0 },
+							end: {
+								x: -mirrorObjectDistance,
+								y: -mirrorObjectHeight,
+							},
+							color: "green",
+							text: "Image",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(
+								-mirrorObjectDistance,
+								mirrorObjectHeight
+							),
+							end: new Vector2f(0, -objectHeight),
+							color: "cyan",
+							isDash: true,
+							beyond: false,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new Vector2f(
+								-mirrorObjectDistance,
+								-mirrorObjectHeight
+							),
+							start: new Vector2f(0, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "cyan",
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, -objectHeight),
+							color: "cyan",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(
+								-mirrorObjectDistance,
+								mirrorObjectHeight
+							),
+							end: new Vector2f(0, mirrorObjectHeight),
+							color: "lime",
+							isDash: true,
+							beyond: false,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, mirrorObjectHeight),
+							color: "lime",
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							start: new Vector2f(-canvas.width, -objectHeight),
+							end: new Vector2f(-objectDistance, -objectHeight),
+							color: "cyan",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(0, mirrorObjectHeight),
+							end: new Vector2f(
+								-canvas.width,
+								mirrorObjectHeight
+							),
+							color: "lime",
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, -mirrorObjectHeight),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "lime",
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(
+								-mirrorObjectDistance,
+								mirrorObjectHeight
+							),
+							end: new Vector2f(0, 0),
+							color: "red",
+							isDash: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new Vector2f(
+								-mirrorObjectDistance,
+								-mirrorObjectHeight
+							),
+							start: new Vector2f(0, 0),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, 0),
+							color: "red",
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, 0),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
+					} else {
 						return;
 					}
-					// drawLine({
-					// 	ctx: context,
-					// 	start: { x: -mirrorObjectDistance, y: 0 },
-					// 	end: {
-					// 		x: -mirrorObjectDistance,
-					// 		y: -mirrorObjectHeight,
-					// 	},
-					// 	color: "green",
-					// 	text: "Image",
-					// });
-
-					drawMirrorTowers_kuadranAtas(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
-
-					AlgorithmDDA({
+					AlgorithmMPT({
 						ctx: context,
-						start: new Vector2f(-objectDistance, -objectHeight),
-						end: new Vector2f(0, -objectHeight),
-						color: "cyan",
-					});
-					AlgorithmDDA({
-						ctx: context,
-						start: new Vector2f(
-							-mirrorObjectDistance,
-							mirrorObjectHeight
-						),
-						end: new Vector2f(0, -objectHeight),
-						color: "cyan",
-						isDash: true,
-					});
-					AlgorithmDDA({
-						ctx: context,
-						beforeStart: new Vector2f(
-							-mirrorObjectDistance,
-							-mirrorObjectHeight
-						),
-						start: new Vector2f(0, objectHeight),
-						end: new Vector2f(canvas.width, 0),
-						color: "cyan",
-						canvasWidth: canvas.width,
-						beyond: true,
-					});
-
-					AlgorithmDDA({ //Sinar Datang
-						ctx: context,
-						start: new Vector2f(-canvas.width, -objectHeight),
-						end: new Vector2f(-objectDistance, -objectHeight),
-						color: "cyan",
-					});
-					AlgorithmDDA({ //Sinar Datang
-						ctx: context,
-						beforeStart: new Vector2f(0, -mirrorObjectHeight),
-						start: new Vector2f(-objectDistance, objectHeight),
-						end: new Vector2f(-canvas.width, 0),
-						canvasWidth: canvas.width,
-						color: "lime",
-						beyond: true,
-					});
-					AlgorithmDDA({ //Sinar Datang
-						ctx: context,
-						beforeStart: new Vector2f(0, 0),
-						start: new Vector2f(-objectDistance, objectHeight),
-						end: new Vector2f(-canvas.width, 0),
-						canvasWidth: canvas.width,
-						color: "red",
-						beyond: true,
-					});
-
-					AlgorithmDDA({
-						ctx: context,
-						start: new Vector2f(-objectDistance, objectHeight),
-						end: new Vector2f(0, 0),
-						color: "red",
-						canvasHeight: canvas.height,
-						beyond: true,
-					});
-
-					AlgorithmDDA({
-						ctx: context,
-						start: new Vector2f(
-							-mirrorObjectDistance,
-							mirrorObjectHeight
-						),
-						end: new Vector2f(0, mirrorObjectHeight),
-						color: "lime",
-						isDash: true,
-					});
-					AlgorithmDDA({
-						ctx: context,
-						start: new Vector2f(-objectDistance, -objectHeight),
-						end: new Vector2f(0, mirrorObjectHeight),
-						color: "lime",
-					});
-					AlgorithmDDA({
-						ctx: context,
-						start: new Vector2f(0, -mirrorObjectHeight),
-						end: new Vector2f(canvas.width, -mirrorObjectHeight),
-						color: "lime",
-						canvasHeight: canvas.height,
-						beyond: true,
+						center: new Vector2f(-mirrorFocus * 2, 0),
+						radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
+						color: "blue",
+						height: canvas.height,
+						concave: true,
+						lens: false,
 					});
 				}
 			}
@@ -487,7 +557,7 @@ export default function Lensa() {
 		mirrorObjectHeight,
 		objectDistance,
 		objectHeight,
-		isBuilding,
+		setIsConvex,
 	]);
 	const configBar = () => {
 		return (
@@ -537,7 +607,7 @@ export default function Lensa() {
 						className="slider-vertical"
 						value={objectHeight}
 						max={360}
-						min={30}
+						min={-360}
 					/>
 					<Slider
 						handler={(e) =>
@@ -546,7 +616,7 @@ export default function Lensa() {
 						className="slider-vertical"
 						value={objectDistance}
 						max={540}
-						min={isBuilding ? 45 : 0}
+						min={0}
 					/>
 				</div>
 				<div className="flex justify-between mx-16">
@@ -664,7 +734,7 @@ export default function Lensa() {
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
 									<div className="flex">
-										{isConvex ? "" : "-"}
+										{isConvex ? "-" : ""}
 										<input
 											type="number"
 											className="w-20 bg-transparent"
@@ -680,9 +750,10 @@ export default function Lensa() {
 									</div>
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-									P ={" "}
-									{100 /
-										(isConvex ? mirrorFocus : -mirrorFocus)}
+									M ={" "}
+									{Math.abs(
+										mirrorObjectDistance / objectDistance
+									)}
 								</td>
 							</tr>
 						</tbody>
@@ -705,28 +776,6 @@ export default function Lensa() {
 						height={720}
 						className={"bg-white"}
 					></canvas>
-				</div>
-				<div className="flex mt-4 mx-4">
-					<div
-						className={`text-xl text-white`}
-					>
-						Buildings DLC
-					</div>
-					<div className="flex items-center justify-start w-full">
-						<label className="flex items-center cursor-pointer">
-							<div className="relative">
-								<input
-									type="checkbox"
-									id="toggleB"
-									className="sr-only"
-									onChange={() => setIsBuilding(!isBuilding)}
-								/>
-								<div className="block bg-gray-600 w-14 h-8 rounded-full" />
-								<div className="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition" />
-							</div>
-							<div className="ml-3 text-gray-700 font-medium"></div>
-						</label>
-					</div>
 				</div>
 			</Layout>
 		</>

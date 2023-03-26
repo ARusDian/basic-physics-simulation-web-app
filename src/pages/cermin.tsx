@@ -6,20 +6,19 @@ import drawLine from "../utils/drawLine";
 import drawBaseView from "../components/drawBaseView";
 import AlgorithmDDA from "@/utils/AlgorithmDDA";
 import Vector2f from "@/utils/Vector2f";
-import drawEllipse from "@/utils/drawEllipse";
-import drawPlane, { drawExplosion, drawMirrorTowers_kuadranAtas, drawMirrorTowers_kuadranBawah, drawTowers } from "@/components/DLC";
 import AlgorithmMPT from '../utils/AlgorithmMPT';
+import drawPlane, { drawExplosion, drawMirrorTowers_kuadranAtas, drawMirrorTowers_kuadranBawah, drawTowers } from "@/components/DLC";
 
 export default function Cermin() {
 	const [objectDistance, setObjectDistance] = useState(100);
-	const [objectHeight, setObjectHeight] = useState(80);
+	const [objectHeight, setObjectHeight] = useState(200);
 	const [mirrorObjectDistance, setMirrorObjectDistance] = useState(0);
 	const [mirrorObjectHeight, setMirrorObjectHeight] = useState(0);
 	const [mirrorFocus, setmirrorFocus] = useState(70);
 	const [isConvex, setIsConvex] = useState(false);
 	const [isBuilding, setIsBuilding] = useState(false);
 	const [planeToggle, setPlaneToggle] = useState(false);
-	const [planeDistanceCoefficient, setPlaneDistanceCoeffiecient] = useState(1.3);
+	const [planeDistanceCoefficient, setPlaneDistanceCoeffiecient] = useState(400);
 	const planeTipDistance = planeDistanceCoefficient + objectDistance;
 	const planeTipHeight = 5 / 8 * objectHeight;
 	const toggleDot = -objectDistance - 45;
@@ -44,6 +43,13 @@ export default function Cermin() {
 
 		ctx.closePath();
 	}
+
+	useEffect(() => {
+		if(!isBuilding){
+			setPlaneToggle(false);	
+		}
+		setPlaneDistanceCoeffiecient(100);
+	},[isBuilding]);
 
 	useEffect(() => {
 		const goDraw = () => {
@@ -71,7 +77,7 @@ export default function Cermin() {
 
 				drawTowers(context, objectDistance, objectHeight, isBuilding);
 
-				if (isBuilding) {
+				if (planeToggle) {
 					if (blownDot >= toggleDot) {
 						drawExplosion(context, objectDistance, objectHeight, planeDistanceCoefficient, blownDot, planeTipDistance, planeTipHeight);
 					}
@@ -114,21 +120,10 @@ export default function Cermin() {
 						text: "Curvature",
 					});
 
-					drawMirrorTowers_kuadranAtas(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
 
-
-					// if (objectDistance != calculatedFocus) {
-					// 	drawLine({
-					// 		ctx: context,
-					// 		start: { x: -mirrorObjectDistance, y: 0 },
-					// 		end: {
-					// 			x: -mirrorObjectDistance,
-					// 			y: -mirrorObjectHeight,
-					// 		},
-					// 		color: "green",
-					// 		text: "Image",
-					// 	});
-					// }
+					if (objectDistance != calculatedFocus) {
+						drawMirrorTowers_kuadranAtas(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
+					}
 
 					AlgorithmDDA({
 						ctx: context,
@@ -204,6 +199,16 @@ export default function Cermin() {
 						canvasWidth: canvas.width,
 						color: "lime",
 						beyond: true,
+					});
+
+					AlgorithmDDA({
+						ctx: context,
+						start: new Vector2f(
+							-objectDistance,
+							-objectHeight
+						),
+						end: new Vector2f(0, 0),
+						color: "red",
 					});
 
 					AlgorithmDDA({
@@ -311,12 +316,7 @@ export default function Cermin() {
 						return;
 					} else if (objectDistance > calculatedFocus) {
 						if (objectDistance != calculatedFocus) {
-
 							drawMirrorTowers_kuadranBawah(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
-
-
-
-
 						}
 
 						AlgorithmDDA({
@@ -415,17 +415,6 @@ export default function Cermin() {
 							beyond: true,
 						});
 					} else if (objectDistance < calculatedFocus) {
-						// drawLine({
-						// 	ctx: context,
-						// 	start: { x: -mirrorObjectDistance, y: 0 },
-						// 	end: {
-						// 		x: -mirrorObjectDistance,
-						// 		y: -mirrorObjectHeight,
-						// 	},
-						// 	color: "green",
-						// 	text: "Image",
-						// });
-
 						drawMirrorTowers_kuadranAtas(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
 
 						AlgorithmDDA({
@@ -843,7 +832,7 @@ export default function Cermin() {
 									}
 									className="slider-horizontal w-full"
 									value={planeDistanceCoefficient}
-									max={150}
+									max={450}
 									min={10}
 								/>
 							</div>
