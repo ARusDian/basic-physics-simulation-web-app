@@ -17,20 +17,22 @@ export default function Lensa() {
 	const [isConvex, setIsConvex] = useState(true);
 	const [isBuilding, setIsBuilding] = useState(false);
 	const [planeToggle, setPlaneToggle] = useState(false);
-	const [planeDistanceCoefficient, setPlaneDistanceCoeffiecient] = useState(1.3);
+	const [planeDistanceCoefficient, setPlaneDistanceCoeffiecient] = useState(400);
+	const [isAnimate, setIsAnimate] = useState(false);
 	const planeTipDistance = planeDistanceCoefficient + objectDistance;
 	const toggleDot = -objectDistance - 45;
 	const blownDot = -planeTipDistance;
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
-
 	const animate = async () => {
 		if (blownDot - 30 >= toggleDot) return;
-		for (let i = planeDistanceCoefficient; i > 0; i -= 1) {
+		setIsAnimate(true);
+		for (let i = planeDistanceCoefficient; i > 0; i -= 2) {
 
 			await new Promise(resolve => setTimeout(resolve, 10));
 			setPlaneDistanceCoeffiecient(i);
 		}
+		setIsAnimate(false);
 	};
 
 	function initDraw(
@@ -55,7 +57,7 @@ export default function Lensa() {
 		if (!isBuilding) {
 			setPlaneToggle(false);
 		}
-		setPlaneDistanceCoeffiecient(100);
+		setPlaneDistanceCoeffiecient(440);
 	}, [isBuilding]);
 
 	useEffect(() => {
@@ -820,28 +822,30 @@ export default function Lensa() {
 							</div>
 						)}
 						{planeToggle && (
-							<div className="flex-row items-center justify-center w-fit">
-								<div
-									className={`text-lg text-white`}
-								>
-									Plane Distance from Towers
+							<>
+								<div className="flex-row items-center justify-center w-fit">
+									<div
+										className={`text-lg text-white`}
+									>
+										Plane Distance from Towers
+									</div>
+									<Slider
+										handler={(e) =>
+											setPlaneDistanceCoeffiecient(parseFloat(e.target.value))
+										}
+										className="slider-horizontal w-full"
+										value={planeDistanceCoefficient}
+										max={450}
+										min={10}
+									/>
 								</div>
-								<Slider
-									handler={(e) =>
-										setPlaneDistanceCoeffiecient(parseFloat(e.target.value))
-									}
-									className="slider-horizontal w-full"
-									value={planeDistanceCoefficient}
-									max={450}
-									min={10}
-								/>
-							</div>
+								<div >
+									<button className={`${isAnimate ? "bg-blue-700" : "bg-sky-500"} hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`} onClick={animate} disabled={isAnimate}>
+										{isAnimate ? "Attacking..." : "Animate"}
+									</button>
+								</div>
+							</>
 						)}
-						<div >
-							<button className="bg-sky-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={animate}>
-								Animate
-							</button>
-						</div>
 					</div>
 				</div>
 			</Layout>
