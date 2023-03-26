@@ -6,7 +6,7 @@ import drawBaseView from "@/components/drawBaseView";
 import AlgorithmDDA from "@/utils/AlgorithmDDA";
 import AlgorithmMPT from "@/utils/AlgorithmMPT";
 import Vector2f from "../utils/Vector2f";
-import drawPlane, { drawMirrorTowers_kuadranAtas, drawMirrorTowers_kuadranBawah, drawTowers } from "@/components/DLC";
+import drawPlane, { drawExplosion, drawMirrorTowers_kuadranAtas, drawMirrorTowers_kuadranBawah, drawTowers } from "@/components/DLC";
 
 export default function Lensa() {
 	const [objectDistance, setObjectDistance] = useState(122);
@@ -16,9 +16,22 @@ export default function Lensa() {
 	const [mirrorFocus, setmirrorFocus] = useState(250);
 	const [isConvex, setIsConvex] = useState(true);
 	const [isBuilding, setIsBuilding] = useState(false);
+	const [planeToggle, setPlaneToggle] = useState(false);
 	const [planeDistanceCoefficient, setPlaneDistanceCoeffiecient] = useState(1.3);
-
+	const planeTipDistance = planeDistanceCoefficient + objectDistance;
+	const toggleDot = -objectDistance - 45;
+	const blownDot = -planeTipDistance;
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+
+
+	const animate = async () => {
+		if (blownDot - 30 >= toggleDot) return;
+		for (let i = planeDistanceCoefficient; i > 0; i -= 1) {
+
+			await new Promise(resolve => setTimeout(resolve, 10));
+			setPlaneDistanceCoeffiecient(i);
+		}
+	};
 
 	function initDraw(
 		ctx: CanvasRenderingContext2D,
@@ -37,6 +50,13 @@ export default function Lensa() {
 
 		ctx.closePath();
 	}
+	
+	useEffect(() => {
+		if (!isBuilding) {
+			setPlaneToggle(false);
+		}
+		setPlaneDistanceCoeffiecient(100);
+	}, [isBuilding]);
 
 	useEffect(() => {
 		const goDraw = () => {
@@ -70,8 +90,52 @@ export default function Lensa() {
 				// 	text: "Object",
 				// });
 
-				drawPlane(context, objectDistance, objectHeight, isBuilding, planeDistanceCoefficient);
 				drawTowers(context, objectDistance, objectHeight, isBuilding);
+
+				if (planeToggle) {
+					if (!(blownDot - 30 >= toggleDot)) {
+						drawPlane(context, objectDistance, objectHeight, planeToggle, planeDistanceCoefficient);
+					}
+					drawExplosion(
+						context,
+						objectDistance,
+						objectHeight,
+						planeDistanceCoefficient,
+						blownDot,
+						toggleDot,
+						0,
+						true
+					);
+					drawExplosion(
+						context,
+						objectDistance,
+						objectHeight,
+						planeDistanceCoefficient,
+						blownDot,
+						toggleDot,
+						20,
+						true
+					);
+					drawExplosion(
+						context,
+						objectDistance,
+						objectHeight,
+						planeDistanceCoefficient,
+						blownDot,
+						toggleDot,
+						30
+					);
+					drawExplosion(
+						context,
+						objectDistance,
+						objectHeight,
+						planeDistanceCoefficient,
+						blownDot,
+						toggleDot,
+						50
+					);
+
+				}
 
 				if (isConvex) {
 					const calculatedFocus = mirrorFocus;
@@ -132,7 +196,7 @@ export default function Lensa() {
 						return;
 					}
 
-					
+
 
 					// Draw MirrorObject
 					// drawLine({
@@ -153,7 +217,7 @@ export default function Lensa() {
 							end: new Vector2f(0, -objectHeight),
 							color: "cyan",
 						});
-						
+
 						AlgorithmDDA({
 							ctx: context,
 							start: new Vector2f(0, objectHeight),
@@ -183,7 +247,7 @@ export default function Lensa() {
 							end: new Vector2f(canvas.width, mirrorObjectHeight),
 							color: "lime",
 						});
-						
+
 						AlgorithmDDA({
 							ctx: context,
 							start: new Vector2f(-objectDistance, objectHeight),
@@ -253,7 +317,7 @@ export default function Lensa() {
 							canvasWidth: canvas.width,
 							color: "red",
 							beyond: true,
-						});	
+						});
 
 						AlgorithmDDA({
 							ctx: context,
@@ -495,6 +559,10 @@ export default function Lensa() {
 		objectDistance,
 		objectHeight,
 		isBuilding,
+		planeDistanceCoefficient,
+		planeToggle,
+		blownDot,
+		toggleDot
 	]);
 	const configBar = () => {
 		return (
@@ -714,12 +782,10 @@ export default function Lensa() {
 					></canvas>
 				</div>
 				<div className="flex mt-4 mx-4">
-					<div
-						className={`text-xl text-white`}
-					>
+					<div className={`text-xl text-white`}>
 						Buildings DLC
 					</div>
-					<div className="flex items-center justify-start w-full">
+					<div className="flex items-center gap-5 justify-start w-full">
 						<label className="flex items-center cursor-pointer">
 							<div className="relative">
 								<input
@@ -733,6 +799,49 @@ export default function Lensa() {
 							</div>
 							<div className="ml-3 text-gray-700 font-medium"></div>
 						</label>
+						{isBuilding && (
+							<div className="flex">
+								<div className="text-xl text-white w-20">
+									Plane Toggle
+								</div>
+								<label className="flex items-center cursor-pointer">
+									<div className="relative">
+										<input
+											type="checkbox"
+											id="toggleB"
+											className="sr-only"
+											onChange={() => setPlaneToggle(!planeToggle)}
+										/>
+										<div className="block bg-gray-600 w-14 h-8 rounded-full" />
+										<div className="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition" />
+									</div>
+									<div className="ml-3 text-gray-700 font-medium"></div>
+								</label>
+							</div>
+						)}
+						{planeToggle && (
+							<div className="flex-row items-center justify-center w-fit">
+								<div
+									className={`text-lg text-white`}
+								>
+									Plane Distance from Towers
+								</div>
+								<Slider
+									handler={(e) =>
+										setPlaneDistanceCoeffiecient(parseFloat(e.target.value))
+									}
+									className="slider-horizontal w-full"
+									value={planeDistanceCoefficient}
+									max={450}
+									min={10}
+								/>
+							</div>
+						)}
+						<div >
+							<button className="bg-sky-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={animate}>
+								Animate
+							</button>
+						</div>
 					</div>
 				</div>
 			</Layout>
