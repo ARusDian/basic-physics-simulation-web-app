@@ -1,24 +1,42 @@
 import Slider from "@/components/Slider";
-import drawInfiniteLine from "@/utils/drawInfiniteLine";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import Layout from "../components/Layout";
 import drawLine from "../utils/drawLine";
-import writeText from "@/utils/writeText";
+import drawBaseView from "../components/drawBaseView";
+import AlgorithmDDA from "@/utils/AlgorithmDDA";
+import Vector2f from "@/utils/Vector2f";
+import AlgorithmMPT from '../utils/AlgorithmMPT';
+import drawPlane, { drawExplosion, drawMirrorTowers_kuadranAtas, drawMirrorTowers_kuadranBawah, drawTowers } from "@/components/DLC";
 
 export default function Cermin() {
 	const [objectDistance, setObjectDistance] = useState(100);
-	const [objectHeight, setObjectHeight] = useState(80);
+	const [objectHeight, setObjectHeight] = useState(200);
 	const [mirrorObjectDistance, setMirrorObjectDistance] = useState(0);
 	const [mirrorObjectHeight, setMirrorObjectHeight] = useState(0);
 	const [mirrorFocus, setmirrorFocus] = useState(70);
 	const [isConvex, setIsConvex] = useState(false);
-
+	const [isBuilding, setIsBuilding] = useState(false);
+	const [planeToggle, setPlaneToggle] = useState(false);
+	const [planeDistanceCoefficient, setPlaneDistanceCoeffiecient] = useState(400);
+	const planeTipDistance = planeDistanceCoefficient + objectDistance;
+	const toggleDot = -objectDistance - 45;
+	const blownDot = -planeTipDistance;
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
+	const animate = async () => {
+		if (blownDot - 30 >= toggleDot) return;
+		for (let i = planeDistanceCoefficient; i > 0; i -= 1) {
 
+			await new Promise(resolve => setTimeout(resolve, 10));
+			setPlaneDistanceCoeffiecient(i);
+		}
+	};
 
-	function initDraw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
+	function initDraw(
+		ctx: CanvasRenderingContext2D,
+		canvas: HTMLCanvasElement
+	): void {
 		ctx.strokeStyle = "#000000";
 		ctx.beginPath();
 
@@ -34,130 +52,100 @@ export default function Cermin() {
 	}
 
 	useEffect(() => {
+		if (!isBuilding) {
+			setPlaneToggle(false);
+		}
+		setPlaneDistanceCoeffiecient(100);
+	}, [isBuilding]);
+
+	useEffect(() => {
 		const goDraw = () => {
 			if (!canvasRef.current) return;
 			const canvas: HTMLCanvasElement = canvasRef.current;
-			const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
+			const context: CanvasRenderingContext2D | null =
+				canvas.getContext("2d");
 
 			if (context) {
 				// For refresh canvas
 				// eslint-disable-next-line no-self-assign
 				context.canvas.width = context.canvas.width;
-				context.setTransform(1, 0, 0, 1, canvas.width / 2, canvas.height / 2);
-				context.clearRect(0, 0, canvas.width / 2, canvas.height / 2);
+				context.setTransform(
+					1,
+					0,
+					0,
+					1,
+					canvas.width / 2,
+					canvas.height / 2
+				);
+				context.clearRect(0, 0, canvas.width, canvas.height);
 				initDraw(context, canvas);
 
-				// Draw Object
-				drawLine({
-					ctx: context,
-					start: { x: -objectDistance, y: 0 },
-					end: { x: -objectDistance, y: objectHeight },
-					color: "#ea96FF",
-					text: "Object",
-				});
-				// Draw Focus coordinate
-				drawLine({
-					ctx: context,
-					start: { x: - mirrorFocus, y: 0 },
-					end: { x: -	mirrorFocus, y: 30 },
-					color: "purple",
-					text: "Focus",
-				});
-				// Draw Curvature Point
-				drawLine({
-					ctx: context,
-					start: { x: - mirrorFocus * 2, y: 2 },
-					end: { x: -	mirrorFocus * 2, y: 30 },
-					color: "brown",
-					text: "Curvature",
-				});
-				//text for 1st object dimension(ruang cahaya I)
-				writeText({
-					ctx: context,
-					start: { x: - mirrorFocus + mirrorFocus * 0.5, y: 2 },
-					end: { x: -	mirrorFocus + mirrorFocus * 0.5, y: -20 },
-					text: "Ruang I",
-					color: 'black',
-				});
-				//text for 2nd object dimension(ruang cahaya II)
-				writeText({
-					ctx: context,
-					start: { x: - mirrorFocus * 1.5, y: 2 },
-					end: { x: -	mirrorFocus * 1.5, y: -20 },
-					text: "Ruang II",
-					color: 'black',
-				});
-				//text for 3rd object dimension(ruang cahaya III)
-				writeText({
-					ctx: context,
-					start: { x: - mirrorFocus * 2.5, y: 2 },
-					end: { x: -	mirrorFocus * 2.5, y: -20 },
-					text: "Ruang III",
-					color: 'black',
-				});
-				//text for 4th object dimension(ruang cahaya IV)
-				writeText({
-					ctx: context,
-					start: { x: canvas.width / 3, y: 0 },
-					end: { x: canvas.width / 4, y: -20 },
-					text: "Ruang IV",
-					color: 'black',
-				});
+				drawBaseView(context, canvas, mirrorFocus, true);
 
-				writeText({
-					ctx: context,
-					start: { x: - canvas.width / 2.5, y: 0 },
-					end: { x: - canvas.width / 2.5, y: 0 },
-					text: "",
-					color: "#7D379",
-				});
+				drawTowers(context, objectDistance, objectHeight, isBuilding);
 
-				//text keterangan ruang benda
-				writeText({
-					ctx: context,
-					start: { x: - canvas.width / 2.5, y: 0 },
-					end: { x: - canvas.width / 2.5, y: 300 },
-					text: "Ruang benda (depan)",
-					color: "#3E8497",
-				});
+				if (planeToggle) {
+					if (!(blownDot - 30 >= toggleDot)) {
+						drawPlane(context, objectDistance, objectHeight, planeToggle, planeDistanceCoefficient);
+					}
+					drawExplosion(
+						context,
+						objectDistance,
+						objectHeight,
+						planeDistanceCoefficient,
+						blownDot,
+						toggleDot,
+						0,
+						true
+					);
+					drawExplosion(
+						context,
+						objectDistance,
+						objectHeight,
+						planeDistanceCoefficient,
+						blownDot,
+						toggleDot,
+						20,
+						true
+					);
+					drawExplosion(
+						context,
+						objectDistance,
+						objectHeight,
+						planeDistanceCoefficient,
+						blownDot,
+						toggleDot,
+						30
+					);
+					drawExplosion(
+						context,
+						objectDistance,
+						objectHeight,
+						planeDistanceCoefficient,
+						blownDot,
+						toggleDot,
+						50
+					);
 
-				writeText({
-					ctx: context,
-					start: { x: - canvas.width / 2.5, y: 0 },
-					end: { x: - canvas.width / 2.5, y: 300 },
-					text: "Ruang benda (depan)",
-					color: "#7D3796",
-				});
-
-				writeText({
-					ctx: context,
-					start: { x: -  canvas.width / 2.5, y: 0 },
-					end: { x: - canvas.width / 2.5, y: - 300 },
-					text: "Ruang bayangan (depan)",
-					color: "#3E8497",
-				});
-
-				writeText({
-					ctx: context,
-					start: { x: canvas.width / 2.5, y: 0 },
-					end: { x: canvas.width / 2.5, y: 300 },
-					text: "Ruang benda (belakang)",
-					color: "#7D3796",
-				});
-
-				writeText({
-					ctx: context,
-					start: { x: canvas.width / 2.5, y: 0 },
-					end: { x: canvas.width / 2.5, y: - 300 },
-					text: "Ruang bayangan (belakang)",
-					color: "#3E8497",
-				});
+				}
 
 				if (isConvex) {
 					const calculatedFocus = -mirrorFocus;
-					setMirrorObjectDistance((objectDistance * calculatedFocus) / (objectDistance - calculatedFocus));
-					setMirrorObjectHeight((mirrorObjectDistance * objectHeight) / objectDistance);
+					setMirrorObjectDistance(
+						(objectDistance * calculatedFocus) /
+						(objectDistance - calculatedFocus)
+					);
+					setMirrorObjectHeight(
+						(mirrorObjectDistance * objectHeight) / objectDistance
+					);
 
+					if (objectDistance == 0) {
+						return;
+					} else if (calculatedFocus == 0) {
+						return;
+					} else if (objectHeight == 0) {
+						return;
+					}
 					// Draw Focus coordinate behind mirror
 					drawLine({
 						ctx: context,
@@ -175,220 +163,433 @@ export default function Cermin() {
 						text: "Curvature",
 					});
 
-					drawLine({
-						ctx: context,
-						start: { x: -(mirrorObjectDistance), y: 0 },
-						end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
-						color: "green",
-						text: "Image",
-					});
 
-					drawLine({
+					if (objectDistance != calculatedFocus) {
+						drawMirrorTowers_kuadranAtas(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
+					}
+
+					AlgorithmDDA({
 						ctx: context,
-						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						end: { x: 0, y: objectHeight },
+						start: new Vector2f(
+							-mirrorObjectDistance,
+							mirrorObjectHeight
+						),
+						end: new Vector2f(0, -objectHeight),
 						color: "cyan",
 						isDash: true,
+						beyond: false,
 					});
-					drawInfiniteLine({
+					AlgorithmDDA({
 						ctx: context,
-						beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						start: { x: 0, y: objectHeight },
-						end: { x: -canvas.width },
-						color: "cyan",
+						beforeStart: new Vector2f(
+							-mirrorObjectDistance,
+							-mirrorObjectHeight
+						),
+						start: new Vector2f(0, objectHeight),
+						end: new Vector2f(-canvas.width, 0),
 						canvasWidth: canvas.width,
-					});
-					drawLine({
-						ctx: context,
-						start: { x: -objectDistance, y: objectHeight },
-						end: { x: 0, y: objectHeight },
 						color: "cyan",
+						beyond: true,
+					});
+					AlgorithmDDA({
+						ctx: context,
+						start: new Vector2f(-objectDistance, -objectHeight),
+						end: new Vector2f(0, -objectHeight),
+						color: "cyan",
+						beyond: false,
 					});
 
-					drawLine({
+					AlgorithmDDA({ //Sinar Datang
 						ctx: context,
-						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						end: { x: 0, y: -mirrorObjectHeight },
+						start: new Vector2f(-canvas.width, -objectHeight),
+						end: new Vector2f(-objectDistance, -objectHeight),
+						color: "cyan",
+						beyond: false,
+					});
+
+					AlgorithmDDA({
+						ctx: context,
+						start: new Vector2f(
+							-mirrorObjectDistance,
+							mirrorObjectHeight
+						),
+						end: new Vector2f(0, mirrorObjectHeight),
 						color: "lime",
 						isDash: true,
+						beyond: false,
 					});
 
-					drawLine({
+					AlgorithmDDA({
 						ctx: context,
-						start: { x: -objectDistance, y: objectHeight },
-						end: { x: 0, y: -mirrorObjectHeight },
+						start: new Vector2f(-objectDistance, -objectHeight),
+						end: new Vector2f(0, mirrorObjectHeight),
 						color: "lime",
 					});
 
-					drawLine({
+					AlgorithmDDA({
 						ctx: context,
-						start: { x: 0, y: -mirrorObjectHeight },
-						end: { x: -canvas.width, y: -mirrorObjectHeight },
+						start: new Vector2f(0, mirrorObjectHeight),
+						end: new Vector2f(-canvas.width, mirrorObjectHeight),
 						color: "lime",
+						beyond: false,
 					});
 
-					drawLine({
+					AlgorithmDDA({ //Sinar Datang
 						ctx: context,
-						start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						end: { x: 0, y: 0 },
-						color: "red",
-						isDash: true,
-					});
-					drawInfiniteLine({
-						ctx: context,
-						beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-						start: { x: 0, y: 0 },
-						end: { x: -canvas.width },
-						color: "red",
+						beforeStart: new Vector2f(0, -mirrorObjectHeight),
+						start: new Vector2f(-objectDistance, objectHeight),
+						end: new Vector2f(-canvas.width, 0),
 						canvasWidth: canvas.width,
+						color: "lime",
+						beyond: true,
 					});
-					drawLine({
+
+					AlgorithmDDA({
 						ctx: context,
-						start: { x: -objectDistance, y: objectHeight },
-						end: { x: 0, y: 0 },
+						start: new Vector2f(
+							-objectDistance,
+							-objectHeight
+						),
+						end: new Vector2f(0, 0),
 						color: "red",
 					});
 
+					AlgorithmDDA({
+						ctx: context,
+						start: new Vector2f(
+							-mirrorObjectDistance,
+							mirrorObjectHeight
+						),
+						end: new Vector2f(0, 0),
+						color: "red",
+						isDash: true,
+					});
+
+					AlgorithmDDA({
+						ctx: context,
+						beforeStart: new Vector2f(
+							-mirrorObjectDistance,
+							-mirrorObjectHeight
+						),
+						start: new Vector2f(0, 0),
+						end: new Vector2f(-canvas.width, 0),
+						canvasWidth: canvas.width,
+						color: "red",
+						beyond: true,
+					});
+
+					AlgorithmMPT({
+						ctx: context,
+						center: new Vector2f(-mirrorFocus * 2, 0),
+						radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
+						color: "blue",
+						height: canvas.height,
+						concave: false,
+						lens: false,
+					});
 				} else {
 					const calculatedFocus = mirrorFocus;
-					setMirrorObjectDistance(objectDistance * calculatedFocus / (objectDistance - calculatedFocus));
-					setMirrorObjectHeight(mirrorObjectDistance * objectHeight / objectDistance);
-					if (objectDistance >= calculatedFocus) {
-						drawLine({
+					setMirrorObjectDistance(
+						(objectDistance * calculatedFocus) /
+						(objectDistance - calculatedFocus)
+					);
+					setMirrorObjectHeight(
+						(mirrorObjectDistance * objectHeight) / objectDistance
+					);
+					if (objectDistance == 0) {
+						return;
+					} else if (calculatedFocus == 0) {
+						return;
+					} else if (objectHeight == 0) {
+						return;
+					} else if (
+						mirrorObjectDistance == Infinity ||
+						mirrorObjectHeight == Infinity
+					) {
+						AlgorithmDDA({
 							ctx: context,
-							start: { x: -(mirrorObjectDistance), y: 0 },
-							end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
-							color: "green",
-							text: "Image",
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(-objectDistance, canvas.height),
+							color: "lime",
 						});
 
-						drawLine({
+						AlgorithmDDA({
 							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: objectHeight },
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, 0),
+							color: "red",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, -objectHeight),
 							color: "cyan",
 						});
-
-						drawLine({
+						AlgorithmMPT({
 							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: 0 },
-							color: "red",
+							center: new Vector2f(-mirrorFocus * 2, 0),
+							radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
+							color: "blue",
+							height: canvas.height,
+							concave: true,
+							lens: false,
 						});
-
-						drawLine({
+						AlgorithmDDA({ //Sinar Datang
 							ctx: context,
-							start: { x: 0, y: 0 },
-							end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							color: "red",
+							start: new Vector2f(-canvas.width, -objectHeight),
+							end: new Vector2f(-objectDistance, -objectHeight),
+							color: "cyan",
 						});
-
-						drawInfiniteLine({
+						AlgorithmDDA({ //Sinar Datang
 							ctx: context,
-							beforeStart: { x: 0, y: 0 },
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: -canvas.width },
-							color: "red",
+							beforeStart: new Vector2f(0, 0),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
 							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
 						});
-
-						drawLine({
+						AlgorithmDDA({ //Sinar Datang
 							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: -mirrorObjectHeight },
+							start: new Vector2f(-objectDistance, -canvas.height),
+							end: new Vector2f(-objectDistance, -objectHeight),
 							color: "lime",
 						});
+						return;
+					} else if (objectDistance > calculatedFocus) {
+						if (objectDistance != calculatedFocus) {
+							drawMirrorTowers_kuadranBawah(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
+						}
 
-						drawInfiniteLine({
+						AlgorithmDDA({
 							ctx: context,
-							start: { x: 0, y: -mirrorObjectHeight },
-							end: { x: -canvas.width, y: -mirrorObjectHeight },
-							color: "lime",
-							canvasHeight: canvas.height
-						});
-
-						drawInfiniteLine({
-							ctx: context,
-							start: { x: 0, y: objectHeight },
-							end: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, -objectHeight),
 							color: "cyan",
-							canvasHeight: canvas.height
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, 0),
+							color: "red",
+							beyond: false,
+							isDash: false,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(0, 0),
+							end: new Vector2f(
+								-mirrorObjectDistance,
+								mirrorObjectHeight
+							),
+							color: "red",
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							start: new Vector2f(-canvas.width, -objectHeight),
+							end: new Vector2f(-objectDistance, -objectHeight),
+							color: "cyan",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new Vector2f(0, 0),
+							start: new Vector2f(
+								-mirrorObjectDistance,
+								-mirrorObjectHeight
+							),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, mirrorObjectHeight),
+							color: "lime",
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, 0),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(0, mirrorObjectHeight),
+							end: new Vector2f(
+								-canvas.width,
+								mirrorObjectHeight
+							),
+							color: "lime",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new Vector2f(
+								-mirrorObjectDistance,
+								-mirrorObjectHeight
+							),
+							start: new Vector2f(0, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "cyan",
+							beyond: true,
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, -mirrorObjectHeight),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "lime",
+							beyond: true,
+						});
+					} else if (objectDistance < calculatedFocus) {
+						drawMirrorTowers_kuadranAtas(context, mirrorObjectDistance, mirrorObjectHeight, isBuilding);
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(
+								-mirrorObjectDistance,
+								mirrorObjectHeight
+							),
+							end: new Vector2f(0, -objectHeight),
+							color: "cyan",
+							isDash: true,
+							beyond: false,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new Vector2f(
+								-mirrorObjectDistance,
+								-mirrorObjectHeight
+							),
+							start: new Vector2f(0, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "cyan",
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, -objectHeight),
+							color: "cyan",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(
+								-mirrorObjectDistance,
+								mirrorObjectHeight
+							),
+							end: new Vector2f(0, mirrorObjectHeight),
+							color: "lime",
+							isDash: true,
+							beyond: false,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, mirrorObjectHeight),
+							color: "lime",
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							start: new Vector2f(-canvas.width, -objectHeight),
+							end: new Vector2f(-objectDistance, -objectHeight),
+							color: "cyan",
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(0, mirrorObjectHeight),
+							end: new Vector2f(
+								-canvas.width,
+								mirrorObjectHeight
+							),
+							color: "lime",
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, -mirrorObjectHeight),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "lime",
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(
+								-mirrorObjectDistance,
+								mirrorObjectHeight
+							),
+							end: new Vector2f(0, 0),
+							color: "red",
+							isDash: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							beforeStart: new Vector2f(
+								-mirrorObjectDistance,
+								-mirrorObjectHeight
+							),
+							start: new Vector2f(0, 0),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
+						});
+
+						AlgorithmDDA({
+							ctx: context,
+							start: new Vector2f(-objectDistance, -objectHeight),
+							end: new Vector2f(0, 0),
+							color: "red",
+						});
+
+						AlgorithmDDA({ //Sinar Datang
+							ctx: context,
+							beforeStart: new Vector2f(0, 0),
+							start: new Vector2f(-objectDistance, objectHeight),
+							end: new Vector2f(-canvas.width, 0),
+							canvasWidth: canvas.width,
+							color: "red",
+							beyond: true,
 						});
 					} else {
-						drawLine({
-							ctx: context,
-							start: { x: -(mirrorObjectDistance), y: 0 },
-							end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
-							color: "green",
-							text: "Image",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: 0, y: objectHeight },
-							color: "cyan",
-							isDash: true,
-						});
-						drawInfiniteLine({
-							ctx: context,
-							beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							start: { x: 0, y: objectHeight },
-							end: { x: -canvas.width },
-							color: "cyan",
-							canvasWidth: canvas.width,
-						});
-						drawLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: objectHeight },
-							color: "cyan",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: 0, y: -mirrorObjectHeight },
-							color: "lime",
-							isDash: true,
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: -mirrorObjectHeight },
-							color: "lime",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: 0, y: -mirrorObjectHeight },
-							end: { x: -canvas.width, y: -mirrorObjectHeight },
-							color: "lime",
-						});
-
-						drawLine({
-							ctx: context,
-							start: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							end: { x: 0, y: 0 },
-							color: "red",
-							isDash: true,
-						});
-						drawInfiniteLine({
-							ctx: context,
-							beforeStart: { x: -mirrorObjectDistance, y: -mirrorObjectHeight },
-							start: { x: 0, y: 0 },
-							end: { x: -canvas.width },
-							color: "red",
-							canvasWidth: canvas.width,
-						});
-						drawLine({
-							ctx: context,
-							start: { x: -objectDistance, y: objectHeight },
-							end: { x: 0, y: 0 },
-							color: "red",
-						});
+						return;
 					}
+					AlgorithmMPT({
+						ctx: context,
+						center: new Vector2f(-mirrorFocus * 2, 0),
+						radius: new Vector2f(2 * mirrorFocus, 2 * mirrorFocus),
+						color: "blue",
+						height: canvas.height,
+						concave: true,
+						lens: false,
+					});
 				}
 			}
 		};
@@ -400,63 +601,75 @@ export default function Cermin() {
 		mirrorObjectHeight,
 		objectDistance,
 		objectHeight,
-		setIsConvex]);
+		isBuilding,
+		planeDistanceCoefficient,
+		planeToggle,
+		blownDot,
+		toggleDot
+	]);
 	const configBar = () => {
-
 		return (
 			<>
 				<div className="flex mt-4 mx-4">
-					<div className={`text-xl ${(!isConvex) ? "text-cyan-400" : ""}`}>
+					<div
+						className={`text-xl ${!isConvex ? "text-cyan-400" : ""}`}
+					>
 						Concave
 					</div>
 					<div className="flex items-center justify-center w-full">
 						<label className="flex items-center cursor-pointer">
 							<div className="relative">
-								<input type="checkbox" id="toggleB" className="sr-only" onChange={() => setIsConvex(!isConvex)} />
+								<input
+									type="checkbox"
+									id="toggleB"
+									className="sr-only"
+									onChange={() => setIsConvex(!isConvex)}
+								/>
 								<div className="block bg-gray-600 w-14 h-8 rounded-full" />
 								<div className="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition" />
 							</div>
-							<div className="ml-3 text-gray-700 font-medium">
-							</div>
+							<div className="ml-3 text-gray-700 font-medium"></div>
 						</label>
 					</div>
-					<div className={`text-xl ${(isConvex) ? "text-cyan-400" : ""}`}>
+					<div
+						className={`text-xl ${isConvex ? "text-cyan-400" : ""}`}
+					>
 						Convex
 					</div>
 				</div>
 				<div className="flex my-20">
 					<Slider
-						handler={(e) => setmirrorFocus(parseInt(e.target.value))}
+						handler={(e) =>
+							setmirrorFocus(parseInt(e.target.value))
+						}
 						className="slider-vertical"
 						value={mirrorFocus}
 						max={540}
 						min={0}
 					/>
 					<Slider
-						handler={(e) => setObjectHeight(parseInt(e.target.value))}
+						handler={(e) =>
+							setObjectHeight(parseInt(e.target.value))
+						}
 						className="slider-vertical"
 						value={objectHeight}
 						max={360}
-						min={-360}
+						min={30}
 					/>
 					<Slider
-						handler={(e) => setObjectDistance(parseInt(e.target.value))}
+						handler={(e) =>
+							setObjectDistance(parseInt(e.target.value))
+						}
 						className="slider-vertical"
 						value={objectDistance}
 						max={540}
-						min={0}
+						min={isBuilding ? 45 : 0}
 					/>
 				</div>
 				<div className="flex justify-between mx-16">
-					<div className="text-xl">
-						f
-					</div>
-					<div className="text-xl">
-						h
-					</div>
-					<div className="text-xl">
-						s
-					</div>
+					<div className="text-xl">f</div>
+					<div className="text-xl">h</div>
+					<div className="text-xl">s</div>
 				</div>
 				<div className="flex mt-2 mx-4">
 					<table className="w-full text-sm text-left text-gray-500">
@@ -478,8 +691,7 @@ export default function Cermin() {
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
 									Distance between Object and Mirror
 								</td>
-								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-								</td>
+								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500"></td>
 							</tr>
 							<tr>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
@@ -488,8 +700,7 @@ export default function Cermin() {
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
 									Height of Object
 								</td>
-								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-								</td>
+								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500"></td>
 							</tr>
 							<tr>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
@@ -498,8 +709,7 @@ export default function Cermin() {
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
 									Focus of Mirror
 								</td>
-								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-								</td>
+								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500"></td>
 							</tr>
 						</tbody>
 					</table>
@@ -530,7 +740,11 @@ export default function Cermin() {
 										type="number"
 										className="w-20 bg-transparent"
 										value={objectDistance}
-										onChange={(e) => setObjectDistance(parseFloat(e.target.value))}
+										onChange={(e) =>
+											setObjectDistance(
+												parseFloat(e.target.value)
+											)
+										}
 										min={0}
 										step={"any"}
 									/>
@@ -548,7 +762,11 @@ export default function Cermin() {
 										type="number"
 										className="w-20 bg-transparent"
 										value={objectHeight}
-										onChange={(e) => setObjectHeight(parseFloat(e.target.value))}
+										onChange={(e) =>
+											setObjectHeight(
+												parseFloat(e.target.value)
+											)
+										}
 										min={-360}
 										step={"any"}
 									/>
@@ -568,14 +786,21 @@ export default function Cermin() {
 											type="number"
 											className="w-20 bg-transparent"
 											value={mirrorFocus}
-											onChange={(e) => setmirrorFocus(parseFloat(e.target.value))}
+											onChange={(e) =>
+												setmirrorFocus(
+													parseFloat(e.target.value)
+												)
+											}
 											min={0}
 											step={"any"}
 										/>
 									</div>
 								</td>
 								<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-									M = {Math.abs(mirrorObjectDistance / objectDistance)}
+									M ={" "}
+									{Math.abs(
+										mirrorObjectDistance / objectDistance
+									)}
 								</td>
 							</tr>
 						</tbody>
@@ -584,4 +809,18 @@ export default function Cermin() {
 			</>
 		);
 	};
+
+	return (
+		<>
+			<Head>
+				<title>Simulasi Cahaya</title>
+			</Head>
+			<Layout configBar={configBar}>
+				<div className="flex flex-col items-center justify-center w-full h-full">
+					<canvas ref={canvasRef} width={1080} height={720} className={"bg-white"}></canvas>
+				</div>
+			</Layout>
+		</>
+	);
 }
+

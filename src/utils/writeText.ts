@@ -18,6 +18,7 @@ export default function writeText(props: Props) {
 	}
 	ctx.strokeStyle = "white";
 	ctx.lineWidth = 1;
+	ctx.strokeStyle = 'rgba(' + [0, 0, 0, 0] + ')';	
 	ctx.moveTo(start.x, start.y);
 	ctx.lineTo(end.x, -end.y);
 	ctx.stroke();

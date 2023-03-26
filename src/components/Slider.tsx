@@ -12,7 +12,7 @@ interface SliderInterface {
 const Slider = (props: SliderInterface) => {
 	// console.log(props.value);
 	return (
-		<input type="range" min={props.min} max={props.max} className={props.className} onChange={props.handler} value={ props.value} />
+		<input type="range" min={props.min} max={props.max} className={props.className} onChange={props.handler} value={ props.value} step="any"/>
 	);
 };
 
