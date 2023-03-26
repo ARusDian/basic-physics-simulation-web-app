@@ -84,7 +84,7 @@ export default function Cermin() {
 
 				drawTowers(context, objectDistance, objectHeight, isBuilding);
 
-				if (planeToggle) {
+				if (planeToggle && objectHeight > 130) {
 					if (!(blownDot - 30 >= toggleDot)) {
 						drawPlane(context, objectDistance, objectHeight, planeToggle, planeDistanceCoefficient);
 					}
