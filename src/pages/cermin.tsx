@@ -7,7 +7,7 @@ import drawBaseView from "../components/drawBaseView";
 import AlgorithmDDA from "@/utils/AlgorithmDDA";
 import Vector2f from "@/utils/Vector2f";
 import drawEllipse from "@/utils/drawEllipse";
-import drawPlane, { drawMirrorTowers_kuadranAtas, drawMirrorTowers_kuadranBawah, drawTowers } from "@/components/DLC";
+import drawPlane, { drawExplosion, drawMirrorTowers_kuadranAtas, drawMirrorTowers_kuadranBawah, drawTowers } from "@/components/DLC";
 
 export default function Cermin() {
 	const [objectDistance, setObjectDistance] = useState(100);
@@ -19,7 +19,11 @@ export default function Cermin() {
 	const [isBuilding, setIsBuilding] = useState(false);
 	const [planeToggle, setPlaneToggle] = useState(false);
 	const [planeDistanceCoefficient, setPlaneDistanceCoeffiecient] = useState(1.3);
-
+	const planeTipDistance = planeDistanceCoefficient + objectDistance;
+	const planeTipHeight = 5 / 8 * objectHeight;
+	const toggleDot = -objectDistance - 45;
+	const blownDot = -planeTipDistance;
+	console.log(toggleDot, blownDot);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
 	function initDraw(
@@ -65,7 +69,15 @@ export default function Cermin() {
 				drawBaseView(context, canvas, mirrorFocus, true);
 
 				drawTowers(context, objectDistance, objectHeight, isBuilding);
-				drawPlane(context, objectDistance, objectHeight, planeToggle, planeDistanceCoefficient);
+
+				if (isBuilding) {
+					if (blownDot >= toggleDot) {
+						drawExplosion(context, objectDistance, objectHeight, planeDistanceCoefficient, blownDot, planeTipDistance, planeTipHeight);
+					}
+					if (!(blownDot - 30 >= toggleDot)) {
+						drawPlane(context, objectDistance, objectHeight, planeToggle, planeDistanceCoefficient);
+					}
+				}
 
 				if (isConvex) {
 					const calculatedFocus = -mirrorFocus;
@@ -465,15 +477,16 @@ export default function Cermin() {
 		objectHeight,
 		isBuilding,
 		planeDistanceCoefficient,
-		planeToggle
+		planeToggle,
+		blownDot,
+		toggleDot
 	]);
 	const configBar = () => {
 		return (
 			<>
 				<div className="flex mt-4 mx-4">
 					<div
-						className={`text-xl ${!isConvex ? "text-cyan-400" : ""
-							}`}
+						className={`text-xl ${!isConvex ? "text-cyan-400" : ""}`}
 					>
 						Concave
 					</div>
@@ -731,14 +744,13 @@ export default function Cermin() {
 									Plane Distance from Towers
 								</div>
 								<Slider
-									handler={(e) => {
-										setPlaneDistanceCoeffiecient(parseFloat(e.target.value));
-										console.log(planeDistanceCoefficient);
-									}}
+									handler={(e) =>
+										setPlaneDistanceCoeffiecient(parseFloat(e.target.value))
+									}
 									className="slider-horizontal w-full"
 									value={planeDistanceCoefficient}
-									max={2}
-									min={1.3}
+									max={150}
+									min={10}
 								/>
 							</div>
 						)}
