@@ -186,7 +186,7 @@ export function drawTowers(
 			start: { x: -objectDistance - 30, y: objectHeight - 20 },
 			end: { x: -objectDistance, y: objectHeight },
 			color: "#931A1A",
-			text: "Object",
+			text: "Objek",
 		});
 
 		drawLine({
@@ -202,7 +202,7 @@ export function drawTowers(
 			start: { x: -objectDistance, y: 0 },
 			end: { x: -objectDistance, y: objectHeight },
 			color: "#ea96FF",
-			text: "Object",
+			text: "Objek",
 		});
 
 	}
@@ -268,7 +268,7 @@ export function drawMirrorTowers_kuadranAtas(
 			start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight - 20 },
 			end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight },
 			color: "#D76D1B",
-			text: "Image",
+			text: "Proyeksi",
 		});
 
 		drawLine({
@@ -278,13 +278,13 @@ export function drawMirrorTowers_kuadranAtas(
 			color: "#D76D1B",
 		});
 	} else {
-		//draw mirror image
+		//draw mirror Projection
 		drawLine({
 			ctx: context,
 			start: { x: -(mirrorObjectDistance), y: 0 },
 			end: { x: -	(mirrorObjectDistance), y: -mirrorObjectHeight },
 			color: "green",
-			text: "Image",
+			text: "Proyeksi",
 		});
 	}
 }
@@ -348,7 +348,7 @@ export function drawMirrorTowers_kuadranBawah(
 			start: { x: -(mirrorObjectDistance) - 30, y: -mirrorObjectHeight + 20 },
 			end: { x: -(mirrorObjectDistance), y: -mirrorObjectHeight },
 			color: "#D76D1B",
-			text: "Image",
+			text: "Proyeksi",
 		});
 
 		drawLine({
@@ -366,7 +366,7 @@ export function drawMirrorTowers_kuadranBawah(
 				y: -mirrorObjectHeight,
 			},
 			color: "green",
-			text: "Image",
+			text: "Proyeksi",
 		});
 	}
 }

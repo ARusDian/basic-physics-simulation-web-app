@@ -726,7 +726,7 @@ export default function Cermin() {
 									Object
 								</th>
 								<th className="px-6 py-3 border-b-2 border-gray-300 text-center leading-4 text-blue-500 tracking-wider">
-									Image
+									Projection
 								</th>
 							</tr>
 						</thead>
@@ -818,6 +818,69 @@ export default function Cermin() {
 			<Layout configBar={configBar}>
 				<div className="flex flex-col items-center justify-center w-full h-full">
 					<canvas ref={canvasRef} width={1080} height={720} className={"bg-white"}></canvas>
+				</div>
+				<div className="flex mt-4 mx-4">
+					<div className={`text-xl text-white`}>
+						Buildings DLC
+					</div>
+					<div className="flex items-center gap-5 justify-start w-full">
+						<label className="flex items-center cursor-pointer">
+							<div className="relative">
+								<input
+									type="checkbox"
+									id="toggleB"
+									className="sr-only"
+									onChange={() => setIsBuilding(!isBuilding)}
+								/>
+								<div className="block bg-gray-600 w-14 h-8 rounded-full" />
+								<div className="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition" />
+							</div>
+							<div className="ml-3 text-gray-700 font-medium"></div>
+						</label>
+						{isBuilding && (
+							<div className="flex">
+								<div className="text-xl text-white w-20">
+									Plane Toggle
+								</div>
+								<label className="flex items-center cursor-pointer">
+									<div className="relative">
+										<input
+											type="checkbox"
+											id="toggleB"
+											className="sr-only"
+											onChange={() => setPlaneToggle(!planeToggle)}
+										/>
+										<div className="block bg-gray-600 w-14 h-8 rounded-full" />
+										<div className="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition" />
+									</div>
+									<div className="ml-3 text-gray-700 font-medium"></div>
+								</label>
+							</div>
+						)}
+						{planeToggle && (
+							<div className="flex-row items-center justify-center w-fit">
+								<div
+									className={`text-lg text-white`}
+								>
+									Plane Distance from Towers
+								</div>
+								<Slider
+									handler={(e) =>
+										setPlaneDistanceCoeffiecient(parseFloat(e.target.value))
+									}
+									className="slider-horizontal w-full"
+									value={planeDistanceCoefficient}
+									max={450}
+									min={10}
+								/>
+							</div>
+						)}
+						<div >
+							<button className="bg-sky-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={animate}>
+								Animate
+							</button>
+						</div>
+					</div>
 				</div>
 			</Layout>
 		</>
