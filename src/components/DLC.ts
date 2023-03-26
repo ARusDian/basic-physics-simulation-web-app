@@ -10,7 +10,7 @@ export default function drawPlane(
 	planeToggle: boolean,
 	planeDistanceCoefficient: number,
 ) {
-	if (!planeToggle && objectHeight < 130) return;	
+	if (!planeToggle && objectHeight < 130) return;
 	//draw Boeing 767
 
 	const planeTipDistance = planeDistanceCoefficient + objectDistance;
@@ -380,19 +380,19 @@ export function drawExplosion(
 	blownDot: number,
 	toggleDot: number,
 	offset: number,
-	isEntry: boolean = false
+	isEntry = false
 ) {
-	const color = ["orange", "yellow", "red"]
+	const color = ["orange", "yellow", "red"];
 
 	const getY = (m: number, x: number, c: number) => x * m + c;
 
-	const getColor = (items : string[]) : string => items[Math.floor(Math.random()*items.length)] 
+	const getColor = (items: string[]): string => items[Math.floor(Math.random() * items.length)];
 
-	objectDistance = objectDistance - offset
+	objectDistance = objectDistance - offset;
 
-	if(blownDot-(offset/2) < toggleDot)return;
+	if (blownDot - (offset / 2) < toggleDot) return;
 
-	if (isEntry){
+	if (isEntry) {
 		for (let i = 3; i <= 9; i += 0.15) {
 			drawLine({
 				ctx: context,
@@ -435,34 +435,34 @@ export function drawExplosion(
 				color: getColor(color),
 			});
 		}
-	}else{
+	} else {
 
-			for(let m = 2;m > -2; m-=0.1){
-				drawLine({
-					ctx: context,
-					start: {
-						x: - (60 - planeDistanceCoefficient) + (-objectDistance - 60),
-						y: - getY(m, planeDistanceCoefficient, -(objectHeight * (5 + (2*m)) / 8))
-					},
-					end: {
-						x: - (60 - planeDistanceCoefficient) + (-objectDistance - 30),
-						y: - getY(m, planeDistanceCoefficient, -(objectHeight * (5 + (2*m)) / 8)) - (m*30)
-					},
-					color: getColor(color),
-				});
-				drawLine({
-					ctx: context,
-					start: {
-						x: - (60 + planeDistanceCoefficient) + (-objectDistance + 30),
-						y: - getY(m, planeDistanceCoefficient, -(objectHeight * (5 + (2*m)) / 8))
-					},
-					end: {
-						x: - (60 + planeDistanceCoefficient) + (-objectDistance ),
-						y: - getY(m, planeDistanceCoefficient, -(objectHeight * (5 + (2*m)) / 8)) - (m*30)
-					},
-					color: getColor(color),
-				});
-			}
+		for (let m = 2; m > -2; m -= 0.1) {
+			drawLine({
+				ctx: context,
+				start: {
+					x: - (60 - planeDistanceCoefficient) + (-objectDistance - 60),
+					y: - getY(m, planeDistanceCoefficient, -(objectHeight * (5 + (2 * m)) / 8))
+				},
+				end: {
+					x: - (60 - planeDistanceCoefficient) + (-objectDistance - 30),
+					y: - getY(m, planeDistanceCoefficient, -(objectHeight * (5 + (2 * m)) / 8)) - (m * 30)
+				},
+				color: getColor(color),
+			});
+			drawLine({
+				ctx: context,
+				start: {
+					x: - (60 + planeDistanceCoefficient) + (-objectDistance + 30),
+					y: - getY(m, planeDistanceCoefficient, -(objectHeight * (5 + (2 * m)) / 8))
+				},
+				end: {
+					x: - (60 + planeDistanceCoefficient) + (-objectDistance),
+					y: - getY(m, planeDistanceCoefficient, -(objectHeight * (5 + (2 * m)) / 8)) - (m * 30)
+				},
+				color: getColor(color),
+			});
+		}
 	}
 
 }
