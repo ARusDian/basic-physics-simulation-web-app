@@ -213,16 +213,6 @@ export default function Lensa() {
 							beyond: true,
 						});
 
-						AlgorithmDDA({ //Sinar Datang
-							ctx: context,
-							beforeStart: new Vector2f(0, 0),
-							start: new Vector2f(-objectDistance, objectHeight),
-							end: new Vector2f(canvas.width, 0),
-							canvasWidth: canvas.width,
-							color: "red",
-							beyond: true,
-						});
-
 					} else {
 						AlgorithmDDA({ //Sinar Datang
 							ctx: context,
@@ -240,15 +230,15 @@ export default function Lensa() {
 							beyond: true,
 						});
 
-						AlgorithmDDA({ //Sinar Datang Masih Ngebug Bang
+						AlgorithmDDA({ //Sinar Datang
 							ctx: context,
-							beforeStart: new Vector2f(-objectDistance, objectHeight),
-							start: new Vector2f(mirrorObjectDistance, mirrorObjectHeight),
+							beforeStart: new Vector2f(0, 0),
+							start: new Vector2f(-objectDistance, objectHeight),
 							end: new Vector2f(-canvas.width, 0),
 							canvasWidth: canvas.width,
 							color: "red",
 							beyond: true,
-						});
+						});	
 
 						AlgorithmDDA({
 							ctx: context,
