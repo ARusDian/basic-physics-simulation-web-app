@@ -20,11 +20,18 @@ export default function Cermin() {
 	const [planeToggle, setPlaneToggle] = useState(false);
 	const [planeDistanceCoefficient, setPlaneDistanceCoeffiecient] = useState(400);
 	const planeTipDistance = planeDistanceCoefficient + objectDistance;
-	const planeTipHeight = 5 / 8 * objectHeight;
 	const toggleDot = -objectDistance - 45;
 	const blownDot = -planeTipDistance;
-	console.log(toggleDot, blownDot);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+
+	const animate = async () => {
+		if(blownDot - 30 >= toggleDot)return;
+		for(let i = planeDistanceCoefficient; i > 0; i-=1){
+
+			await new Promise(resolve => setTimeout(resolve, 10	));	
+			setPlaneDistanceCoeffiecient(i);
+		}
+	}
 
 	function initDraw(
 		ctx: CanvasRenderingContext2D,
@@ -78,12 +85,48 @@ export default function Cermin() {
 				drawTowers(context, objectDistance, objectHeight, isBuilding);
 
 				if (planeToggle) {
-					if (blownDot >= toggleDot) {
-						drawExplosion(context, objectDistance, objectHeight, planeDistanceCoefficient, blownDot, planeTipDistance, planeTipHeight);
-					}
 					if (!(blownDot - 30 >= toggleDot)) {
 						drawPlane(context, objectDistance, objectHeight, planeToggle, planeDistanceCoefficient);
 					}
+						drawExplosion(
+							context,
+							objectDistance,
+							objectHeight,
+							planeDistanceCoefficient,
+							blownDot,
+							toggleDot,
+							0,
+							true
+						);
+						drawExplosion(
+							context,
+							objectDistance,
+							objectHeight,
+							planeDistanceCoefficient,
+							blownDot,
+							toggleDot,
+							20,
+							true
+						);
+					drawExplosion(
+						context,
+						objectDistance,
+						objectHeight,
+						planeDistanceCoefficient,
+						blownDot,
+						toggleDot,
+						30
+					);
+					drawExplosion(
+						context,
+						objectDistance,
+						objectHeight,
+						planeDistanceCoefficient,
+						blownDot,
+						toggleDot,
+						50
+					);
+					
 				}
 
 				if (isConvex) {
@@ -837,6 +880,11 @@ export default function Cermin() {
 								/>
 							</div>
 						)}
+						<div >
+							<button className="bg-sky-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={animate}>
+								Animate
+							</button>
+						</div>
 					</div>
 				</div>
 			</Layout>
