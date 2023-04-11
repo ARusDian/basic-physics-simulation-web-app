@@ -1,18 +1,18 @@
 import vector2f from "./Vector2f";
 
 export interface Props {
-    ctx: CanvasRenderingContext2D;
-    center: vector2f;
-    radius: vector2f;
-    color: string;
-    height?: number;
-    concave: boolean;
-	lens: boolean;
+	ctx: CanvasRenderingContext2D;
+	center: vector2f;
+	radius: vector2f;
+	color: string;
+	height?: number;
+	concave?: boolean;
+	lens?: boolean;
+	ball?: boolean;
 }
 
 export default function AlgorithmMPT(props: Props) {
-	const {ctx, center, radius, color, height, concave, lens} = props;
-
+	const { ctx, center, radius, color, height, concave, lens, ball } = props;
 	ctx.beginPath();
 	ctx.strokeStyle = color;
 	ctx.fillStyle = color;
@@ -36,10 +36,10 @@ export default function AlgorithmMPT(props: Props) {
 	drawMPTEllipese(x, y);
 
 	p = Math.round(sry - (srx * ry) + (0.25 * srx));
-	while(px < py) {
+	while (px < py) {
 		x++;
 		px += twoSRY;
-		if(p < 0) {
+		if (p < 0) {
 			p += sry + px;
 		}
 		else {
@@ -50,11 +50,11 @@ export default function AlgorithmMPT(props: Props) {
 		drawMPTEllipese(x, y);
 	}
 
-	p = Math.round(sry * (x + 0.5) * (x + 0.5) + srx * (y-1) * (y - 1) - srx * sry);
-	while(y > 0) {
+	p = Math.round(sry * (x + 0.5) * (x + 0.5) + srx * (y - 1) * (y - 1) - srx * sry);
+	while (y > 0) {
 		y--;
 		py -= twoSRX;
-		if(p > 0) {
+		if (p > 0) {
 			p += srx - py;
 		}
 		else {
@@ -64,13 +64,13 @@ export default function AlgorithmMPT(props: Props) {
 		}
 		drawMPTEllipese(x, y);
 	}
-
+	console.log("sampesini");
 	ctx.stroke();
 	ctx.closePath();
 
 	function drawMPTEllipese(x: number, y: number) {
-		if(lens) {
-			if(concave) {
+		if (lens) {
+			if (concave) {
 				ctx.fillRect((center.getX() + x + rx / 7), (center.getY() + y), 1, 1);
 				ctx.fillRect((-center.getX() - x - rx / 7), (center.getY() + y), 1, 1);
 				ctx.fillRect((center.getX() + x + rx / 7), (center.getY() - y), 1, 1);
@@ -83,8 +83,12 @@ export default function AlgorithmMPT(props: Props) {
 				ctx.fillRect((-center.getX() - x + rx / 100), (center.getY() - y), 1, 1);
 			}
 		}
+		else if (ball) {
+			ctx.fillRect((center.getX() + x), (center.getY() + y), 1, -1);
+			// ctx.fillRect((center.getX() + x), (center.getY() - y), 1, -1);
+		}
 		else {
-			if(concave) {
+			if (concave) {
 				ctx.fillRect((center.getX() + x), (center.getY() + y), 1, 1);
 				ctx.fillRect((center.getX() + x), (center.getY() - y), 1, 1);
 			}
@@ -93,6 +97,8 @@ export default function AlgorithmMPT(props: Props) {
 				ctx.fillRect((-center.getX() - x), (center.getY() - y), 1, 1);
 			}
 		}
-        
+
+
+
 	}
 }
