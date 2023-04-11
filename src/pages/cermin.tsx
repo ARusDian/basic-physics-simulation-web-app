@@ -443,7 +443,7 @@ export default function Cermin() {
 							beforeStart: new Vector2f(
 								-mirrorObjectDistance,
 								-mirrorObjectHeight
-							),
+							), 
 							start: new Vector2f(0, objectHeight),
 							end: new Vector2f(-canvas.width, 0),
 							canvasWidth: canvas.width,

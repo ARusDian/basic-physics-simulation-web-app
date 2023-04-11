@@ -27,7 +27,5 @@ const DDA = (startC: { x: number, y: number }, endC: { x: number, y: number }) =
 
 };
 
-DDA({ x: 2, y: 5 }, { x: -3, y: -5 });
-
 
 export default DDA;
