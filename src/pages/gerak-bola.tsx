@@ -9,9 +9,15 @@ import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 export default function GerakBola() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const [ballX, setBallX] = useState(500);
-	const [ballY, setBallY] = useState(500);
-	const [velocityY, setVelocityY] = useState(0);
+	// const [ballX, setBallX] = useState(500);
+	// const [ballY, setBallY] = useState(500);
+	// const [velocityY, setVelocityY] = useState(0);
+	const [ball, setBall] = useState({
+		posX: 500,
+		posY: 500,
+		velocityY: 0,
+		bounceFactor: 0.8,
+	});
 
 	const initDraw = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void => {
 		ctx.strokeStyle = "black";
@@ -22,40 +28,36 @@ export default function GerakBola() {
 		ctx.closePath();
 	};
 
-	const gravity = 9.81;
-	const bounce = 0.7;
-	let tempVelocityY = velocityY;
+	// const gravity = 9.81;
+	// const bounce = 0.7;
+	// let tempVelocityY = velocityY;
 
-	function update(deltaTime : number) {
-		tempVelocityY += Math.round(Math.sqrt(2 * gravity * ballY) * deltaTime);
+	// function update(deltaTime : number) {
+	// 	tempVelocityY += Math.floor(Math.sqrt(2 * gravity * ballY) * deltaTime);
 
-		if(ballY < 120) {
-			tempVelocityY = Math.round(tempVelocityY -bounce);
-		}
+	// 	if(ballY < 120) {
+	// 		tempVelocityY = Math.floor(tempVelocityY -bounce);
+	// 	}
 
-		// if (tempVelocityY < 2) {
-		// 	tempVelocityY = 0;
-		// }
+	// 	setVelocityY(tempVelocityY);
+	// 	setBallY(ballY - tempVelocityY);
+	// }
 
-		setVelocityY(tempVelocityY);
-		setBallY(ballY - tempVelocityY);
-	}
+	// let lastTime = Date.now();
+	// function loopState() {
+	// 	requestAnimationFrame(loopState);
+	// 	const now = Date.now();
+	// 	const deltaTime = (now - lastTime) / 1000;
+	// 	lastTime = now;
 
-	let lastTime = Date.now();
-	function loopState() {
-		requestAnimationFrame(loopState);
-		const now = Date.now();
-		const deltaTime = (now - lastTime) / 1000;
-		lastTime = now;
-	
-		update(deltaTime);
-	}
+	// 	update(deltaTime);
+	// }
 
 	useEffect(() => {
 		// function updateBall() {
 		// 	let height = ballY - 120;
 		// 	let gravity = 9.81;
-			
+
 		// 	let time = Math.sqrt((2 * height) / gravity);
 		// 	for(let i = 0; i < time; i++) {
 		// 		const now = performance.now();
@@ -65,13 +67,30 @@ export default function GerakBola() {
 		// 		setBallY(ballY - Math.round(Math.sqrt(2 * gravity * height) * deltaTime));
 		// 	}
 		// }
-
+		
 		if (!canvasRef.current) return;
 		const canvas: HTMLCanvasElement = canvasRef.current;
 		const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
 
+		const updatePos = () => {
+			const newVelocityY = ball.velocityY + 0.1;
+			const newY = Math.round(ball.posY - newVelocityY);
+
+			if (newY  > -canvas.height && newY  < 120) {
+				const newVelocityY = Math.round(-ball.velocityY * ball.bounceFactor);
+				setBall({
+					...ball,
+					posY: canvas.height + (-canvas.height + 120),
+					velocityY: newVelocityY,
+					bounceFactor: ball.bounceFactor * 1
+				});
+			} else {
+				setBall({ ...ball, posY: newY, velocityY: newVelocityY });
+			}
+			requestAnimationFrame(updatePos);
+		};
+
 		if (context) {
-			loopState();
 			context.setTransform(
 				1,
 				0,
@@ -85,8 +104,8 @@ export default function GerakBola() {
 			initDraw(context, canvas);
 			// Draw the line
 			context.beginPath();
-			context.moveTo(ballX, 20);
-			context.lineTo(ballX, ballY); // Use canvas height to calculate the y-coordinate
+			context.moveTo(ball.posX, 20);
+			context.lineTo(ball.posX, ball.posY); // Use canvas height to calculate the y-coordinate
 			context.stroke();
 
 			// if (ballY < 120) {
@@ -95,7 +114,7 @@ export default function GerakBola() {
 			// if (ballY > 120) {
 			// 	let height = ballY - 120;
 			// 	let gravity = 9.81;
-				
+
 			// 	let time = Math.round(Math.sqrt((2 * height) / gravity));
 			// 	for(let i = 0; i <= time; i++) {
 			// 		const now = Date.now();
@@ -115,10 +134,10 @@ export default function GerakBola() {
 
 			Ball({
 				ctx: context,
-				center: new Vector2f(ballX, ballY),
+				center: new Vector2f(ball.posX, ball.posY),
 				radius: new Vector2f(100, 100),
 				color: "blue",
-				distance: ballX / 10,
+				distance: ball.posX / 10,
 			});
 
 			// AlgorithmMPT({
@@ -136,7 +155,8 @@ export default function GerakBola() {
 			// 	color: "blue",
 			// });
 		}
-	}, [ballX, ballY]);
+		requestAnimationFrame(updatePos);
+	}, [ball]);
 
 
 	// useEffect(() => {
@@ -167,23 +187,24 @@ export default function GerakBola() {
 	const configBar = () => (
 		<>
 			<div className="flex flex-col mx-auto my-8 px-10 gap-4">
+				<h2>Vy : {ball.velocityY}</h2>
 				<div className="flex flex-col gap-2 text-xl">
-					<h2>X : {ballX}</h2>
+					<h2>X : {ball.posX}</h2>
 					<Slider
-						value={ballX}
+						value={ball.posX}
 						max={1060}
 						min={20}
-						handler={(e) => setBallX(parseInt(e.target.value))}
+						handler={(e) => setBall({ ...ball, posX: parseInt(e.target.value) })}
 						className=""
 					/>
 				</div>
 				<div className="flex flex-col gap-2 text-xl">
-					<h2>Y : {ballY}</h2>
+					<h2>Y : {ball.posY}</h2>
 					<Slider
-						value={ballY}
+						value={ball.posY}
 						max={720}
 						min={120}
-						handler={(e) => setBallY(parseInt(e.target.value))}
+						handler={(e) => setBall({ ...ball, posY: parseInt(e.target.value) })}
 						className=""
 					/>
 				</div>
