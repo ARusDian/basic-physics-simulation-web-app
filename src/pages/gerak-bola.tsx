@@ -76,7 +76,7 @@ export default function GerakBola() {
 			const newVelocityY = ball.velocityY + 0.1;
 			const newY = Math.round(ball.posY - newVelocityY);
 
-			if (newY  > -canvas.height && newY  < 120) {
+			if (newY > 0 && newY < 120) {
 				const newVelocityY = Math.round(-ball.velocityY * ball.bounceFactor);
 				setBall({
 					...ball,
