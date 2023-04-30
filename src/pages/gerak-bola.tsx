@@ -73,6 +73,7 @@ export default function GerakBola() {
 		const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
 
 		const updatePos = () => {
+			// let vt = Math.sqrt(2 * 9.8 * (ball.posY/10));
 			let newVelocityY = ball.velocityY + 0.1;
 			const newY = Math.floor(ball.posY - newVelocityY);
 			if (newY > 0 && newY < 120) {
@@ -135,7 +136,7 @@ export default function GerakBola() {
 				center: new Vector2f(ball.posX, ball.posY),
 				radius: new Vector2f(100, 100),
 				color: "blue",
-				distance: ball.posX / 10,
+				distance: ball.posX/10,
 			});
 
 			// AlgorithmMPT({
