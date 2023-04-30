@@ -30,14 +30,12 @@ export default function GerakBola() {
 		tempVelocityY += Math.round(Math.sqrt(2 * gravity * ballY) * deltaTime);
 
 		if(ballY < 120) {
-			tempVelocityY *= -bounce;
+			tempVelocityY = Math.round(tempVelocityY -bounce);
 		}
 
-		if (tempVelocityY < 2) {
-			tempVelocityY = 0;
-		}
-
-		// console.log(tempVelocityY);
+		// if (tempVelocityY < 2) {
+		// 	tempVelocityY = 0;
+		// }
 
 		setVelocityY(tempVelocityY);
 		setBallY(ballY - tempVelocityY);
