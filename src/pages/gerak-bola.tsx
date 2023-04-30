@@ -1,6 +1,8 @@
 import Layout from "@/components/Layout";
 import Slider from "@/components/Slider";
-import AlgorithmMPT from "@/utils/AlgorithmMPT";
+// import AlgorithmDDA from "@/utils/AlgorithmDDA";
+// import AlgorithmMPT from "@/utils/AlgorithmMPT";
+import Ball from "@/utils/Ball";
 import Vector2f from "@/utils/Vector2f";
 // import WorkInProgress from "@/components/WorkInProgress";
 import Head from "next/head";
@@ -19,12 +21,51 @@ export default function GerakBola() {
 		ctx.closePath();
 	};
 
+	let gravity = 9.81;
+	let bounce = 0.7;
+	let velocityY = 0;
+
+	function update(deltaTime : number) {
+		velocityY += Math.round(Math.sqrt(2 * gravity * ballY) * deltaTime);
+
+		if(ballY < 120) {
+			velocityY *= -1;
+		}
+	
+		setBallY(ballY - velocityY);
+	}
+
+	let lastTime = Date.now();
+	function loopState() {
+		requestAnimationFrame(loopState);
+		const now = Date.now();
+		const deltaTime = (now - lastTime) / 1000;
+		lastTime = now;
+	
+		update(deltaTime);
+	}
+
 	useEffect(() => {
+		// function updateBall() {
+		// 	let height = ballY - 120;
+		// 	let gravity = 9.81;
+			
+		// 	let time = Math.sqrt((2 * height) / gravity);
+		// 	for(let i = 0; i < time; i++) {
+		// 		const now = performance.now();
+		// 		const deltaTime = (now - lastTime) / 1000;
+		// 		lastTime = now;
+
+		// 		setBallY(ballY - Math.round(Math.sqrt(2 * gravity * height) * deltaTime));
+		// 	}
+		// }
+
 		if (!canvasRef.current) return;
 		const canvas: HTMLCanvasElement = canvasRef.current;
 		const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
 
 		if (context) {
+			loopState();
 			context.setTransform(
 				1,
 				0,
@@ -41,6 +82,53 @@ export default function GerakBola() {
 			context.moveTo(ballX, 20);
 			context.lineTo(ballX, ballY); // Use canvas height to calculate the y-coordinate
 			context.stroke();
+
+			// if (ballY < 120) {
+			// 	setBallY(120);
+			// }
+			// if (ballY > 120) {
+			// 	let height = ballY - 120;
+			// 	let gravity = 9.81;
+				
+			// 	let time = Math.round(Math.sqrt((2 * height) / gravity));
+			// 	for(let i = 0; i <= time; i++) {
+			// 		const now = Date.now();
+			// 		const deltaTime = (now - lastTime) / (1000 / 60);
+			// 		lastTime = now;
+
+			// 		let velocity = -1 * Math.round(Math.sqrt(2 * gravity * height) * deltaTime)
+
+			// 		// setBallY(Math.round((velocity * i) + (0.5 * gravity * (i ** 2))))
+
+			// 		setBallY(height + velocity);
+			// 		console.log(ballY);
+			// 		// console.log((height + 120) - Math.round(Math.sqrt(2 * gravity * height) * deltaTime));
+			// 		// console.log(deltaTime);
+			// 	}
+			// }
+
+			Ball({
+				ctx: context,
+				center: new Vector2f(ballX, ballY),
+				radius: new Vector2f(100, 100),
+				color: "blue",
+				distance: ballX / 10,
+			});
+
+			// AlgorithmMPT({
+			// 	ctx: context,
+			// 	center: new Vector2f(ballX, ballY),
+			// 	radius: new Vector2f(100, 100),
+			// 	color: "blue",
+			// 	ball: true,
+			// });
+
+			// AlgorithmDDA({
+			// 	ctx: context,
+			// 	start: new Vector2f(ballX + 100, ballY),
+			// 	end: new Vector2f(ballX, ballY),
+			// 	color: "blue",
+			// });
 		}
 	}, [ballX, ballY]);
 
@@ -88,7 +176,7 @@ export default function GerakBola() {
 					<Slider
 						value={ballY}
 						max={720}
-						min={20}
+						min={120}
 						handler={(e) => setBallY(parseInt(e.target.value))}
 						className=""
 					/>

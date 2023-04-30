@@ -84,8 +84,10 @@ export default function AlgorithmMPT(props: Props) {
 			}
 		}
 		else if (ball) {
-			ctx.fillRect((center.getX() + x), (center.getY() + y), 1, -1);
-			// ctx.fillRect((center.getX() + x), (center.getY() - y), 1, -1);
+			ctx.fillRect((center.getX() + x), (center.getY() + y), 1, 1);
+			ctx.fillRect((center.getX() + x), (center.getY() - y), 1, 1);
+			ctx.fillRect((center.getX() - x), (center.getY() + y), 1, 1);
+			ctx.fillRect((center.getX() - x), (center.getY() - y), 1, 1);
 		}
 		else {
 			if (concave) {
