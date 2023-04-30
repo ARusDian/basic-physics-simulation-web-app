@@ -11,6 +11,7 @@ export default function GerakBola() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [ballX, setBallX] = useState(500);
 	const [ballY, setBallY] = useState(500);
+	const [velocityY, setVelocityY] = useState(0);
 
 	const initDraw = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void => {
 		ctx.strokeStyle = "black";
@@ -21,18 +22,25 @@ export default function GerakBola() {
 		ctx.closePath();
 	};
 
-	let gravity = 9.81;
-	let bounce = 0.7;
-	let velocityY = 0;
+	const gravity = 9.81;
+	const bounce = 0.7;
+	let tempVelocityY = velocityY;
 
 	function update(deltaTime : number) {
-		velocityY += Math.round(Math.sqrt(2 * gravity * ballY) * deltaTime);
+		tempVelocityY += Math.round(Math.sqrt(2 * gravity * ballY) * deltaTime);
 
 		if(ballY < 120) {
-			velocityY *= -1;
+			tempVelocityY *= -bounce;
 		}
-	
-		setBallY(ballY - velocityY);
+
+		if (tempVelocityY < 2) {
+			tempVelocityY = 0;
+		}
+
+		// console.log(tempVelocityY);
+
+		setVelocityY(tempVelocityY);
+		setBallY(ballY - tempVelocityY);
 	}
 
 	let lastTime = Date.now();
