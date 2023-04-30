@@ -73,14 +73,12 @@ export default function GerakBola() {
 		const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
 
 		const updatePos = () => {
-			const newVelocityY = ball.velocityY + 0.1;
-			const newY = Math.round(ball.posY - newVelocityY);
-
+			let newVelocityY = ball.velocityY + 0.1;
+			const newY = Math.floor(ball.posY - newVelocityY);
 			if (newY > 0 && newY < 120) {
-				const newVelocityY = Math.round(-ball.velocityY * ball.bounceFactor);
+				newVelocityY = Math.floor(-ball.velocityY * 0.8);
 				setBall({
 					...ball,
-					posY: canvas.height + (-canvas.height + 120),
 					velocityY: newVelocityY,
 					bounceFactor: ball.bounceFactor * 1
 				});
@@ -104,8 +102,8 @@ export default function GerakBola() {
 			initDraw(context, canvas);
 			// Draw the line
 			context.beginPath();
-			context.moveTo(ball.posX, 20);
-			context.lineTo(ball.posX, ball.posY); // Use canvas height to calculate the y-coordinate
+			// context.moveTo(ball.posX, 20);
+			// context.lineTo(ball.posX, ball.posY);
 			context.stroke();
 
 			// if (ballY < 120) {
@@ -194,7 +192,7 @@ export default function GerakBola() {
 						value={ball.posX}
 						max={1060}
 						min={20}
-						handler={(e) => setBall({ ...ball, posX: parseInt(e.target.value) })}
+						handler={(e) => setBall({ ...ball, posX: parseInt(e.target.value)})}
 						className=""
 					/>
 				</div>
@@ -204,7 +202,7 @@ export default function GerakBola() {
 						value={ball.posY}
 						max={720}
 						min={120}
-						handler={(e) => setBall({ ...ball, posY: parseInt(e.target.value) })}
+						handler={(e) => setBall({ ...ball, posY: parseInt(e.target.value), velocityY: 0 })}
 						className=""
 					/>
 				</div>
