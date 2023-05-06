@@ -17,6 +17,8 @@ export default function GerakBola() {
 		posY: 500,
 		velocityY: 0,
 		bounceFactor: 0.8,
+		radiusX: 100,
+		radiusY: 100,
 	});
 
 	const initDraw = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void => {
@@ -81,10 +83,10 @@ export default function GerakBola() {
 				setBall({
 					...ball,
 					velocityY: newVelocityY,
-					bounceFactor: ball.bounceFactor * 1
+					bounceFactor: ball.bounceFactor * 1,
 				});
 			} else {
-				setBall({ ...ball, posY: newY, velocityY: newVelocityY });
+				setBall({ ...ball, posY: newY, velocityY: newVelocityY,});
 			}
 			requestAnimationFrame(updatePos);
 		};
@@ -134,7 +136,7 @@ export default function GerakBola() {
 			Ball({
 				ctx: context,
 				center: new Vector2f(ball.posX, ball.posY),
-				radius: new Vector2f(100, 100),
+				radius: new Vector2f(ball.radiusX, ball.radiusY),
 				color: "blue",
 				distance: ball.posX/10,
 			});

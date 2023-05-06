@@ -31,7 +31,7 @@ export default function Ball(props: Props) {
 	let px = 0;
 	let py = twoSRX * y;
 
-	let rad = (distance / rx);
+	// let rad = (distance / rx);
 
 	// let x = px + ((xo - px) * Math.cos(rad)) - ((yo - py) * Math.sin(rad));
 	// let y = py + ((xo - px) * Math.sin(rad)) + ((yo - py) * Math.cos(rad));
