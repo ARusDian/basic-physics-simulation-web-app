@@ -17,6 +17,7 @@ export default function GerakBola() {
 		posY: 500,
 		velocityY: 0,
 		bounceFactor: 0.8,
+		radius: 100,
 	});
 
 	const initDraw = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void => {
@@ -77,14 +78,19 @@ export default function GerakBola() {
 			let newVelocityY = ball.velocityY + 0.1;
 			const newY = Math.floor(ball.posY - newVelocityY);
 			if (newY > 0 && newY < 120) {
-				newVelocityY = Math.floor(-ball.velocityY * 0.8);
+				newVelocityY = Math.floor(-ball.velocityY * ball.bounceFactor);
 				setBall({
 					...ball,
 					velocityY: newVelocityY,
-					bounceFactor: ball.bounceFactor * 1
+					bounceFactor: ball.bounceFactor * 1,
 				});
 			} else {
-				setBall({ ...ball, posY: newY, velocityY: newVelocityY });
+				setBall({
+					...ball, 
+					posY: newY, 
+					velocityY: newVelocityY,
+					radius: (-0.0012 * ball.posY + 1.15) * 100
+				});
 			}
 			requestAnimationFrame(updatePos);
 		};
@@ -134,9 +140,9 @@ export default function GerakBola() {
 			Ball({
 				ctx: context,
 				center: new Vector2f(ball.posX, ball.posY),
-				radius: new Vector2f(100, 100),
+				radius: new Vector2f(ball.radius, ball.radius),
 				color: "blue",
-				distance: ball.posX/10,
+				distance: ball.posX,
 			});
 
 			// AlgorithmMPT({
@@ -204,6 +210,16 @@ export default function GerakBola() {
 						max={720}
 						min={120}
 						handler={(e) => setBall({ ...ball, posY: parseInt(e.target.value), velocityY: 0 })}
+						className=""
+					/>
+				</div>
+				<div className="flex flex-col gap-2 text-xl">
+					<h2>Bounce : {ball.bounceFactor}</h2>
+					<Slider
+						value={ball.bounceFactor}
+						max={2}
+						min={0}
+						handler={(e) => setBall({ ...ball, bounceFactor: parseFloat(parseFloat(e.target.value).toFixed(1))})}
 						className=""
 					/>
 				</div>
