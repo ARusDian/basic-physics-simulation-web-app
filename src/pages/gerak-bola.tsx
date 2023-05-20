@@ -6,12 +6,14 @@ import Ball from "@/utils/Ball";
 import Vector2f from "@/utils/Vector2f";
 // import WorkInProgress from "@/components/WorkInProgress";
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 export default function GerakBola() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const animationRef = useRef<number | null>(null);
 	// const [ballX, setBallX] = useState(500);
 	// const [ballY, setBallY] = useState(500);
 	// const [velocityY, setVelocityY] = useState(0);
+	const [gravity, setGravity] = useState<boolean>(true);
 	const [ball, setBall] = useState({
 		posX: 500,
 		posY: 500,
@@ -54,6 +56,31 @@ export default function GerakBola() {
 	// 	update(deltaTime);
 	// }
 
+	const updatePos = useCallback(() => {
+		// let vt = Math.sqrt(2 * 9.8 * (ball.posY/10));
+		let newVelocityY = ball.velocityY + 0.1;
+		const newY = Math.floor(ball.posY - newVelocityY);
+		if (newY > 0 && newY < 120) {
+			newVelocityY = Math.floor(-ball.velocityY * ball.bounceFactor);
+			setBall({
+				...ball,
+				velocityY: newVelocityY,
+				bounceFactor: ball.bounceFactor * 1,
+			});
+		} else {
+			setBall({
+				...ball,
+				posY: newY,
+				velocityY: newVelocityY,
+				radius: (-0.0012 * ball.posY + 1.15) * 100
+			});
+		}
+
+		if (gravity) {
+			animationRef.current = requestAnimationFrame(updatePos);
+		}
+	}, [gravity, ball]);
+
 	useEffect(() => {
 		// function updateBall() {
 		// 	let height = ballY - 120;
@@ -68,32 +95,11 @@ export default function GerakBola() {
 		// 		setBallY(ballY - Math.round(Math.sqrt(2 * gravity * height) * deltaTime));
 		// 	}
 		// }
-		
+
 		if (!canvasRef.current) return;
 		const canvas: HTMLCanvasElement = canvasRef.current;
 		const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
 
-		const updatePos = () => {
-			// let vt = Math.sqrt(2 * 9.8 * (ball.posY/10));
-			let newVelocityY = ball.velocityY + 0.1;
-			const newY = Math.floor(ball.posY - newVelocityY);
-			if (newY > 0 && newY < 120) {
-				newVelocityY = Math.floor(-ball.velocityY * ball.bounceFactor);
-				setBall({
-					...ball,
-					velocityY: newVelocityY,
-					bounceFactor: ball.bounceFactor * 1,
-				});
-			} else {
-				setBall({
-					...ball, 
-					posY: newY, 
-					velocityY: newVelocityY,
-					radius: (-0.0012 * ball.posY + 1.15) * 100
-				});
-			}
-			requestAnimationFrame(updatePos);
-		};
 
 		if (context) {
 			context.setTransform(
@@ -160,8 +166,17 @@ export default function GerakBola() {
 			// 	color: "blue",
 			// });
 		}
-		requestAnimationFrame(updatePos);
-	}, [ball]);
+
+		if (gravity) {
+			animationRef.current = requestAnimationFrame(updatePos);
+		}
+
+		return () => {
+			if (animationRef.current) {
+				cancelAnimationFrame(animationRef.current);
+			}
+		};
+	}, [ball, gravity, updatePos]);
 
 
 	// useEffect(() => {
@@ -199,7 +214,7 @@ export default function GerakBola() {
 						value={ball.posX}
 						max={1060}
 						min={20}
-						handler={(e) => setBall({ ...ball, posX: parseInt(e.target.value)})}
+						handler={(e) => setBall({ ...ball, posX: parseInt(e.target.value) })}
 						className=""
 					/>
 				</div>
@@ -209,7 +224,10 @@ export default function GerakBola() {
 						value={ball.posY}
 						max={720}
 						min={120}
-						handler={(e) => setBall({ ...ball, posY: parseInt(e.target.value), velocityY: 0 })}
+						handler={(e) => setBall({
+							...ball, posY: parseInt(e.target.value), velocityY: 0,
+							radius: (-0.0012 * ball.posY + 1.15) * 100
+						})}
 						className=""
 					/>
 				</div>
@@ -217,11 +235,18 @@ export default function GerakBola() {
 					<h2>Bounce : {ball.bounceFactor}</h2>
 					<Slider
 						value={ball.bounceFactor}
-						max={2}
+						max={1}
 						min={0}
-						handler={(e) => setBall({ ...ball, bounceFactor: parseFloat(parseFloat(e.target.value).toFixed(1))})}
+						handler={(e) => setBall({ ...ball, bounceFactor: parseFloat(parseFloat(e.target.value).toFixed(1)) })}
 						className=""
 					/>
+				</div>
+				<div className="mt-3">
+					<label className="relative inline-flex items-center cursor-pointer">
+						<input type="checkbox" className="sr-only peer" checked={gravity ? true : false} onClick={() => setGravity(prev => !prev)} />
+						<div className="w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+						<span className="ml-3 text-lg font-medium text-gray-300">Gravity</span>
+					</label>
 				</div>
 			</div>
 		</>
