@@ -28,7 +28,6 @@ export default function GerakBola() {
 	};
 
 	const updatePos = useCallback(() => {
-		// let vt = Math.sqrt(2 * 9.8 * (ball.posY/10));
 		let isMovingBackwards = ball.isMovingBackwards;
 		let newVelocityY = ball.velocityY + 0.1;
 		let newVelocityX = ball.velocityX;
@@ -41,9 +40,6 @@ export default function GerakBola() {
 
 		const newY = Math.floor(ball.posY - newVelocityY);	
 		const newX = Math.floor(ball.posX + newVelocityX);
-		// let newX;
-		// if (isMovingBackwards) newX = Math.floor(ball.posX - newVelocityX);
-		// else newX = Math.floor(ball.posX + newVelocityX);
 
 		if (newY > 0 && newY < 120) {
 			newVelocityY = Math.floor(-ball.velocityY * ball.bounceFactor);
