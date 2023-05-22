@@ -606,6 +606,7 @@ export default function Lensa() {
 						value={mirrorFocus}
 						max={540}
 						min={0}
+						step={1}
 					/>
 					<Slider
 						handler={(e) =>
@@ -615,6 +616,7 @@ export default function Lensa() {
 						value={objectHeight}
 						max={360}
 						min={30}
+						step={1}
 					/>
 					<Slider
 						handler={(e) =>
@@ -624,6 +626,7 @@ export default function Lensa() {
 						value={objectDistance}
 						max={540}
 						min={isBuilding ? 45 : 0}
+						step={1}
 					/>
 				</div>
 				<div className="flex justify-between mx-16">
@@ -837,6 +840,7 @@ export default function Lensa() {
 										value={planeDistanceCoefficient}
 										max={450}
 										min={10}
+										step={1}
 									/>
 								</div>
 								<div >
