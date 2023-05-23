@@ -7,7 +7,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 export default function GerakBola() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const animationRef = useRef<number | null>(null);
-	const kickAnimationRef = useRef<number | null>(null);
 	const [gravity, setGravity] = useState<boolean>(true);
 	const [kicked, setKicked] = useState<boolean>(false);
 	const [ball, setBall] = useState({
@@ -29,43 +28,6 @@ export default function GerakBola() {
 		ctx.closePath();
 	};
 
-	// const kickBallAnimation = useCallback(() => {
-	// 	let isMovingBackwards = ball.isMovingBackwards;
-	// 	let newVelocityX = ball.velocityX;
-
-	// 	if (ball.posX >= 1020) isMovingBackwards = true;
-	// 	else if (ball.posX <= 30) isMovingBackwards = false;
-
-	// 	if (isMovingBackwards) {
-	// 		if (newVelocityX < 0) newVelocityX = newVelocityX * 1;
-	// 		else newVelocityX = -newVelocityX;
-	// 	}
-	// 	else {
-	// 		if (newVelocityX > 0) newVelocityX = newVelocityX * 1;
-	// 		else newVelocityX = -newVelocityX;
-	// 	}
-
-	// 	const newX = Math.floor(ball.posX + newVelocityX);
-	// 	if (newX <= 30 || newX >= 1020) {
-	// 		newVelocityX = -ball.velocityX * ball.bounceFactor;
-	// 		setBall({
-	// 			...ball,
-	// 			posX: newX,
-	// 			velocityX: newVelocityX,
-	// 		});
-	// 	} else {
-	// 		setBall({
-	// 			...ball,
-	// 			posX: newX
-	// 		});
-	// 	}
-
-	// 	if (kicked) {
-	// 		requestAnimationFrame(kickBallAnimation);
-	// 	}
-
-	// }, [ball, kicked]);
-
 	const updatePos = useCallback(() => {
 		let isMovingBackwards = ball.isMovingBackwards;
 		let newVelocityY = ball.velocityY + 0.1;
@@ -74,23 +36,23 @@ export default function GerakBola() {
 		if (ball.posX >= 1020) isMovingBackwards = true;
 		else if (ball.posX <= 30) isMovingBackwards = false;
 
-		if (isMovingBackwards) {
-			if (newVelocityX < 0) newVelocityX = newVelocityX * 1;
-			else newVelocityX = -newVelocityX;
-		}
-		else {
-			if (newVelocityX > 0) newVelocityX = newVelocityX * 1;
-			else newVelocityX = -newVelocityX;
-		}
+		// if (isMovingBackwards) {
+		// 	if (newVelocityX < 0) newVelocityX = newVelocityX * 1;
+		// 	else newVelocityX = -newVelocityX;
+		// }
+		// else {
+		// 	if (newVelocityX > 0) newVelocityX = newVelocityX * 1;
+		// 	else newVelocityX = -newVelocityX;
+		// }
 
 		const newY = Math.floor(ball.posY - newVelocityY);
-		let newX = Math.floor(ball.posX + newVelocityX);
-		
-		
+		let newX = isMovingBackwards ? Math.floor(ball.posX - newVelocityX) : Math.floor(ball.posX + newVelocityX);
+
+
 		if (newY > 0 && newY < 120) {
 			newVelocityY = Math.floor(-ball.velocityY * ball.bounceFactor);
 			newVelocityX = Math.sign((newVelocityX * ball.bounceFactor) * 1.01) * Math.floor(Math.abs(newVelocityX * ball.bounceFactor) * 1.01);
-			newX = Math.floor(ball.posX + newVelocityX);
+			newX = isMovingBackwards ? Math.floor(ball.posX - newVelocityX) : Math.floor(ball.posX + newVelocityX);
 			setBall({
 				...ball,
 				posX: newX,
@@ -99,27 +61,34 @@ export default function GerakBola() {
 				isMovingBackwards,
 			});
 		} else {
-			if (newX <= 30  || newX >= 1020) {
-				// newVelocityX = parseFloat(((newVelocityX * ball.bounceFactor) / 1.1).toFixed(2));
+			if (newX <= 30 || newX >= 1020) {
 				newVelocityX = Math.sign((newVelocityX * ball.bounceFactor) / 1.15) * Math.floor(Math.abs(newVelocityX * ball.bounceFactor) / 1.15);
-				console.log(newX, newVelocityX);
 			}
-			newX = Math.floor(ball.posX + newVelocityX);
-			setBall({
-				...ball,
-				posY: newY,
-				posX: newX,
-				velocityX: newVelocityX,
-				velocityY: newVelocityY,
-				radius: (-0.0012 * ball.posY + 1.15) * 100,
-				isMovingBackwards,
-			});
+			newX = isMovingBackwards ? Math.floor(ball.posX - newVelocityX) : Math.floor(ball.posX + newVelocityX);
+			if (!gravity && kicked) {
+				setBall({
+					...ball,
+					posX: newX,
+					velocityX: newVelocityX,
+					isMovingBackwards,
+				});
+			} else {
+				setBall({
+					...ball,
+					posY: newY,
+					posX: newX,
+					velocityX: newVelocityX,
+					velocityY: newVelocityY,
+					radius: (-0.0012 * ball.posY + 1.15) * 100,
+					isMovingBackwards,
+				});
+			}
 		}
 
 		if (gravity) {
 			animationRef.current = requestAnimationFrame(updatePos);
 		}
-	}, [gravity, ball]);
+	}, [gravity, ball, kicked]);
 
 	useEffect(() => {
 		if (!canvasRef.current) return;
@@ -149,27 +118,13 @@ export default function GerakBola() {
 			});
 		}
 
-		// if (kicked) {
-		// 	kickAnimationRef.current = requestAnimationFrame(kickBallAnimation);
-
-		// 	if (ball.velocityX <= 0.5 || ball.velocityX >= -0.5) {
-		// 		setKicked(false);
-		// 		cancelAnimationFrame(kickAnimationRef.current);
-		// 	}
-		// }
-
-
-		if (gravity) {
+		if (gravity || kicked) {
 			animationRef.current = requestAnimationFrame(updatePos);
 		}
 
 		return () => {
 			if (animationRef.current) {
 				cancelAnimationFrame(animationRef.current);
-			}
-
-			if (kickAnimationRef.current) {
-				cancelAnimationFrame(kickAnimationRef.current);
 			}
 		};
 	}, [ball, gravity, updatePos, kicked]);
@@ -220,9 +175,9 @@ export default function GerakBola() {
 					/>
 				</div>
 				<div className="flex flex-col gap-2 text-xl">
-					<h2>Vx : {ball.velocityX}</h2>
+					<h2>Vx : {ball.isMovingBackwards ? "-" + ball.velocityX : ball.velocityX}</h2>
 					<Slider
-						value={ball.velocityX}
+						value={ball.isMovingBackwards ? -ball.velocityX : ball.velocityX}
 						max={10}
 						min={-10}
 						handler={(e) => setBall({ ...ball, velocityX: parseFloat(parseFloat(e.target.value).toFixed(1)) })}
