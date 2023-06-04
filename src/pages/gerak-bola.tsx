@@ -272,10 +272,6 @@ export default function GerakBola() {
 					</div>
 					<div className="">
 						<button className="px-5 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" onClick={() => {
-							// setBall({
-							// 	...ball,
-							// 	velocityX: 200
-							// });
 							setKicked(true);
 						}}>Kick Ball</button>
 					</div>
