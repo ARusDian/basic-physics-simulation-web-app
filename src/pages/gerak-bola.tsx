@@ -37,15 +37,6 @@ export default function GerakBola() {
 		if (ball.posX >= 1020) isMovingBackwards = true;
 		else if (ball.posX <= 30) isMovingBackwards = false;
 
-		// if (isMovingBackwards) {
-		// 	if (newVelocityX < 0) newVelocityX = newVelocityX * 1;
-		// 	else newVelocityX = -newVelocityX;
-		// }
-		// else {
-		// 	if (newVelocityX > 0) newVelocityX = newVelocityX * 1;
-		// 	else newVelocityX = -newVelocityX;
-		// }
-
 		const newY = Math.floor(ball.posY - newVelocityY);
 		let newX = isMovingBackwards ? Math.floor(ball.posX - newVelocityX) : Math.floor(ball.posX + newVelocityX);
 
@@ -194,9 +185,9 @@ export default function GerakBola() {
 			context.imageSmoothingEnabled = true;
 			context.imageSmoothingQuality = 'high';
 
-			context.clearRect(0, 0, canvas.width, canvas.height);
+			context?.clearRect(0, 0, canvas.width, canvas.height);
 	
-			context.putImageData(imageData, 0, 0);
+			context?.putImageData(imageData, 0, 0);
 		}
 
 		return () => {
