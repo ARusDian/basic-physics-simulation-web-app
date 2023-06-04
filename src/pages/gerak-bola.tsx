@@ -208,6 +208,7 @@ export default function GerakBola() {
 						value={ball.posX}
 						max={1020}
 						min={30}
+						step={1}
 						handler={(e) => {
 							if (parseInt(e.target.value) < ball.posX) {
 								setBall({ ...ball, posX: parseInt(e.target.value), isMovingBackwards: true });
@@ -224,6 +225,7 @@ export default function GerakBola() {
 						value={ball.posY}
 						max={720}
 						min={120}
+						step={1}
 						handler={(e) => setBall({
 							...ball, posY: parseInt(e.target.value),
 							velocityY: 0,
@@ -238,7 +240,8 @@ export default function GerakBola() {
 						value={ball.bounceFactor}
 						max={1}
 						min={0}
-						handler={(e) => setBall({ ...ball, bounceFactor: parseFloat(parseFloat(e.target.value).toFixed(2)) })}
+						step={0.1}
+						handler={(e) => setBall({ ...ball, bounceFactor: parseFloat(parseFloat(e.target.value).toFixed(1)) })}
 						className=""
 					/>
 				</div>
@@ -252,6 +255,7 @@ export default function GerakBola() {
 					</div>
 					<Slider
 						value={ball.isMovingBackwards ? -ball.velocityX : ball.velocityX}
+						step={1}
 						max={10}
 						min={-10}
 						handler={(e) => setBall({ ...ball, velocityX: parseFloat(parseFloat(e.target.value).toFixed(1)) })}
