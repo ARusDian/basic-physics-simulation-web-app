@@ -121,10 +121,6 @@ export default function GerakBola() {
 			});
 		}
 
-		if (gravity || kicked) {
-			animationRef.current = requestAnimationFrame(updatePos);
-		}
-
 		// if (sampling != 1) {
 		// 	const originalData = context.getImageData(0, 0, canvas.width, canvas.height);
 		// 	const msaaData = msaaContext.getImageData(0, 0, msaaWidth, msaaHeight);
@@ -162,6 +158,10 @@ export default function GerakBola() {
 
 		if (sampling != 1) {
 			const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+			context.imageSmoothingEnabled = true;
+			context.imageSmoothingQuality = 'high';
+
 			const diameter = 2 * sampling + 1;
 			const halfDiameter = Math.floor(diameter / 2);
 	
@@ -191,12 +191,13 @@ export default function GerakBola() {
 				}
 			}
 
-			context.imageSmoothingEnabled = true;
-			context.imageSmoothingQuality = 'high';
-
 			context.clearRect(0, 0, canvas.width, canvas.height);
 	
 			context.putImageData(imageData, 0, 0);
+		}
+
+		if (gravity || kicked) {
+			animationRef.current = requestAnimationFrame(updatePos);
 		}
 
 		return () => {
