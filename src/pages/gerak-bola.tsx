@@ -37,15 +37,6 @@ export default function GerakBola() {
 		if (ball.posX >= 1020) isMovingBackwards = true;
 		else if (ball.posX <= 30) isMovingBackwards = false;
 
-		// if (isMovingBackwards) {
-		// 	if (newVelocityX < 0) newVelocityX = newVelocityX * 1;
-		// 	else newVelocityX = -newVelocityX;
-		// }
-		// else {
-		// 	if (newVelocityX > 0) newVelocityX = newVelocityX * 1;
-		// 	else newVelocityX = -newVelocityX;
-		// }
-
 		const newY = Math.floor(ball.posY - newVelocityY);
 		let newX = isMovingBackwards ? Math.floor(ball.posX - newVelocityX) : Math.floor(ball.posX + newVelocityX);
 
@@ -191,13 +182,12 @@ export default function GerakBola() {
 				}
 			}
 
-			context.clearRect(0, 0, canvas.width, canvas.height);
-	
-			context.putImageData(imageData, 0, 0);
-		}
+			context.imageSmoothingEnabled = true;
+			context.imageSmoothingQuality = 'high';
 
-		if (gravity || kicked) {
-			animationRef.current = requestAnimationFrame(updatePos);
+			context?.clearRect(0, 0, canvas.width, canvas.height);
+	
+			context?.putImageData(imageData, 0, 0);
 		}
 
 		return () => {
@@ -218,6 +208,7 @@ export default function GerakBola() {
 						value={ball.posX}
 						max={1020}
 						min={30}
+						step={1}
 						handler={(e) => {
 							if (parseInt(e.target.value) < ball.posX) {
 								setBall({ ...ball, posX: parseInt(e.target.value), isMovingBackwards: true });
@@ -234,6 +225,7 @@ export default function GerakBola() {
 						value={ball.posY}
 						max={720}
 						min={120}
+						step={1}
 						handler={(e) => setBall({
 							...ball, posY: parseInt(e.target.value),
 							velocityY: 0,
@@ -248,34 +240,41 @@ export default function GerakBola() {
 						value={ball.bounceFactor}
 						max={1}
 						min={0}
-						handler={(e) => setBall({ ...ball, bounceFactor: parseFloat(parseFloat(e.target.value).toFixed(2)) })}
+						step={0.1}
+						handler={(e) => setBall({ ...ball, bounceFactor: parseFloat(parseFloat(e.target.value).toFixed(1)) })}
 						className=""
 					/>
 				</div>
 				<div className="flex flex-col gap-2 text-xl">
-					<h2>Vx : {ball.isMovingBackwards ? "-" + ball.velocityX : ball.velocityX}</h2>
+					<div className="flex flex-row">
+						<h2>Vx : {ball.isMovingBackwards && "-"}</h2>
+						<input type="text" className="bg-transparent rounded-lg" value={ball.velocityX} onChange={(e) => {
+							setBall({ ...ball, velocityX: parseFloat(e.target.value) });
+							setKicked(false);
+						}} />
+					</div>
 					<Slider
 						value={ball.isMovingBackwards ? -ball.velocityX : ball.velocityX}
+						step={1}
 						max={10}
 						min={-10}
 						handler={(e) => setBall({ ...ball, velocityX: parseFloat(parseFloat(e.target.value).toFixed(1)) })}
 						className=""
 					/>
 				</div>
-				<div className="mt-3">
-					<label className="relative inline-flex items-center cursor-pointer mb-3">
-						<input type="checkbox" className="sr-only peer" checked={gravity ? true : false} onChange={() => setGravity(prev => !prev)} />
-						<div className="w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
-						<span className="ml-3 text-lg font-medium text-gray-300">Gravity</span>
-					</label>
-					<br />
-					<button className="px-5 py-1 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" onClick={() => {
-						setBall({
-							...ball,
-							velocityX: 200
-						});
-						setKicked(true);
-					}}>Kick Ball</button>
+				<div className="mt-3 flex flex-row justify-between items-center">
+					<div>
+						<label className="relative inline-flex items-center cursor-pointer">
+							<input type="checkbox" className="sr-only peer" checked={gravity ? true : false} onChange={() => setGravity(prev => !prev)} />
+							<div className="w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+							<span className="ml-3 text-lg font-medium text-gray-300">Gravity</span>
+						</label>
+					</div>
+					<div className="">
+						<button className="px-5 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" onClick={() => {
+							setKicked(true);
+						}}>Kick Ball</button>
+					</div>
 				</div>
 				<div className="mt-3">
 					<select value={sampling} onChange={(e) => setSampling(parseInt(e.target.value))} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
