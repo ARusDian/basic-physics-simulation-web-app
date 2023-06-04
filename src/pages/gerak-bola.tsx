@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 export default function GerakBola() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const animationRef = useRef<number | null>(null);
+	const [sampling, setSampling] = useState<number>(1);
 	const [gravity, setGravity] = useState<boolean>(true);
 	const [kicked, setKicked] = useState<boolean>(false);
 	const [ball, setBall] = useState({
@@ -95,15 +96,17 @@ export default function GerakBola() {
 		const canvas: HTMLCanvasElement = canvasRef.current;
 		const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
 
+		// const msaaCanvas = document.createElement('canvas');
+		// const msaaContext = msaaCanvas.getContext('2d');
+
+		// const msaaWidth = canvas.width * sampling;
+		// const msaaHeight = canvas.height * sampling;
+
+		// msaaCanvas.width = msaaWidth;
+		// msaaCanvas.height = msaaHeight;
+
 		if (context) {
-			context.setTransform(
-				1,
-				0,
-				0,
-				-1,
-				0,
-				canvas.height
-			);
+			context.setTransform(1, 0, 0, -1, 0, canvas.height);
 			context.clearRect(0, 0, canvas.width, canvas.height);
 			initDraw(context, canvas);
 			context.beginPath();
@@ -122,12 +125,86 @@ export default function GerakBola() {
 			animationRef.current = requestAnimationFrame(updatePos);
 		}
 
+		// if (sampling != 1) {
+		// 	const originalData = context.getImageData(0, 0, canvas.width, canvas.height);
+		// 	const msaaData = msaaContext.getImageData(0, 0, msaaWidth, msaaHeight);
+
+		// 	for (let y = 0; y < canvas.height; y++) {
+		// 		for (let x = 0; x < canvas.width; x++) {
+		// 			let r = 0, g = 0, b = 0, a = 0;
+
+		// 			for (let offsetY = 0; offsetY < sampling; offsetY++) {
+		// 				for (let offsetX = 0; offsetX < sampling; offsetX++) {
+		// 					const pixelX = x * sampling + offsetX;
+		// 					const pixelY = y * sampling + offsetY;
+
+		// 					const pixelIndex = (pixelY * msaaWidth + pixelX) * 4;
+		// 					const pixelData = msaaData.data;
+
+		// 					r += pixelData[pixelIndex];
+		// 					g += pixelData[pixelIndex + 1];
+		// 					b += pixelData[pixelIndex + 2];
+		// 					a += pixelData[pixelIndex + 3];
+		// 				}
+		// 			}
+
+		// 			const pixelIndex = (y * canvas.width + x) * 4;
+		// 			const pixelCount = sampling * sampling;
+		// 			originalData.data[pixelIndex] = Math.floor(r / pixelCount);
+		// 			originalData.data[pixelIndex + 1] = Math.floor(g / pixelCount);
+		// 			originalData.data[pixelIndex + 2] = Math.floor(b / pixelCount);
+		// 			originalData.data[pixelIndex + 3] = Math.floor(a / pixelCount);
+		// 		}
+		// 	}
+
+		// 	context.putImageData(originalData, 0, 0);
+		// }
+
+		if (sampling != 1) {
+			const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+			const diameter = 2 * sampling + 1;
+			const halfDiameter = Math.floor(diameter / 2);
+	
+			for (let y = 0; y < canvas.height; y++) {
+				for (let x = 0; x < canvas.width; x++) {
+					let r = 0, g = 0, b = 0, a = 0;
+					for (let offsetY = -halfDiameter; offsetY <= halfDiameter; offsetY++) {
+						for (let offsetX = -halfDiameter; offsetX <= halfDiameter; offsetX++) {
+							const pixelX = x + offsetX;
+							const pixelY = y + offsetY;
+	
+							const pixelIndex = (pixelY * canvas.width + pixelX) * 4;
+							const pixelData = imageData.data;
+	
+							r += pixelData[pixelIndex];
+							g += pixelData[pixelIndex + 1];
+							b += pixelData[pixelIndex + 2];
+							a += pixelData[pixelIndex + 3];
+						}
+					}
+					const pixelIndex = (y * canvas.width + x) * 4;
+					const pixelCount = diameter * diameter;
+					imageData.data[pixelIndex] = Math.floor(r / pixelCount);
+					imageData.data[pixelIndex + 1] = Math.floor(g / pixelCount);
+					imageData.data[pixelIndex + 2] = Math.floor(b / pixelCount);
+					imageData.data[pixelIndex + 3] = Math.floor(a / pixelCount);
+				}
+			}
+
+			context.imageSmoothingEnabled = true;
+			context.imageSmoothingQuality = 'high';
+
+			context.clearRect(0, 0, canvas.width, canvas.height);
+	
+			context.putImageData(imageData, 0, 0);
+		}
+
 		return () => {
 			if (animationRef.current) {
 				cancelAnimationFrame(animationRef.current);
 			}
 		};
-	}, [ball, gravity, updatePos, kicked]);
+	}, [ball, gravity, updatePos, kicked, sampling]);
 
 	const configBar = () => (
 		<>
@@ -207,6 +284,14 @@ export default function GerakBola() {
 							setKicked(true);
 						}}>Kick Ball</button>
 					</div>
+				</div>
+				<div className="mt-3">
+					<select value={sampling} onChange={(e) => setSampling(parseInt(e.target.value))} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+						<option defaultValue={1}>Anti-Aliasing Off</option>
+						<option value={2}>2x Anti-Aliasing</option>
+						<option value={4}>4x Anti-Aliasing</option>
+						<option value={8}>8x Anti-Aliasing</option>
+					</select>
 				</div>
 			</div>
 		</>
